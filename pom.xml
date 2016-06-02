@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+
+        <!-- Artifact Information -->
+        <groupId>org.basinmc</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <packaging>pom</packaging>
+
+        <prerequisites>
+                <maven>3.3</maven>
+        </prerequisites>
+
+        <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+                <game.version>1.9.4</game.version>
+                <mcp.version>snapshot-20160602</mcp.version>
+        </properties>
+
+        <licenses>
+                <license>
+                        <name>Apache License 2.0</name>
+                        <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+                        <distribution>repo</distribution>
+                </license>
+        </licenses>
+
+        <!-- Artifact Metadata -->
+        <name>Basin</name>
+        <description>A Minecraft server API.</description>
+        <inceptionYear>2015</inceptionYear>
+
+        <organization>
+                <name>Basin</name>
+                <url>https://www.basinmc.org/</url>
+        </organization>
+
+        <developers>
+                <developer>
+                        <name>Johannes Donath</name>
+                        <timezone>Europe/Berlin</timezone>
+                        <email>johannesd@torchmind.com</email>
+                        <url>https://www.johannes-donath.com</url>
+
+                        <organization>Torchmind</organization>
+                        <organizationUrl>https://www.torchmind.com</organizationUrl>
+                </developer>
+        </developers>
+
+        <scm>
+                <tag>master</tag>
+                <url>https://github.com/BasinMC/Basin</url>
+                <connection>scm:git:git@github.com:/BasinMC/Basin.git</connection>
+                <developerConnection>scm:git:git@github.com:/BasinMC/Basin.git</developerConnection>
+        </scm>
+
+        <issueManagement>
+                <system>GitHub</system>
+                <url>https://github.com/BasinMC/Basin/issues</url>
+        </issueManagement>
+
+        <distributionManagement>
+                <repository>
+                        <id>basinmc</id>
+                        <name>BasinMC Stable</name>
+                        <url>https://www.basinmc.org/nexus/repository/maven-releases/</url>
+                </repository>
+
+                <snapshotRepository>
+                        <id>basinmc</id>
+                        <name>BasinMC Snapshot</name>
+                        <url>https://www.basinmc.org/nexus/repository/maven-snapshots/</url>
+                </snapshotRepository>
+        </distributionManagement>
+
+        <!-- Dependencies -->
+        <repositories>
+                <repository>
+                        <id>minecraft</id>
+                        <name>Minecraft</name>
+                        <url>https://libraries.minecraft.net/</url>
+                </repository>
+        </repositories>
+
+        <pluginRepositories>
+                <pluginRepository>
+                        <id>basinmc</id>
+                        <name>BasinMC Public</name>
+                        <url>https://www.basinmc.org/nexus/repository/public/</url>
+
+                        <snapshots>
+                                <enabled>true</enabled>
+                        </snapshots>
+                </pluginRepository>
+        </pluginRepositories>
+
+        <dependencyManagement>
+                <dependencies>
+                        <!-- Minecraft -->
+                        <!-- Note: Some newer dependency versions might be included later -->
+                        <dependency>
+                                <groupId>com.mojang</groupId>
+                                <artifactId>authlib</artifactId>
+                                <version>1.5.22</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>org.apache.logging.log4j</groupId>
+                                <artifactId>log4j-api</artifactId>
+                                <version>2.0-beta9</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>org.apache.logging.log4j</groupId>
+                                <artifactId>log4j-core</artifactId>
+                                <version>2.0-beta9</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>org.apache.commons</groupId>
+                                <artifactId>commons-lang3</artifactId>
+                                <version>3.3.2</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>com.google.code.gson</groupId>
+                                <artifactId>gson</artifactId>
+                                <version>2.2.4</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>it.unimi.dsi</groupId>
+                                <artifactId>fastutil</artifactId>
+                                <version>7.0.12_mojang</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-all</artifactId>
+                                <version>4.0.23.Final</version>
+                        </dependency>
+
+                        <!-- Utility -->
+                        <dependency>
+                                <groupId>com.google.guava</groupId>
+                                <artifactId>guava</artifactId>
+                                <version>19.0</version>
+                        </dependency>
+
+                        <!-- Code Quality -->
+                        <dependency>
+                                <groupId>com.google.code.findbugs</groupId>
+                                <artifactId>jsr305</artifactId>
+                                <version>3.0.1</version>
+                                <scope>provided</scope>
+                        </dependency>
+                </dependencies>
+        </dependencyManagement>
+
+        <!-- Build Settings -->
+        <build>
+                <finalName>${project.groupId}.${project.artifactId}-${project.version}</finalName>
+                <defaultGoal>clean install</defaultGoal>
+
+                <plugins>
+                        <!-- Java Compiler -->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-compiler-plugin</artifactId>
+                                <version>3.5</version>
+
+                                <configuration>
+                                        <source>1.8</source>
+                                        <target>1.8</target>
+                                </configuration>
+                        </plugin>
+
+                        <!-- Minecraft Source -->
+                        <plugin>
+                                <groupId>org.basinmc.maven.plugins</groupId>
+                                <artifactId>minecraft-maven-plugin</artifactId>
+                                <version>1.0-SNAPSHOT</version>
+
+                                <configuration>
+                                        <gameVersion>${game.version}</gameVersion>
+                                        <mcpVersion>${mcp.version}</mcpVersion>
+                                        <module>server</module>
+                                </configuration>
+
+                                <executions>
+                                        <execution>
+                                                <id>minecraft-safeguard</id>
+
+                                                <goals>
+                                                        <goal>git-safeguard</goal>
+                                                </goals>
+                                        </execution>
+                                        <execution>
+                                                <id>minecraft-download</id>
+
+                                                <goals>
+                                                        <goal>download</goal>
+                                                </goals>
+                                        </execution>
+                                        <execution>
+                                                <id>minecraft-decompile</id>
+
+                                                <goals>
+                                                        <goal>decompile</goal>
+                                                </goals>
+                                        </execution>
+                                        <execution>
+                                                <id>minecraft-patch</id>
+
+                                                <goals>
+                                                        <goal>git-patch</goal>
+                                                </goals>
+                                        </execution>
+                                </executions>
+                        </plugin>
+
+                        <!-- Jar Creation -->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-jar-plugin</artifactId>
+                                <version>2.6</version>
+
+                                <configuration>
+                                        <archive>
+                                                <addMavenDescriptor>true</addMavenDescriptor>
+                                                <compress>true</compress>
+                                                <index>true</index>
+
+                                                <manifest>
+                                                        <main-class>
+                                                                org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler
+                                                        </main-class>
+                                                </manifest>
+                                        </archive>
+                                </configuration>
+                        </plugin>
+
+                        <!-- Uber Jar -->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-shade-plugin</artifactId>
+                                <version>2.4.3</version>
+
+                                <configuration>
+                                        <minimizeJar>true</minimizeJar>
+                                </configuration>
+                        </plugin>
+
+                        <!-- Attach Sources -->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-source-plugin</artifactId>
+                                <version>2.4</version>
+
+                                <executions>
+                                        <execution>
+                                                <id>attach-sources</id>
+
+                                                <goals>
+                                                        <goal>jar-no-fork</goal>
+                                                </goals>
+                                        </execution>
+                                </executions>
+                        </plugin>
+
+                        <!-- Attach JavaDoc -->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-javadoc-plugin</artifactId>
+                                <version>2.10.3</version>
+
+                                <executions>
+                                        <execution>
+                                                <id>attach-javadocs</id>
+
+                                                <goals>
+                                                        <goal>jar</goal>
+                                                </goals>
+                                        </execution>
+                                </executions>
+                        </plugin>
+
+                        <!-- GPG Signatures -->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-gpg-plugin</artifactId>
+                                <version>1.5</version>
+
+                                <executions>
+                                        <execution>
+                                                <id>sign-artifacts</id>
+                                                <phase>verify</phase>
+
+                                                <goals>
+                                                        <goal>sign</goal>
+                                                </goals>
+                                        </execution>
+                                </executions>
+
+                                <configuration>
+                                        <keyname>A0360AC7</keyname>
+                                </configuration>
+                        </plugin>
+                </plugins>
+        </build>
+
+        <modules></modules>
+
+        <!-- Deployment Profiles -->
+        <profiles>
+                <profile>
+                        <id>deployment</id>
+
+                        <build>
+                                <plugins>
+                                        <!-- GPG Signatures -->
+                                        <plugin>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-gpg-plugin</artifactId>
+                                        </plugin>
+                                </plugins>
+                        </build>
+                </profile>
+        </profiles>
+</project>
