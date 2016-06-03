@@ -1,4 +1,4 @@
-From 541eb0e3c4d6f9a7a204fdf4288c4fd225995869 Mon Sep 17 00:00:00 2001
+From 19efd2a869a3da342b5364f12ac49b89376ebbaa Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Thu, 2 Jun 2016 19:57:10 -0600
 Subject: [PATCH] Fixed compilation errors.
@@ -165,6 +165,19 @@ index ab6bc6d..59571b5 100644
          var10 = 0;
  
          for (int var15 = var8.getZ(); var15 <= var9.getZ(); ++var15) {
+diff --git a/net/minecraft/command/CommandHandler.java b/net/minecraft/command/CommandHandler.java
+index ec57990..4e4d75e 100644
+--- a/net/minecraft/command/CommandHandler.java
++++ b/net/minecraft/command/CommandHandler.java
+@@ -50,7 +50,7 @@ public abstract class CommandHandler implements ICommandManager {
+       var1.addChatMessage(var8);
+     } else if (var5.checkPermission(this.getServer(), var1)) {
+       if (var6 > -1) {
+-        List var14 = EntitySelector.matchEntities(var1, var3[var6], Entity.class);
++        List<Entity> var14 = EntitySelector.matchEntities(var1, var3[var6], Entity.class); // BCMP
+         String var9 = var3[var6];
+         var1.setCommandStat(CommandResultStats.Type.AFFECTED_ENTITIES, var14.size());
+ 
 diff --git a/net/minecraft/command/server/CommandAchievement.java b/net/minecraft/command/server/CommandAchievement.java
 index a5c7dd7..ddd41b0 100644
 --- a/net/minecraft/command/server/CommandAchievement.java
@@ -293,6 +306,21 @@ index bf16003..821d92a 100644
                this.worldObj.getEntitiesWithinAABB(
                    EntityLivingBase.class, this.getEntityBoundingBox());
            if (!var23.isEmpty()) {
+diff --git a/net/minecraft/entity/EntityTracker.java b/net/minecraft/entity/EntityTracker.java
+index e11f598..6458b56 100644
+--- a/net/minecraft/entity/EntityTracker.java
++++ b/net/minecraft/entity/EntityTracker.java
+@@ -251,8 +251,8 @@ public class EntityTracker {
+   }
+ 
+   public void sendLeashedEntitiesInChunk(EntityPlayerMP var1, Chunk var2) {
+-    ArrayList var3 = Lists.newArrayList();
+-    ArrayList var4 = Lists.newArrayList();
++    ArrayList<Entity> var3 = Lists.newArrayList(); // BCMP
++    ArrayList<Entity> var4 = Lists.newArrayList(); // BCMP
+ 
+     for (EntityTrackerEntry var6 : this.trackedEntities) {
+       Entity var7 = var6.getTrackedEntity();
 diff --git a/net/minecraft/entity/ai/EntityAIAvoidEntity.java b/net/minecraft/entity/ai/EntityAIAvoidEntity.java
 index d2c2b5c..d4c38d4 100644
 --- a/net/minecraft/entity/ai/EntityAIAvoidEntity.java
@@ -598,6 +626,41 @@ index 9d36664..d26c263 100644
  
      for (int var4 = 0; var4 < var1.getHeight(); ++var4) {
        for (int var5 = 0; var5 < var1.getWidth(); ++var5) {
+diff --git a/net/minecraft/network/EnumConnectionState.java b/net/minecraft/network/EnumConnectionState.java
+index be2d135..5ca79de 100644
+--- a/net/minecraft/network/EnumConnectionState.java
++++ b/net/minecraft/network/EnumConnectionState.java
+@@ -274,7 +274,7 @@ public enum EnumConnectionState {
+ 
+   protected EnumConnectionState registerPacket(
+       EnumPacketDirection var1, Class<? extends Packet<?>> var2) {
+-    Object var3 = (BiMap) this.directionMaps.get(var1);
++    BiMap<Integer, Class<? extends Packet<?>>> var3 = (BiMap) this.directionMaps.get(var1); // BCMP
+     if (var3 == null) {
+       var3 = HashBiMap.create();
+       this.directionMaps.put(var1, var3);
+@@ -330,7 +330,7 @@ public enum EnumConnectionState {
+       STATES_BY_ID[var4 - MIN_PROTOCOL_ID] = var3;
+ 
+       for (EnumPacketDirection var6 : var3.directionMaps.keySet()) {
+-        for (Class var8 : ((BiMap) var3.directionMaps.get(var6)).values()) {
++        for (Class<? extends Packet<?>> var8 : var3.directionMaps.get(var6).values()) { // BCMP
+           if (STATES_BY_CLASS.containsKey(var8) && STATES_BY_CLASS.get(var8) != var3) {
+             throw new Error(
+                 "Packet "
+diff --git a/net/minecraft/network/NetworkManager.java b/net/minecraft/network/NetworkManager.java
+index d43bae5..f33cd52 100644
+--- a/net/minecraft/network/NetworkManager.java
++++ b/net/minecraft/network/NetworkManager.java
+@@ -134,7 +134,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
+     this.closeChannel(var3);
+   }
+ 
+-  protected void channelRead0(ChannelHandlerContext var1, Packet<?> var2) throws Exception {
++  protected void channelRead0(ChannelHandlerContext var1, Packet var2) throws Exception { // BCMP
+     if (this.channel.isOpen()) {
+       try {
+         var2.processPacket(this.packetListener);
 diff --git a/net/minecraft/pathfinding/WalkNodeProcessor.java b/net/minecraft/pathfinding/WalkNodeProcessor.java
 index c655743..d50fba1 100644
 --- a/net/minecraft/pathfinding/WalkNodeProcessor.java
@@ -620,6 +683,19 @@ index c655743..d50fba1 100644
      PathNodeType var12 = PathNodeType.BLOCKED;
      double var13 = (double) var5.width / 2.0D;
      BlockPos var15 = new BlockPos(var5);
+diff --git a/net/minecraft/profiler/Snooper.java b/net/minecraft/profiler/Snooper.java
+index 86b5bad..5ccf676 100644
+--- a/net/minecraft/profiler/Snooper.java
++++ b/net/minecraft/profiler/Snooper.java
+@@ -88,7 +88,7 @@ public class Snooper {
+ 
+   private void addJvmArgsToSnooper() {
+     RuntimeMXBean var1 = ManagementFactory.getRuntimeMXBean();
+-    List var2 = var1.getInputArguments();
++    List<String> var2 = var1.getInputArguments(); // BCMP
+     int var3 = 0;
+ 
+     for (String var5 : var2) {
 diff --git a/net/minecraft/scoreboard/Scoreboard.java b/net/minecraft/scoreboard/Scoreboard.java
 index 72ca1c3..3dd4d93 100644
 --- a/net/minecraft/scoreboard/Scoreboard.java
@@ -655,6 +731,28 @@ index 72ca1c3..3dd4d93 100644
        var2.addAll(var4.values());
      }
  
+diff --git a/net/minecraft/scoreboard/ServerScoreboard.java b/net/minecraft/scoreboard/ServerScoreboard.java
+index fbe5b22..3a9d564 100644
+--- a/net/minecraft/scoreboard/ServerScoreboard.java
++++ b/net/minecraft/scoreboard/ServerScoreboard.java
+@@ -170,7 +170,7 @@ public class ServerScoreboard extends Scoreboard {
+   }
+ 
+   public void addObjective(ScoreObjective var1) {
+-    List var2 = this.getCreatePackets(var1);
++    List<Packet<?>> var2 = this.getCreatePackets(var1); // BCMP
+ 
+     for (EntityPlayerMP var4 : this.scoreboardMCServer.getPlayerList().getPlayerList()) {
+       for (Packet var6 : var2) {
+@@ -195,7 +195,7 @@ public class ServerScoreboard extends Scoreboard {
+   }
+ 
+   public void sendDisplaySlotRemovalPackets(ScoreObjective var1) {
+-    List var2 = this.getDestroyPackets(var1);
++    List<Packet<?>> var2 = this.getDestroyPackets(var1);
+ 
+     for (EntityPlayerMP var4 : this.scoreboardMCServer.getPlayerList().getPlayerList()) {
+       for (Packet var6 : var2) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
 index aa3abcc..f1f2598 100644
 --- a/net/minecraft/server/MinecraftServer.java
@@ -668,6 +766,54 @@ index aa3abcc..f1f2598 100644
        if (!var8.isEmpty()) {
          for (String var10 : var8) {
            if (var7) {
+diff --git a/net/minecraft/server/management/PlayerList.java b/net/minecraft/server/management/PlayerList.java
+index b4328c5..9ae582f 100644
+--- a/net/minecraft/server/management/PlayerList.java
++++ b/net/minecraft/server/management/PlayerList.java
+@@ -409,7 +409,7 @@ public abstract class PlayerList {
+ 
+   public EntityPlayerMP createPlayerForUser(GameProfile var1) {
+     UUID var2 = EntityPlayer.getUUID(var1);
+-    ArrayList var3 = Lists.newArrayList();
++    ArrayList<EntityPlayerMP> var3 = Lists.newArrayList(); // BCMP
+ 
+     for (int var4 = 0; var4 < this.playerEntityList.size(); ++var4) {
+       EntityPlayerMP var5 = (EntityPlayerMP) this.playerEntityList.get(var4);
+diff --git a/net/minecraft/server/management/PlayerProfileCache.java b/net/minecraft/server/management/PlayerProfileCache.java
+index 88a5958..74aced2 100644
+--- a/net/minecraft/server/management/PlayerProfileCache.java
++++ b/net/minecraft/server/management/PlayerProfileCache.java
+@@ -192,7 +192,7 @@ public class PlayerProfileCache {
+ 
+     try {
+       var1 = Files.newReader(this.usercacheFile, Charsets.UTF_8);
+-      List var2 = (List) this.gson.fromJson(var1, TYPE);
++      List<PlayerProfileCache.ProfileEntry> var2 = (List) this.gson.fromJson(var1, TYPE); // BCMP
+       this.usernameToProfileEntryMap.clear();
+       this.uuidToProfileEntryMap.clear();
+       this.gameProfiles.clear();
+diff --git a/net/minecraft/server/management/UserList.java b/net/minecraft/server/management/UserList.java
+index c6aca35..7ca6695 100644
+--- a/net/minecraft/server/management/UserList.java
++++ b/net/minecraft/server/management/UserList.java
+@@ -146,7 +146,7 @@ public class UserList<K, V extends UserListEntry<K>> {
+   }
+ 
+   public void readSavedFile() throws FileNotFoundException {
+-    Collection var1 = null;
++    Collection<V> var1 = null; // BCMP
+     BufferedReader var2 = null;
+ 
+     try {
+@@ -159,7 +159,7 @@ public class UserList<K, V extends UserListEntry<K>> {
+     if (var1 != null) {
+       this.values.clear();
+ 
+-      for (UserListEntry var4 : var1) {
++      for (V var4 : var1) { // BCMP
+         if (var4.getValue() != null) {
+           this.values.put(this.getObjectKey(var4.getValue()), var4);
+         }
 diff --git a/net/minecraft/tileentity/TileEntityBeacon.java b/net/minecraft/tileentity/TileEntityBeacon.java
 index b54ae18..adc7d46 100644
 --- a/net/minecraft/tileentity/TileEntityBeacon.java
@@ -681,6 +827,28 @@ index b54ae18..adc7d46 100644
  
        for (EntityPlayer var11 : var9) {
          var11.addPotionEffect(new PotionEffect(this.primaryEffect, var4, var3, true, true));
+diff --git a/net/minecraft/util/ClassInheritanceMultiMap.java b/net/minecraft/util/ClassInheritanceMultiMap.java
+index 5c70b02..d949952 100644
+--- a/net/minecraft/util/ClassInheritanceMultiMap.java
++++ b/net/minecraft/util/ClassInheritanceMultiMap.java
+@@ -30,7 +30,7 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T> {
+   protected void createLookup(Class<?> var1) {
+     ALL_KNOWN.add(var1);
+ 
+-    for (Object var3 : this.values) {
++    for (T var3 : this.values) { // BCMP
+       if (var1.isAssignableFrom(var3.getClass())) {
+         this.addForClass(var3, var1);
+       }
+@@ -64,7 +64,7 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T> {
+   private void addForClass(T var1, Class<?> var2) {
+     List var3 = (List) this.map.get(var2);
+     if (var3 == null) {
+-      this.map.put(var2, Lists.newArrayList(new Object[] {var1}));
++      this.map.put(var2, Lists.newArrayList((T[]) new Object[] {var1})); // BCMP
+     } else {
+       var3.add(var1);
+     }
 diff --git a/net/minecraft/util/IntHashMap.java b/net/minecraft/util/IntHashMap.java
 index 46fee47..9b77225 100644
 --- a/net/minecraft/util/IntHashMap.java
@@ -767,6 +935,19 @@ index 7b6f346..5b63280 100644
      }
  
      this.objectList.set(var2, var1);
+diff --git a/net/minecraft/util/datafix/DataFixer.java b/net/minecraft/util/datafix/DataFixer.java
+index 496d42c..e2dc7c2 100644
+--- a/net/minecraft/util/datafix/DataFixer.java
++++ b/net/minecraft/util/datafix/DataFixer.java
+@@ -93,7 +93,7 @@ public class DataFixer implements IDataFixer {
+   }
+ 
+   private <V> List<V> getTypeList(Map<IFixType, List<V>> var1, IFixType var2) {
+-    Object var3 = (List) var1.get(var2);
++    List<V> var3 = (List) var1.get(var2); // BCMP
+     if (var3 == null) {
+       var3 = Lists.newArrayList();
+       var1.put(var2, var3);
 diff --git a/net/minecraft/util/math/Cartesian.java b/net/minecraft/util/math/Cartesian.java
 index 93855fe..e6e5849 100644
 --- a/net/minecraft/util/math/Cartesian.java
@@ -843,6 +1024,19 @@ index 53ef89e..2319a31 100644
          if (!var5.isEmpty()) {
            var1.append("(");
            int var6 = 0;
+diff --git a/net/minecraft/world/gen/layer/GenLayer.java b/net/minecraft/world/gen/layer/GenLayer.java
+index acbebcd..6a19491 100644
+--- a/net/minecraft/world/gen/layer/GenLayer.java
++++ b/net/minecraft/world/gen/layer/GenLayer.java
+@@ -69,7 +69,7 @@ public abstract class GenLayer {
+     GenLayer var37 = GenLayerZoom.magnify(1000L, var9, 2);
+     GenLayerBiomeEdge var38 = new GenLayerBiomeEdge(1000L, var37);
+     GenLayer var10 = GenLayerZoom.magnify(1000L, var32, 2);
+-    GenLayerHills var39 = new GenLayerHills(1000L, var38, var10);
++    GenLayer var39 = new GenLayerHills(1000L, var38, var10); // BCMP WTF
+     GenLayer var33 = GenLayerZoom.magnify(1000L, var32, 2);
+     var33 = GenLayerZoom.magnify(1000L, var33, var7);
+     GenLayerRiver var35 = new GenLayerRiver(1L, var33);
 diff --git a/net/minecraft/world/gen/structure/StructureComponentTemplate.java b/net/minecraft/world/gen/structure/StructureComponentTemplate.java
 index 3290074..30adc20 100644
 --- a/net/minecraft/world/gen/structure/StructureComponentTemplate.java
@@ -878,6 +1072,19 @@ index bc34442..3f9217d 100644
  
        for (StructureOceanMonumentPieces.RoomDefinition var37 : var2) {
          if (var37 != null) {
+diff --git a/net/minecraft/world/gen/structure/template/Template.java b/net/minecraft/world/gen/structure/template/Template.java
+index e2a9eeb..28dab7d 100644
+--- a/net/minecraft/world/gen/structure/template/Template.java
++++ b/net/minecraft/world/gen/structure/template/Template.java
+@@ -101,7 +101,7 @@ public class Template {
+   }
+ 
+   private void takeEntitiesFromWorld(World var1, BlockPos var2, BlockPos var3) {
+-    List var4 =
++    List<Entity> var4 = // BCMP
+         var1.getEntitiesWithinAABB(
+             Entity.class,
+             new AxisAlignedBB(var2, var3),
 diff --git a/net/minecraft/world/storage/loot/LootTable.java b/net/minecraft/world/storage/loot/LootTable.java
 index 57f1432..7860f24 100644
 --- a/net/minecraft/world/storage/loot/LootTable.java
