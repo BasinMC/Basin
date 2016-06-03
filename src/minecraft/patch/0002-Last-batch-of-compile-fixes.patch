@@ -1,0 +1,519 @@
+From 3bcf2f1d5b8aafc639ff3d1e2e0a79ae432b1b69 Mon Sep 17 00:00:00 2001
+From: 0x277F <0x277F@gmail.com>
+Date: Thu, 2 Jun 2016 20:36:13 -0600
+Subject: [PATCH] Last batch of compile fixes
+
+
+diff --git a/net/minecraft/block/BlockRedstoneWire.java b/net/minecraft/block/BlockRedstoneWire.java
+index 4cdb2f7..bccec08 100644
+--- a/net/minecraft/block/BlockRedstoneWire.java
++++ b/net/minecraft/block/BlockRedstoneWire.java
+@@ -160,7 +160,7 @@ public class BlockRedstoneWire extends Block {
+ 
+   private IBlockState updateSurroundingRedstone(World var1, BlockPos var2, IBlockState var3) {
+     var3 = this.calculateCurrentChanges(var1, var2, var2, var3);
+-    ArrayList var4 = Lists.newArrayList(this.blocksNeedingUpdate);
++    ArrayList<BlockPos> var4 = Lists.newArrayList(this.blocksNeedingUpdate); // BCMP
+     this.blocksNeedingUpdate.clear();
+ 
+     for (BlockPos var6 : var4) {
+diff --git a/net/minecraft/command/CommandClone.java b/net/minecraft/command/CommandClone.java
+index 6ca4ccb..dd908be 100644
+--- a/net/minecraft/command/CommandClone.java
++++ b/net/minecraft/command/CommandClone.java
+@@ -84,9 +84,9 @@ public class CommandClone extends CommandBase {
+               }
+ 
+               ArrayList var15 = Lists.newArrayList();
+-              ArrayList var16 = Lists.newArrayList();
++              ArrayList<StaticCloneData> var16 = Lists.newArrayList(); //BCMP
+               ArrayList var17 = Lists.newArrayList();
+-              LinkedList var18 = Lists.newLinkedList();
++              LinkedList<BlockPos> var18 = Lists.newLinkedList(); // BCMP
+               BlockPos var19 =
+                   new BlockPos(var8.minX - var7.minX, var8.minY - var7.minY, var8.minZ - var7.minZ);
+ 
+@@ -135,11 +135,11 @@ public class CommandClone extends CommandBase {
+                 }
+               }
+ 
+-              ArrayList var31 = Lists.newArrayList();
++              ArrayList<StaticCloneData> var31 = Lists.newArrayList(); // BCMP
+               var31.addAll(var15);
+               var31.addAll(var16);
+               var31.addAll(var17);
+-              List var34 = Lists.reverse(var31);
++              List<StaticCloneData> var34 = Lists.reverse(var31); // BCMP
+ 
+               for (CommandClone.StaticCloneData var41 : var34) {
+                 TileEntity var46 = var13.getTileEntity(var41.pos);
+@@ -175,7 +175,7 @@ public class CommandClone extends CommandBase {
+                 var13.notifyNeighborsRespectDebug(var44.pos, var44.blockState.getBlock());
+               }
+ 
+-              List var40 = var13.getPendingBlockUpdates(var7, false);
++              List<NextTickListEntry> var40 = var13.getPendingBlockUpdates(var7, false); // BCMP
+               if (var40 != null) {
+                 for (NextTickListEntry var48 : var40) {
+                   if (var7.isVecInside(var48.position)) {
+diff --git a/net/minecraft/command/CommandStats.java b/net/minecraft/command/CommandStats.java
+index 88eacb6..9e05e8d 100644
+--- a/net/minecraft/command/CommandStats.java
++++ b/net/minecraft/command/CommandStats.java
+@@ -176,7 +176,7 @@ public class CommandStats extends CommandBase {
+   }
+ 
+   protected List<String> getObjectiveNames(MinecraftServer var1) {
+-    Collection var2 = var1.worldServerForDimension(0).getScoreboard().getScoreObjectives();
++    Collection<ScoreObjective> var2 = var1.worldServerForDimension(0).getScoreboard().getScoreObjectives(); // BCMP
+     ArrayList var3 = Lists.newArrayList();
+ 
+     for (ScoreObjective var5 : var2) {
+diff --git a/net/minecraft/command/EntitySelector.java b/net/minecraft/command/EntitySelector.java
+index 7eb63df..fa12599 100644
+--- a/net/minecraft/command/EntitySelector.java
++++ b/net/minecraft/command/EntitySelector.java
+@@ -62,7 +62,7 @@ public class EntitySelector {
+ 
+   @Nullable
+   public static ITextComponent matchEntitiesToTextComponent(ICommandSender var0, String var1) {
+-    List var2 = matchEntities(var0, var1, Entity.class);
++    List<Entity> var2 = matchEntities(var0, var1, Entity.class); // BCMP
+     if (var2.isEmpty()) {
+       return null;
+     } else {
+@@ -87,7 +87,7 @@ public class EntitySelector {
+         String var5 = var3.group(1);
+         BlockPos var6 = getBlockPosFromArguments(var4, var0.getPosition());
+         Vec3d var7 = getPosFromArguments(var4, var0.getPositionVector());
+-        List var8 = getWorlds(var0, var4);
++        List<World> var8 = getWorlds(var0, var4); // BCMP
+         ArrayList var9 = Lists.newArrayList();
+ 
+         for (World var11 : var8) {
+@@ -141,11 +141,14 @@ public class EntitySelector {
+ 
+   private static List<Predicate<Entity>> getTypePredicates(Map<String, String> var0, String var1) {
+     ArrayList var2 = Lists.newArrayList();
+-    final String var3 = getArgument(var0, "type");
++    // BCMP start
++    String var3 = getArgument(var0, "type");
+     final boolean var4 = var3 != null && var3.startsWith("!");
+     if (var4) {
+       var3 = var3.substring(1);
+     }
++    final String final_var3 = var3;
++    // BCMP end
+ 
+     boolean var6 = !var1.equals("e");
+     boolean var7 = var1.equals("r") && var3 != null;
+@@ -162,7 +165,7 @@ public class EntitySelector {
+       var2.add(
+           new Predicate<Entity>() {
+             public boolean apply(@Nullable Entity var1) {
+-              return EntityList.isStringEntityName(var1, var3) != var4;
++              return EntityList.isStringEntityName(var1, final_var3) != var4; // BCMP
+             }
+           });
+     }
+@@ -203,7 +206,7 @@ public class EntitySelector {
+         var2 = var2.substring(1);
+       }
+ 
+-      final WorldSettings.GameType var4;
++      WorldSettings.GameType var4; // BCMP - unfinal
+       try {
+         int var5 = Integer.parseInt(var2);
+         var4 =
+@@ -212,6 +215,7 @@ public class EntitySelector {
+         var4 =
+             WorldSettings.GameType.parseGameTypeWithDefault(var2, WorldSettings.GameType.NOT_SET);
+       }
++      final WorldSettings.GameType final_var4 = var4; // BCMP
+ 
+       var1.add(
+           new Predicate<Entity>() {
+@@ -221,7 +225,7 @@ public class EntitySelector {
+               } else {
+                 EntityPlayerMP var2 = (EntityPlayerMP) var1;
+                 WorldSettings.GameType var3x = var2.interactionManager.getGameType();
+-                return var3 ? var3x != var4 : var3x == var4;
++                return var3 ? var3x != final_var4 : var3x == final_var4;
+               }
+             }
+           });
+@@ -231,11 +235,12 @@ public class EntitySelector {
+ 
+   private static List<Predicate<Entity>> getTeamPredicates(Map<String, String> var0) {
+     ArrayList var1 = Lists.newArrayList();
+-    final String var2 = getArgument(var0, "team");
++    String var2 = getArgument(var0, "team"); // BCMP
+     final boolean var3 = var2 != null && var2.startsWith("!");
+     if (var3) {
+       var2 = var2.substring(1);
+     }
++    final String final_var2 = var2; // BCMP
+ 
+     if (var2 != null) {
+       var1.add(
+@@ -247,7 +252,7 @@ public class EntitySelector {
+                 EntityLivingBase var2x = (EntityLivingBase) var1;
+                 Team var3x = var2x.getTeam();
+                 String var4 = var3x == null ? "" : var3x.getRegisteredName();
+-                return var4.equals(var2) != var3;
++                return var4.equals(final_var2) != var3; // BCMP
+               }
+             }
+           });
+@@ -258,7 +263,7 @@ public class EntitySelector {
+ 
+   private static List<Predicate<Entity>> getScorePredicates(
+       final ICommandSender var0, Map<String, String> var1) {
+-    final Map var2 = getScoreMap(var1);
++    final Map<?, ?> var2 = getScoreMap(var1); // BCMP - I can't believe this worked.
+     return (List<Predicate<Entity>>)
+         (var2.isEmpty()
+             ? Collections.emptyList()
+@@ -313,17 +318,18 @@ public class EntitySelector {
+ 
+   private static List<Predicate<Entity>> getNamePredicates(Map<String, String> var0) {
+     ArrayList var1 = Lists.newArrayList();
+-    final String var2 = getArgument(var0, "name");
++    String var2 = getArgument(var0, "name"); // BCMP - yep, we're doing this again
+     final boolean var3 = var2 != null && var2.startsWith("!");
+     if (var3) {
+       var2 = var2.substring(1);
+     }
++    final String final_var2 = var2; // BCMP
+ 
+     if (var2 != null) {
+       var1.add(
+           new Predicate<Entity>() {
+             public boolean apply(@Nullable Entity var1) {
+-              return var1 != null && var1.getName().equals(var2) != var3;
++              return var1 != null && var1.getName().equals(final_var2) != var3; // BCMP
+             }
+           });
+     }
+@@ -333,11 +339,12 @@ public class EntitySelector {
+ 
+   private static List<Predicate<Entity>> getTagPredicates(Map<String, String> var0) {
+     ArrayList var1 = Lists.newArrayList();
+-    final String var2 = getArgument(var0, "tag");
++    String var2 = getArgument(var0, "tag"); // BCMP
+     final boolean var3 = var2 != null && var2.startsWith("!");
+     if (var3) {
+       var2 = var2.substring(1);
+     }
++    final String final_var2 = var2;
+ 
+     if (var2 != null) {
+       var1.add(
+@@ -345,9 +352,9 @@ public class EntitySelector {
+             public boolean apply(@Nullable Entity var1) {
+               return var1 == null
+                   ? false
+-                  : ("".equals(var2)
++                  : ("".equals(final_var2)
+                       ? var1.getTags().isEmpty() != var3
+-                      : var1.getTags().contains(var2) != var3);
++                      : var1.getTags().contains(final_var2) != var3);
+             }
+           });
+     }
+@@ -516,7 +523,7 @@ public class EntitySelector {
+         && var6 == 1
+         && ((List) var0).contains(var7)
+         && !"r".equals(var4)) {
+-      var0 = Lists.newArrayList(new Entity[] {var7});
++      var0 = Lists.newArrayList((T[]) new Entity[] {var7}); // BCMP
+     }
+ 
+     if (var6 != 0) {
+diff --git a/net/minecraft/command/server/CommandBanIp.java b/net/minecraft/command/server/CommandBanIp.java
+index ab714d5..bea2c4c 100644
+--- a/net/minecraft/command/server/CommandBanIp.java
++++ b/net/minecraft/command/server/CommandBanIp.java
+@@ -71,7 +71,7 @@ public class CommandBanIp extends CommandBase {
+     UserListIPBansEntry var5 =
+         new UserListIPBansEntry(var3, (Date) null, var2.getName(), (Date) null, var4);
+     var1.getPlayerList().getBannedIPs().addEntry(var5);
+-    List var6 = var1.getPlayerList().getPlayersMatchingAddress(var3);
++    List<EntityPlayerMP> var6 = var1.getPlayerList().getPlayersMatchingAddress(var3); // BCMP
+     String[] var7 = new String[var6.size()];
+     int var8 = 0;
+ 
+diff --git a/net/minecraft/command/server/CommandScoreboard.java b/net/minecraft/command/server/CommandScoreboard.java
+index a9e6311..325ccd7 100644
+--- a/net/minecraft/command/server/CommandScoreboard.java
++++ b/net/minecraft/command/server/CommandScoreboard.java
+@@ -240,7 +240,7 @@ public class CommandScoreboard extends CommandBase {
+     if (var4 < 0) {
+       return false;
+     } else {
+-      ArrayList var13 = Lists.newArrayList(this.getScoreboard(var1).getObjectiveNames());
++      ArrayList<String> var13 = Lists.newArrayList(this.getScoreboard(var1).getObjectiveNames()); // BCMP
+       String var6 = var3[var4];
+       ArrayList var7 = Lists.newArrayList();
+ 
+@@ -525,7 +525,7 @@ public class CommandScoreboard extends CommandBase {
+       var1.addChatMessage(var8);
+       var1.addChatMessage(new TextComponentString(joinNiceString(var7.toArray())));
+     } else {
+-      Collection var10 = var5.getTeams();
++      Collection<ScorePlayerTeam> var10 = var5.getTeams(); // BCMP
+       var1.setCommandStat(CommandResultStats.Type.QUERY_RESULT, var10.size());
+       if (var10.isEmpty()) {
+         throw new CommandException("commands.scoreboard.teams.list.empty", new Object[0]);
+@@ -670,7 +670,7 @@ public class CommandScoreboard extends CommandBase {
+     Scoreboard var5 = this.getScoreboard(var4);
+     ScorePlayerTeam var6 = this.convertToTeam(var2[var3], var4);
+     if (var6 != null) {
+-      ArrayList var7 = Lists.newArrayList(var6.getMembershipCollection());
++      ArrayList<String> var7 = Lists.newArrayList(var6.getMembershipCollection()); // BCMP
+       var1.setCommandStat(CommandResultStats.Type.AFFECTED_ENTITIES, var7.size());
+       if (var7.isEmpty()) {
+         throw new CommandException(
+@@ -701,7 +701,7 @@ public class CommandScoreboard extends CommandBase {
+ 
+   protected void listObjectives(ICommandSender var1, MinecraftServer var2) throws CommandException {
+     Scoreboard var3 = this.getScoreboard(var2);
+-    Collection var4 = var3.getScoreObjectives();
++    Collection<ScoreObjective> var4 = var3.getScoreObjectives(); // BCMP
+     if (var4.isEmpty()) {
+       throw new CommandException("commands.scoreboard.objectives.list.empty", new Object[0]);
+     } else {
+@@ -759,7 +759,7 @@ public class CommandScoreboard extends CommandBase {
+     Scoreboard var5 = this.getScoreboard(var4);
+     if (var2.length > var3) {
+       String var6 = getEntityName(var4, var1, var2[var3]);
+-      Map var7 = var5.getObjectivesForEntity(var6);
++      Map<?, Score> var7 = var5.getObjectivesForEntity(var6); // BCMP
+       var1.setCommandStat(CommandResultStats.Type.QUERY_RESULT, var7.size());
+       if (var7.isEmpty()) {
+         throw new CommandException(
+@@ -1225,7 +1225,7 @@ public class CommandScoreboard extends CommandBase {
+   }
+ 
+   protected List<String> getObjectiveNames(boolean var1, MinecraftServer var2) {
+-    Collection var3 = this.getScoreboard(var2).getScoreObjectives();
++    Collection<ScoreObjective> var3 = this.getScoreboard(var2).getScoreObjectives(); // BCMP
+     ArrayList var4 = Lists.newArrayList();
+ 
+     for (ScoreObjective var6 : var3) {
+@@ -1238,7 +1238,7 @@ public class CommandScoreboard extends CommandBase {
+   }
+ 
+   protected List<String> getTriggerNames(MinecraftServer var1) {
+-    Collection var2 = this.getScoreboard(var1).getScoreObjectives();
++    Collection<ScoreObjective> var2 = this.getScoreboard(var1).getScoreObjectives(); // BCMP
+     ArrayList var3 = Lists.newArrayList();
+ 
+     for (ScoreObjective var5 : var2) {
+diff --git a/net/minecraft/entity/EntityList.java b/net/minecraft/entity/EntityList.java
+index d023b17..34e5ce4 100644
+--- a/net/minecraft/entity/EntityList.java
++++ b/net/minecraft/entity/EntityList.java
+@@ -213,7 +213,7 @@ public class EntityList {
+   public static void init() {}
+ 
+   public static List<String> getEntityNameList() {
+-    Set var0 = NAME_TO_CLASS.keySet();
++    Set<String> var0 = NAME_TO_CLASS.keySet(); // BCMP
+     ArrayList var1 = Lists.newArrayList();
+ 
+     for (String var3 : var0) {
+diff --git a/net/minecraft/entity/SharedMonsterAttributes.java b/net/minecraft/entity/SharedMonsterAttributes.java
+index 7854d1b..93bf143 100644
+--- a/net/minecraft/entity/SharedMonsterAttributes.java
++++ b/net/minecraft/entity/SharedMonsterAttributes.java
+@@ -60,7 +60,7 @@ public class SharedMonsterAttributes {
+     IAttribute var2 = var0.getAttribute();
+     var1.setString("Name", var2.getAttributeUnlocalizedName());
+     var1.setDouble("Base", var0.getBaseValue());
+-    Collection var3 = var0.getModifiers();
++    Collection<AttributeModifier> var3 = var0.getModifiers(); // BCMP
+     if (var3 != null && !var3.isEmpty()) {
+       NBTTagList var4 = new NBTTagList();
+ 
+diff --git a/net/minecraft/entity/item/EntityFallingBlock.java b/net/minecraft/entity/item/EntityFallingBlock.java
+index 22bc888..d1ddc58 100644
+--- a/net/minecraft/entity/item/EntityFallingBlock.java
++++ b/net/minecraft/entity/item/EntityFallingBlock.java
+@@ -163,7 +163,7 @@ public class EntityFallingBlock extends Entity {
+     if (this.hurtEntities) {
+       int var4 = MathHelper.ceiling_float_int(var1 - 1.0F);
+       if (var4 > 0) {
+-        ArrayList var5 =
++        ArrayList<Entity> var5 = // BCMP
+             Lists.newArrayList(
+                 this.worldObj.getEntitiesWithinAABBExcludingEntity(
+                     this, this.getEntityBoundingBox()));
+diff --git a/net/minecraft/entity/monster/EntitySkeleton.java b/net/minecraft/entity/monster/EntitySkeleton.java
+index c8f7753..3bc4fbf 100644
+--- a/net/minecraft/entity/monster/EntitySkeleton.java
++++ b/net/minecraft/entity/monster/EntitySkeleton.java
+@@ -62,7 +62,7 @@ public class EntitySkeleton extends EntityMob implements IRangedAttackMob {
+   private final EntityAIAttackRangedBow aiArrowAttack =
+       new EntityAIAttackRangedBow(this, 1.0D, 20, 15.0F);
+   private final EntityAIAttackMelee aiAttackOnCollide =
+-      new EntityAIAttackMelee(this, 1.2D, var5) {
++      new EntityAIAttackMelee(this, 1.2D, false) { // BCMP
+         public void resetTask() {
+           super.resetTask();
+           EntitySkeleton.this.setSwingingArms(false);
+diff --git a/net/minecraft/entity/monster/EntityWitch.java b/net/minecraft/entity/monster/EntityWitch.java
+index 6985819..67cf4e1 100644
+--- a/net/minecraft/entity/monster/EntityWitch.java
++++ b/net/minecraft/entity/monster/EntityWitch.java
+@@ -101,7 +101,7 @@ public class EntityWitch extends EntityMob implements IRangedAttackMob {
+           ItemStack var5 = this.getHeldItemMainhand();
+           this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, (ItemStack) null);
+           if (var5 != null && var5.getItem() == Items.POTIONITEM) {
+-            List var6 = PotionUtils.getEffectsFromStack(var5);
++            List<PotionEffect> var6 = PotionUtils.getEffectsFromStack(var5); // BCMP
+             if (var6 != null) {
+               for (PotionEffect var4 : var6) {
+                 this.addPotionEffect(new PotionEffect(var4));
+diff --git a/net/minecraft/inventory/ContainerRepair.java b/net/minecraft/inventory/ContainerRepair.java
+index 6b3833d..2ff87b8 100644
+--- a/net/minecraft/inventory/ContainerRepair.java
++++ b/net/minecraft/inventory/ContainerRepair.java
+@@ -131,7 +131,7 @@ public class ContainerRepair extends Container {
+     } else {
+       ItemStack var5 = var1.copy();
+       ItemStack var6 = this.inputSlots.getStackInSlot(1);
+-      Map var7 = EnchantmentHelper.getEnchantments(var5);
++      Map<Enchantment, Integer> var7 = EnchantmentHelper.getEnchantments(var5); // BCMP
+       var3 = var3 + var1.getRepairCost() + (var6 == null ? 0 : var6.getRepairCost());
+       this.materialCost = 0;
+       if (var6 != null) {
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index 82ff0a3..a20b751 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -336,7 +336,7 @@ public class DedicatedServer extends MinecraftServer implements IServer {
+     System.exit(0);
+   }
+ 
+-  protected void updateTimeLightAndEntities() {
++  public void updateTimeLightAndEntities() { // BCMP
+     super.updateTimeLightAndEntities();
+     this.executePendingCommands();
+   }
+diff --git a/net/minecraft/server/management/PreYggdrasilConverter.java b/net/minecraft/server/management/PreYggdrasilConverter.java
+index 6111a42..7455374 100644
+--- a/net/minecraft/server/management/PreYggdrasilConverter.java
++++ b/net/minecraft/server/management/PreYggdrasilConverter.java
+@@ -49,7 +49,7 @@ public class PreYggdrasilConverter {
+   public static final File OLD_WHITELIST_FILE = new File("white-list.txt");
+ 
+   static List<String> readFile(File var0, Map<String, String[]> var1) throws IOException {
+-    List var2 = Files.readLines(var0, Charsets.UTF_8);
++    List<String> var2 = Files.readLines(var0, Charsets.UTF_8); // BCMP
+ 
+     for (String var4 : var2) {
+       var4 = var4.trim();
+@@ -162,7 +162,7 @@ public class PreYggdrasilConverter {
+       }
+ 
+       try {
+-        HashMap var2 = Maps.newHashMap();
++        HashMap<String, String[]> var2 = Maps.newHashMap(); // BCMP
+         readFile(OLD_IPBAN_FILE, var2);
+ 
+         for (String var4 : var2.keySet()) {
+diff --git a/net/minecraft/stats/StatList.java b/net/minecraft/stats/StatList.java
+index 7d50b3b..c506132 100644
+--- a/net/minecraft/stats/StatList.java
++++ b/net/minecraft/stats/StatList.java
+@@ -354,7 +354,7 @@ public class StatList {
+   }
+ 
+   private static void initCraftableStats() {
+-    HashSet var0 = Sets.newHashSet();
++    HashSet<Item> var0 = Sets.newHashSet(); // BCMP
+ 
+     for (IRecipe var2 : CraftingManager.getInstance().getRecipeList()) {
+       if (var2.getRecipeOutput() != null) {
+diff --git a/net/minecraft/world/chunk/storage/AnvilChunkLoader.java b/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
+index 29f6932..e7dbd59 100644
+--- a/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
++++ b/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
+@@ -244,7 +244,7 @@ public class AnvilChunkLoader implements IChunkLoader, IThreadedFileIO {
+     }
+ 
+     var3.setTag("TileEntities", var19);
+-    List var22 = var2.getPendingBlockUpdates(var1, false);
++    List<NextTickListEntry> var22 = var2.getPendingBlockUpdates(var1, false); // BCMP
+     if (var22 != null) {
+       long var25 = var2.getTotalWorldTime();
+       NBTTagList var28 = new NBTTagList();
+diff --git a/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java b/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java
+index 3069d4f..897b3c7 100644
+--- a/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java
++++ b/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java
+@@ -1143,7 +1143,7 @@ public class ComponentScatteredFeaturePieces {
+                   var10.calculateConnectedPos(
+                       var9, new BlockPos(3, -1 - var13 * 3, 5), var9, new BlockPos(3, 5, 7)));
+           var12.addBlocksToWorldChunk(var1, var21, var9);
+-          Map var22 = var12.getDataBlocks(var21, var9);
++          Map<?, ?> var22 = var12.getDataBlocks(var21, var9); // BCMP
+ 
+           for (Entry var17 : var22.entrySet()) {
+             if ("chest".equals(var17.getValue())) {
+diff --git a/net/minecraft/world/gen/structure/MapGenStructure.java b/net/minecraft/world/gen/structure/MapGenStructure.java
+index 7099475..1e9b968 100644
+--- a/net/minecraft/world/gen/structure/MapGenStructure.java
++++ b/net/minecraft/world/gen/structure/MapGenStructure.java
+@@ -168,7 +168,7 @@ public abstract class MapGenStructure extends MapGenBase {
+     if (var13 != null) {
+       return var13;
+     } else {
+-      List var20 = this.getCoordList();
++      List<BlockPos> var20 = this.getCoordList(); // BCMP
+       if (var20 != null) {
+         BlockPos var21 = null;
+ 
+diff --git a/net/minecraft/world/gen/structure/StructureEndCityPieces.java b/net/minecraft/world/gen/structure/StructureEndCityPieces.java
+index 41a561e..40fe401 100644
+--- a/net/minecraft/world/gen/structure/StructureEndCityPieces.java
++++ b/net/minecraft/world/gen/structure/StructureEndCityPieces.java
+@@ -374,7 +374,7 @@ public class StructureEndCityPieces {
+     if (var1 > 8) {
+       return false;
+     } else {
+-      ArrayList var6 = Lists.newArrayList();
++      ArrayList<StructureComponent> var6 = Lists.newArrayList(); // BCMP
+       if (var0.generate(var1, var2, var3, var6, var5)) {
+         boolean var7 = false;
+         int var8 = var5.nextInt();
+diff --git a/net/minecraft/world/storage/loot/LootPool.java b/net/minecraft/world/storage/loot/LootPool.java
+index 214c5a0..5d6d751 100644
+--- a/net/minecraft/world/storage/loot/LootPool.java
++++ b/net/minecraft/world/storage/loot/LootPool.java
+@@ -37,7 +37,7 @@ public class LootPool {
+   }
+ 
+   protected void createLootRoll(Collection<ItemStack> var1, Random var2, LootContext var3) {
+-    ArrayList var4 = Lists.newArrayList();
++    ArrayList<LootEntry> var4 = Lists.newArrayList(); // BCMP
+     int var5 = 0;
+ 
+     for (LootEntry var9 : this.lootEntries) {
+diff --git a/net/minecraft/world/storage/loot/conditions/EntityHasScore.java b/net/minecraft/world/storage/loot/conditions/EntityHasScore.java
+index 4fa4ead..b161b2b 100644
+--- a/net/minecraft/world/storage/loot/conditions/EntityHasScore.java
++++ b/net/minecraft/world/storage/loot/conditions/EntityHasScore.java
+@@ -78,7 +78,7 @@ public class EntityHasScore implements LootCondition {
+     }
+ 
+     public EntityHasScore deserialize(JsonObject var1, JsonDeserializationContext var2) {
+-      Set var3 = JsonUtils.getJsonObject(var1, "scores").entrySet();
++      Set<Entry<String, JsonElement>> var3 = JsonUtils.getJsonObject(var1, "scores").entrySet(); // BCMP
+       LinkedHashMap var4 = Maps.newLinkedHashMap();
+ 
+       for (Entry var6 : var3) {
+-- 
+2.5.5
+

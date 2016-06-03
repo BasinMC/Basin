@@ -1,4 +1,4 @@
-From 541eb0e3c4d6f9a7a204fdf4288c4fd225995869 Mon Sep 17 00:00:00 2001
+From d15612ab54a2e10c18e9518a3bce0486fc396e39 Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Thu, 2 Jun 2016 19:57:10 -0600
 Subject: [PATCH] Fixed compilation errors.
@@ -781,7 +781,7 @@ index 93855fe..e6e5849 100644
    }
  
 diff --git a/net/minecraft/world/World.java b/net/minecraft/world/World.java
-index e59c305..0ce5929 100644
+index eeba852..50348b6 100644
 --- a/net/minecraft/world/World.java
 +++ b/net/minecraft/world/World.java
 @@ -2128,7 +2128,7 @@ public abstract class World implements IBlockAccess {
@@ -905,5 +905,5 @@ index e99e454..837bce1 100644
        int var5 = 0;
  
 -- 
-2.7.1.windows.2
+2.5.5
 
