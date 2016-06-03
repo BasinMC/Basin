@@ -305,7 +305,9 @@
                 </plugins>
         </build>
 
-        <modules></modules>
+        <modules>
+                <module>faucet</module>
+        </modules>
 
         <!-- Deployment Profiles -->
         <profiles>
