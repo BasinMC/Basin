@@ -1,14 +1,14 @@
-From 042967fb17ca8a9409f3a978f75b509d4f454181 Mon Sep 17 00:00:00 2001
+From 540541186c69c9595c4a322fbf24985a8d6cadaf Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Fri, 3 Jun 2016 11:33:41 +0200
 Subject: [PATCH] Eastereggs!
 
 
 diff --git a/net/minecraft/entity/player/EntityPlayerMP.java b/net/minecraft/entity/player/EntityPlayerMP.java
-index 23f46da..ed5defe 100644
+index 23f46da..359fc54 100644
 --- a/net/minecraft/entity/player/EntityPlayerMP.java
 +++ b/net/minecraft/entity/player/EntityPlayerMP.java
-@@ -452,6 +452,28 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener {
+@@ -452,6 +452,29 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener {
      this.addStat(StatList.DEATHS);
      this.takeStat(StatList.TIME_SINCE_DEATH);
      this.getCombatTracker().reset();
@@ -17,10 +17,11 @@ index 23f46da..ed5defe 100644
 +    if (!Boolean.getBoolean("org.basinmc.easteregg.disable")) {
 +      // Akkarin's Easteregg - Imma spud
 +      if (this.getUniqueID().toString().equals("d71a5dac-4e71-443b-8158-4389c269e44d")) {
-+        this.dropItem(new ItemStack(Items.POTATO, 1), true, false);
-+        this.dropItem(new ItemStack(Items.POTATO, 1), true, false);
-+        this.dropItem(new ItemStack(Items.POTATO, 1), true, false);
-+        this.dropItem(new ItemStack(Items.POTATO, 1), true, false);
++        ItemStack stack = new ItemStack(Items.POTATO, 1);
++        stack.setStackDisplayName("Akkarin's Spud");
++        stack.addEnchantment(net.minecraft.enchantment.Enchantment.getEnchantmentByID(51), 1);
++
++        this.dropItem(stack, true, false);
 +      }
 +
 +      // Sycholic's Easteregg - Explodes
@@ -35,8 +36,8 @@ index 23f46da..ed5defe 100644
 +    }
 +    // BEE End
    }
- 
+
    public boolean attackEntityFrom(DamageSource var1, float var2) {
--- 
+--
 2.7.1.windows.2
 
