@@ -1,0 +1,3 @@
+[submodule "faucet"]
+	path = faucet
+	url = git@github.com:BasinMC/Faucet.git
