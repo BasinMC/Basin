@@ -1,4 +1,4 @@
-From 2de55ab9a449c1f2f880e9352624841c84e8bb40 Mon Sep 17 00:00:00 2001
+From 83f931a0e3934055d207e163bfa853971640cbb8 Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Thu, 2 Jun 2016 19:57:10 -0600
 Subject: [PATCH] Fixed compilation errors.
@@ -251,7 +251,7 @@ index 88eacb6..9e05e8d 100644
  
      for (ScoreObjective var5 : var2) {
 diff --git a/net/minecraft/command/EntitySelector.java b/net/minecraft/command/EntitySelector.java
-index 7eb63df..a8513bd 100644
+index 7eb63df..026f7b6 100644
 --- a/net/minecraft/command/EntitySelector.java
 +++ b/net/minecraft/command/EntitySelector.java
 @@ -62,7 +62,7 @@ public class EntitySelector {
@@ -290,56 +290,47 @@ index 7eb63df..a8513bd 100644
  
      boolean var6 = !var1.equals("e");
      boolean var7 = var1.equals("r") && var3 != null;
-@@ -203,7 +206,7 @@ public class EntitySelector {
+@@ -203,15 +206,18 @@ public class EntitySelector {
          var2 = var2.substring(1);
        }
  
 -      final WorldSettings.GameType var4;
-+      WorldSettings.GameType var4; // BCMP - unfinal
++      // BCMP start
++      WorldSettings.GameType var4_;
        try {
          int var5 = Integer.parseInt(var2);
-         var4 =
-@@ -212,6 +215,7 @@ public class EntitySelector {
-         var4 =
+-        var4 =
++        var4_ =
+             WorldSettings.GameType.parseGameTypeWithDefault(var5, WorldSettings.GameType.NOT_SET);
+       } catch (Throwable var6) {
+-        var4 =
++        var4_ =
              WorldSettings.GameType.parseGameTypeWithDefault(var2, WorldSettings.GameType.NOT_SET);
        }
-+      final WorldSettings.GameType final_var4 = var4; // BCMP
++      final WorldSettings.GameType var4 = var4_;
++      // BCMP end
  
        var1.add(
            new Predicate<Entity>() {
-@@ -221,7 +225,7 @@ public class EntitySelector {
-               } else {
-                 EntityPlayerMP var2 = (EntityPlayerMP) var1;
-                 WorldSettings.GameType var3x = var2.interactionManager.getGameType();
--                return var3 ? var3x != var4 : var3x == var4;
-+                return var3 ? var3x != final_var4 : var3x == final_var4;
-               }
-             }
-           });
-@@ -231,11 +235,12 @@ public class EntitySelector {
+@@ -231,11 +237,14 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getTeamPredicates(Map<String, String> var0) {
      ArrayList var1 = Lists.newArrayList();
 -    final String var2 = getArgument(var0, "team");
-+    String var2 = getArgument(var0, "team"); // BCMP
-     final boolean var3 = var2 != null && var2.startsWith("!");
+-    final boolean var3 = var2 != null && var2.startsWith("!");
++    // BCMP start
++    String var2_ = getArgument(var0, "team");
++    final boolean var3 = var2_ != null && var2_.startsWith("!");
      if (var3) {
-       var2 = var2.substring(1);
+-      var2 = var2.substring(1);
++      var2_ = var2_.substring(1);
      }
-+    final String final_var2 = var2; // BCMP
++    final String var2 = var2_;
++    // BCMP end
  
      if (var2 != null) {
        var1.add(
-@@ -247,7 +252,7 @@ public class EntitySelector {
-                 EntityLivingBase var2x = (EntityLivingBase) var1;
-                 Team var3x = var2x.getTeam();
-                 String var4 = var3x == null ? "" : var3x.getRegisteredName();
--                return var4.equals(var2) != var3;
-+                return var4.equals(final_var2) != var3; // BCMP
-               }
-             }
-           });
-@@ -258,7 +263,7 @@ public class EntitySelector {
+@@ -258,7 +267,7 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getScorePredicates(
        final ICommandSender var0, Map<String, String> var1) {
@@ -348,54 +339,43 @@ index 7eb63df..a8513bd 100644
      return (List<Predicate<Entity>>)
          (var2.isEmpty()
              ? Collections.emptyList()
-@@ -313,17 +318,18 @@ public class EntitySelector {
+@@ -313,11 +322,14 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getNamePredicates(Map<String, String> var0) {
      ArrayList var1 = Lists.newArrayList();
 -    final String var2 = getArgument(var0, "name");
-+    String var2 = getArgument(var0, "name"); // BCMP - yep, we're doing this again
-     final boolean var3 = var2 != null && var2.startsWith("!");
+-    final boolean var3 = var2 != null && var2.startsWith("!");
++    // BCMP start
++    String var2_ = getArgument(var0, "name");
++    final boolean var3 = var2_ != null && var2_.startsWith("!");
      if (var3) {
-       var2 = var2.substring(1);
+-      var2 = var2.substring(1);
++      var2_ = var2_.substring(1);
      }
-+    final String final_var2 = var2; // BCMP
++    final String var2 = var2_;
++    // BCMP end
  
      if (var2 != null) {
        var1.add(
-           new Predicate<Entity>() {
-             public boolean apply(@Nullable Entity var1) {
--              return var1 != null && var1.getName().equals(var2) != var3;
-+              return var1 != null && var1.getName().equals(final_var2) != var3; // BCMP
-             }
-           });
-     }
-@@ -333,11 +339,12 @@ public class EntitySelector {
+@@ -333,11 +345,14 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getTagPredicates(Map<String, String> var0) {
      ArrayList var1 = Lists.newArrayList();
 -    final String var2 = getArgument(var0, "tag");
-+    String var2 = getArgument(var0, "tag"); // BCMP
-     final boolean var3 = var2 != null && var2.startsWith("!");
+-    final boolean var3 = var2 != null && var2.startsWith("!");
++    // BCMP start
++    String var2_ = getArgument(var0, "tag");
++    final boolean var3 = var2_ != null && var2_.startsWith("!");
      if (var3) {
-       var2 = var2.substring(1);
+-      var2 = var2.substring(1);
++      var2_ = var2_.substring(1);
      }
-+    final String final_var2 = var2;
++    final String var2 = var2_;
++    // BCMP end
  
      if (var2 != null) {
        var1.add(
-@@ -345,9 +352,9 @@ public class EntitySelector {
-             public boolean apply(@Nullable Entity var1) {
-               return var1 == null
-                   ? false
--                  : ("".equals(var2)
-+                  : ("".equals(final_var2)
-                       ? var1.getTags().isEmpty() != var3
--                      : var1.getTags().contains(var2) != var3);
-+                      : var1.getTags().contains(final_var2) != var3);
-             }
-           });
-     }
-@@ -516,7 +523,7 @@ public class EntitySelector {
+@@ -516,7 +531,7 @@ public class EntitySelector {
          && var6 == 1
          && ((List) var0).contains(var7)
          && !"r".equals(var4)) {
