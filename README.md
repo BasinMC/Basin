@@ -1,4 +1,4 @@
-# Basin ![State](https://img.shields.io/badge/state-stable-green.svg) [![Latest Tag](https://img.shields.io/github/release/basinmc/basin.svg)](https://github.com/BasinMC/Basin/releases)
+# Basin ![State](https://img.shields.io/badge/state-prototype-orange.svg) [![Latest Tag](https://img.shields.io/github/release/basinmc/basin.svg)](https://github.com/BasinMC/Basin/releases)
 
 A modular Minecraft API.
 
