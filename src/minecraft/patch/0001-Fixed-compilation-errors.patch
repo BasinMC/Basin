@@ -1,4 +1,4 @@
-From e8e4f6c33c3787edae4ba9fd86616dc4767061dc Mon Sep 17 00:00:00 2001
+From 2de55ab9a449c1f2f880e9352624841c84e8bb40 Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Thu, 2 Jun 2016 19:57:10 -0600
 Subject: [PATCH] Fixed compilation errors.
@@ -251,7 +251,7 @@ index 88eacb6..9e05e8d 100644
  
      for (ScoreObjective var5 : var2) {
 diff --git a/net/minecraft/command/EntitySelector.java b/net/minecraft/command/EntitySelector.java
-index 7eb63df..fa12599 100644
+index 7eb63df..a8513bd 100644
 --- a/net/minecraft/command/EntitySelector.java
 +++ b/net/minecraft/command/EntitySelector.java
 @@ -62,7 +62,7 @@ public class EntitySelector {
@@ -277,26 +277,19 @@ index 7eb63df..fa12599 100644
    private static List<Predicate<Entity>> getTypePredicates(Map<String, String> var0, String var1) {
      ArrayList var2 = Lists.newArrayList();
 -    final String var3 = getArgument(var0, "type");
+-    final boolean var4 = var3 != null && var3.startsWith("!");
 +    // BCMP start
-+    String var3 = getArgument(var0, "type");
-     final boolean var4 = var3 != null && var3.startsWith("!");
++    String var3_ = getArgument(var0, "type");
++    final boolean var4 = var3_ != null && var3_.startsWith("!");
      if (var4) {
-       var3 = var3.substring(1);
+-      var3 = var3.substring(1);
++      var3_ = var3_.substring(1);
      }
-+    final String final_var3 = var3;
++    final String var3 = var3_;
 +    // BCMP end
  
      boolean var6 = !var1.equals("e");
      boolean var7 = var1.equals("r") && var3 != null;
-@@ -162,7 +165,7 @@ public class EntitySelector {
-       var2.add(
-           new Predicate<Entity>() {
-             public boolean apply(@Nullable Entity var1) {
--              return EntityList.isStringEntityName(var1, var3) != var4;
-+              return EntityList.isStringEntityName(var1, final_var3) != var4; // BCMP
-             }
-           });
-     }
 @@ -203,7 +206,7 @@ public class EntitySelector {
          var2 = var2.substring(1);
        }
