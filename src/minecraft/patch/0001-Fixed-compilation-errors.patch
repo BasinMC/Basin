@@ -1,4 +1,4 @@
-From dcb04437db117dd8ba477d6dbb0355d99ffd93e7 Mon Sep 17 00:00:00 2001
+From e8e4f6c33c3787edae4ba9fd86616dc4767061dc Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Thu, 2 Jun 2016 19:57:10 -0600
 Subject: [PATCH] Fixed compilation errors.
@@ -1184,7 +1184,7 @@ index b4328c5..9ae582f 100644
      for (int var4 = 0; var4 < this.playerEntityList.size(); ++var4) {
        EntityPlayerMP var5 = (EntityPlayerMP) this.playerEntityList.get(var4);
 diff --git a/net/minecraft/server/management/PlayerProfileCache.java b/net/minecraft/server/management/PlayerProfileCache.java
-index 88a5958..74aced2 100644
+index 55ba23e..050b96c 100644
 --- a/net/minecraft/server/management/PlayerProfileCache.java
 +++ b/net/minecraft/server/management/PlayerProfileCache.java
 @@ -192,7 +192,7 @@ public class PlayerProfileCache {
@@ -1401,7 +1401,7 @@ index 93855fe..e6e5849 100644
    }
  
 diff --git a/net/minecraft/world/World.java b/net/minecraft/world/World.java
-index e59c305..0ce5929 100644
+index eeba852..50348b6 100644
 --- a/net/minecraft/world/World.java
 +++ b/net/minecraft/world/World.java
 @@ -2128,7 +2128,7 @@ public abstract class World implements IBlockAccess {
