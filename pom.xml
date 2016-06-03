@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+
+        <!-- Parent Artifact Information -->
+        <parent>
+                <artifactId>parent</artifactId>
+                <groupId>org.basinmc</groupId>
+                <version>1.0-SNAPSHOT</version>
+        </parent>
+
+        <!-- Artifact Information -->
+        <artifactId>faucet</artifactId>
+        <packaging>jar</packaging>
+
+        <!-- Artifact Metadata -->
+        <name>Faucet</name>
+        <description>A Minecraft plugin API.</description>
+
+        <!-- Dependencies -->
+        <dependencies>
+                <!-- Minecraft -->
+                <dependency>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-api</artifactId>
+                </dependency>
+                <dependency>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-lang3</artifactId>
+                </dependency>
+                <dependency>
+                        <groupId>com.google.code.gson</groupId>
+                        <artifactId>gson</artifactId>
+                </dependency>
+                <dependency>
+                        <groupId>io.netty</groupId>
+                        <artifactId>netty-all</artifactId>
+                </dependency>
+
+                <!-- Utility -->
+                <dependency>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                </dependency>
+
+                <!-- Code Quality -->
+                <dependency>
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>jsr305</artifactId>
+                </dependency>
+        </dependencies>
+
+        <!-- Build Settings -->
+        <build>
+                <plugins>
+                        <!-- Java Compiler -->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-compiler-plugin</artifactId>
+                        </plugin>
+
+                        <!-- Jar Creation -->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-jar-plugin</artifactId>
+                        </plugin>
+
+                        <!-- Attach Sources -->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-source-plugin</artifactId>
+                        </plugin>
+
+                        <!-- Attach JavaDoc -->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-javadoc-plugin</artifactId>
+                        </plugin>
+                </plugins>
+        </build>
+</project>
