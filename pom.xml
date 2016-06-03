@@ -317,6 +317,7 @@
 
         <modules>
                 <module>faucet</module>
+                <module>sink</module>
         </modules>
 
         <!-- Deployment Profiles -->
