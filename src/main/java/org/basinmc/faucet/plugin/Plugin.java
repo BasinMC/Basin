@@ -30,27 +30,27 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Plugin {
     /**
-     * {@see org.basinmc.faucet.plugin.PluginMetadata}
+     * {@link org.basinmc.faucet.plugin.PluginMetadata}
      */
     String id();
 
     /**
-     * {@see org.basinmc.faucet.plugin.PluginMetadata}
+     * {@link org.basinmc.faucet.plugin.PluginMetadata}
      */
     String name() default "##ID##";
 
     /**
-     * {@see org.basinmc.faucet.plugin.PluginMetadata}
+     * {@link org.basinmc.faucet.plugin.PluginMetadata}
      */
     String desc() default "";
 
     /**
-     * {@see org.basinmc.faucet.plugin.PluginMetadata}
+     * {@link org.basinmc.faucet.plugin.PluginMetadata}
      */
     String version();
 
     /**
-     * {@see org.basinmc.faucet.plugin.PluginMetadata} A list of dependency strings that represent
+     * {@link org.basinmc.faucet.plugin.PluginMetadata} A list of dependency strings that represent
      * version ranges and dependency plugin IDs. The format for each is "{plugin-id}@{version}". One
      * can append a second version string after the first and separate the two with a hyphen to
      * denote an (doubly-inclusive) version range. Alternatively, one can append to the version
@@ -62,7 +62,7 @@ public @interface Plugin {
     String[] dependencies() default {};
 
     /**
-     * {@see org.basinmc.faucet.plugin.PluginMetadata} Functions the same as {@link
+     * {@link org.basinmc.faucet.plugin.PluginMetadata} Functions the same as {@link
      * Plugin#dependencies()}
      */
     String[] softDependencies() default {};
