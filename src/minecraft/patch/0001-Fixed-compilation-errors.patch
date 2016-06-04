@@ -1,4 +1,4 @@
-From 83f931a0e3934055d207e163bfa853971640cbb8 Mon Sep 17 00:00:00 2001
+From b51a78f1eeee60ec9f13c5119402aa46e8e54213 Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Thu, 2 Jun 2016 19:57:10 -0600
 Subject: [PATCH] Fixed compilation errors.
@@ -238,7 +238,7 @@ index ec57990..4e4d75e 100644
          var1.setCommandStat(CommandResultStats.Type.AFFECTED_ENTITIES, var14.size());
  
 diff --git a/net/minecraft/command/CommandStats.java b/net/minecraft/command/CommandStats.java
-index 88eacb6..9e05e8d 100644
+index bc5783b..c3a9e14 100644
 --- a/net/minecraft/command/CommandStats.java
 +++ b/net/minecraft/command/CommandStats.java
 @@ -176,7 +176,7 @@ public class CommandStats extends CommandBase {
@@ -429,10 +429,10 @@ index ab714d5..bea2c4c 100644
      int var8 = 0;
  
 diff --git a/net/minecraft/command/server/CommandScoreboard.java b/net/minecraft/command/server/CommandScoreboard.java
-index a9e6311..325ccd7 100644
+index 2f6609a..18e878f 100644
 --- a/net/minecraft/command/server/CommandScoreboard.java
 +++ b/net/minecraft/command/server/CommandScoreboard.java
-@@ -240,7 +240,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -237,7 +237,7 @@ public class CommandScoreboard extends CommandBase {
      if (var4 < 0) {
        return false;
      } else {
@@ -441,7 +441,7 @@ index a9e6311..325ccd7 100644
        String var6 = var3[var4];
        ArrayList var7 = Lists.newArrayList();
  
-@@ -525,7 +525,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -522,7 +522,7 @@ public class CommandScoreboard extends CommandBase {
        var1.addChatMessage(var8);
        var1.addChatMessage(new TextComponentString(joinNiceString(var7.toArray())));
      } else {
@@ -450,7 +450,7 @@ index a9e6311..325ccd7 100644
        var1.setCommandStat(CommandResultStats.Type.QUERY_RESULT, var10.size());
        if (var10.isEmpty()) {
          throw new CommandException("commands.scoreboard.teams.list.empty", new Object[0]);
-@@ -670,7 +670,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -667,7 +667,7 @@ public class CommandScoreboard extends CommandBase {
      Scoreboard var5 = this.getScoreboard(var4);
      ScorePlayerTeam var6 = this.convertToTeam(var2[var3], var4);
      if (var6 != null) {
@@ -459,7 +459,7 @@ index a9e6311..325ccd7 100644
        var1.setCommandStat(CommandResultStats.Type.AFFECTED_ENTITIES, var7.size());
        if (var7.isEmpty()) {
          throw new CommandException(
-@@ -701,7 +701,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -698,7 +698,7 @@ public class CommandScoreboard extends CommandBase {
  
    protected void listObjectives(ICommandSender var1, MinecraftServer var2) throws CommandException {
      Scoreboard var3 = this.getScoreboard(var2);
@@ -468,7 +468,7 @@ index a9e6311..325ccd7 100644
      if (var4.isEmpty()) {
        throw new CommandException("commands.scoreboard.objectives.list.empty", new Object[0]);
      } else {
-@@ -759,7 +759,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -756,7 +756,7 @@ public class CommandScoreboard extends CommandBase {
      Scoreboard var5 = this.getScoreboard(var4);
      if (var2.length > var3) {
        String var6 = getEntityName(var4, var1, var2[var3]);
@@ -477,7 +477,7 @@ index a9e6311..325ccd7 100644
        var1.setCommandStat(CommandResultStats.Type.QUERY_RESULT, var7.size());
        if (var7.isEmpty()) {
          throw new CommandException(
-@@ -1225,7 +1225,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -1222,7 +1222,7 @@ public class CommandScoreboard extends CommandBase {
    }
  
    protected List<String> getObjectiveNames(boolean var1, MinecraftServer var2) {
@@ -486,7 +486,7 @@ index a9e6311..325ccd7 100644
      ArrayList var4 = Lists.newArrayList();
  
      for (ScoreObjective var6 : var3) {
-@@ -1238,7 +1238,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -1235,7 +1235,7 @@ public class CommandScoreboard extends CommandBase {
    }
  
    protected List<String> getTriggerNames(MinecraftServer var1) {
@@ -940,7 +940,7 @@ index b4a5325..068348a 100644
          for (PotionEffect var4 : var2) {
            this.customPotionEffects.add(new PotionEffect(var4));
 diff --git a/net/minecraft/inventory/Container.java b/net/minecraft/inventory/Container.java
-index 68626c4..4de8b7d 100644
+index 3e58077..2b78734 100644
 --- a/net/minecraft/inventory/Container.java
 +++ b/net/minecraft/inventory/Container.java
 @@ -30,7 +30,7 @@ public abstract class Container {
@@ -953,10 +953,10 @@ index 68626c4..4de8b7d 100644
    }
  
 diff --git a/net/minecraft/inventory/ContainerRepair.java b/net/minecraft/inventory/ContainerRepair.java
-index 6b3833d..2ff87b8 100644
+index 00f5836..1cbb3f4 100644
 --- a/net/minecraft/inventory/ContainerRepair.java
 +++ b/net/minecraft/inventory/ContainerRepair.java
-@@ -131,7 +131,7 @@ public class ContainerRepair extends Container {
+@@ -130,7 +130,7 @@ public class ContainerRepair extends Container {
      } else {
        ItemStack var5 = var1.copy();
        ItemStack var6 = this.inputSlots.getStackInSlot(1);
@@ -965,6 +965,15 @@ index 6b3833d..2ff87b8 100644
        var3 = var3 + var1.getRepairCost() + (var6 == null ? 0 : var6.getRepairCost());
        this.materialCost = 0;
        if (var6 != null) {
+@@ -177,7 +177,7 @@ public class ContainerRepair extends Container {
+             }
+           }
+ 
+-          Map var19 = EnchantmentHelper.getEnchantments(var6);
++          Map<Enchantment, Integer> var19 = EnchantmentHelper.getEnchantments(var6); // BCMP
+ 
+           for (Enchantment var23 : var19.keySet()) {
+             if (var23 != null) {
 diff --git a/net/minecraft/item/ItemSlab.java b/net/minecraft/item/ItemSlab.java
 index 02728a2..6681051 100644
 --- a/net/minecraft/item/ItemSlab.java
@@ -1157,7 +1166,7 @@ index b4328c5..9ae582f 100644
      for (int var4 = 0; var4 < this.playerEntityList.size(); ++var4) {
        EntityPlayerMP var5 = (EntityPlayerMP) this.playerEntityList.get(var4);
 diff --git a/net/minecraft/server/management/PlayerProfileCache.java b/net/minecraft/server/management/PlayerProfileCache.java
-index 55ba23e..050b96c 100644
+index 88a5958..74aced2 100644
 --- a/net/minecraft/server/management/PlayerProfileCache.java
 +++ b/net/minecraft/server/management/PlayerProfileCache.java
 @@ -192,7 +192,7 @@ public class PlayerProfileCache {
@@ -1502,10 +1511,10 @@ index 3290074..30adc20 100644
      for (BlockPos var6 : var4.keySet()) {
        String var7 = (String) var4.get(var6);
 diff --git a/net/minecraft/world/gen/structure/StructureEndCityPieces.java b/net/minecraft/world/gen/structure/StructureEndCityPieces.java
-index 41a561e..40fe401 100644
+index 90c472b..79c91f1 100644
 --- a/net/minecraft/world/gen/structure/StructureEndCityPieces.java
 +++ b/net/minecraft/world/gen/structure/StructureEndCityPieces.java
-@@ -374,7 +374,7 @@ public class StructureEndCityPieces {
+@@ -381,7 +381,7 @@ public class StructureEndCityPieces {
      if (var1 > 8) {
        return false;
      } else {
