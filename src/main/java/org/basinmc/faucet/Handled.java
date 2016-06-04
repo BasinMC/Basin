@@ -17,6 +17,8 @@
 
 package org.basinmc.faucet;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents a type that wraps another type. This would primarily be used for API-NMS
  * intermediaries.
@@ -24,5 +26,6 @@ package org.basinmc.faucet;
  * @param <T> The type being wrapped
  */
 public interface Handled<T> {
+    @Nonnull
     T getHandle();
 }
