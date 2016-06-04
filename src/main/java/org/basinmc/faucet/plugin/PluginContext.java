@@ -28,17 +28,6 @@ import javax.annotation.Nonnull;
 public interface PluginContext {
 
     /**
-     * Retrieves a group identifier (such as the ones found in most popular dependency management
-     * systems) which uniquely identifies a group of plugin implementations.
-     *
-     * Ideally this is a reversed domain name as seen in Java package names.
-     *
-     * @return an identifier.
-     */
-    @Nonnull
-    String getGroupIdentifier();
-
-    /**
      * Retrieves a plugin identifier (such as the ones found in most popular dependency management
      * systems) which uniquely identifies a plugin in a group of implementations.
      *

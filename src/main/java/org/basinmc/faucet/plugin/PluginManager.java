@@ -31,27 +31,14 @@ public interface PluginManager {
     /**
      * Retrieves a plugin's context based on its group and plugin identifiers.
      *
-     * @param groupId  a group identifier.
      * @param pluginId a plugin identifier.
      * @return a plugin context or, if no such plugin could be located, an empty optional.
      */
     @Nonnull
-    Optional<PluginContext> getPluginContext(@Nonnull String groupId, @Nonnull String pluginId);
-
-    /**
-     * Retrieves a plugin's context based on its group and plugin identifiers.
-     *
-     * @param pluginCoordinate a plugin coordinate.
-     * @return a plugin context or, if no such plugin could be located, an empty optional.
-     */
-    @Nonnull
-    Optional<PluginContext> getPluginContext(@Nonnull String pluginCoordinate);
+    Optional<PluginContext> getPluginContext(@Nonnull String pluginId);
 
     /**
      * Attempts to install a plugin from the specified path.
-     *
-     * Calling this method will cause the server to search for a plugin loader which indicates
-     * support for the specified path.
      *
      * @param pluginPackage a plugin package path.
      * @return a plugin context.
@@ -60,17 +47,19 @@ public interface PluginManager {
     PluginContext install(@Nonnull Path pluginPackage);
 
     /**
-     * Attempts to uninstall a plugin.
+     * Attempts to install a plugin from the specified path using the specified plugin loader.
      *
-     * @param groupId  a group identifier.
-     * @param pluginId a plugin identifier.
+     * @param pluginPackage a plugin package path.
+     * @param loader        a plugin loader.
+     * @return a plugin context.
      */
-    void uninstall(@Nonnull String groupId, @Nonnull String pluginId);
+    @Nonnull
+    PluginContext install(@Nonnull Path pluginPackage, @Nonnull PluginLoader loader);
 
     /**
      * Attempts to uninstall a plugin.
      *
-     * @param pluginCoordinate a plugin coordinate.
+     * @param pluginId a plugin identifier.
      */
-    void uninstall(@Nonnull String pluginCoordinate);
+    void uninstall(@Nonnull String pluginId);
 }

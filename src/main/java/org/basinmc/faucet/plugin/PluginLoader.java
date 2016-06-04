@@ -35,12 +35,4 @@ public interface PluginLoader {
      */
     @Nonnull
     PluginContext createContext(@Nonnull Path packagePath);
-
-    /**
-     * Checks whether this plugin loaded supports the file or directory at the specified path.
-     *
-     * @param packagePath a package path.
-     * @return true if supported, false otherwise.
-     */
-    boolean supports(@Nonnull Path packagePath);
 }
