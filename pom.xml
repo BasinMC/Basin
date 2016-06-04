@@ -114,6 +114,13 @@
 
         <dependencyManagement>
                 <dependencies>
+                        <!-- Modules -->
+                        <dependency>
+                                <groupId>org.basinmc</groupId>
+                                <artifactId>faucet</artifactId>
+                                <version>1.0-SNAPSHOT</version>
+                        </dependency>
+
                         <!-- Minecraft -->
                         <!-- Note: Some newer dependency versions might be included later -->
                         <dependency>
