@@ -16,6 +16,8 @@
  */
 package org.basinmc.faucet.plugin;
 
+import java.nio.file.Path;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -24,15 +26,6 @@ import javax.annotation.Nonnull;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public interface PluginContext {
-
-    /**
-     * Retrieves a plugin identifier (such as the ones found in most popular dependency management
-     * systems) which uniquely identifies a plugin in a group of implementations.
-     *
-     * @return an identifier.
-     */
-    @Nonnull
-    String getIdentifier();
 
     /**
      * Retrieves a group identifier (such as the ones found in most popular dependency management
@@ -46,13 +39,22 @@ public interface PluginContext {
     String getGroupIdentifier();
 
     /**
-     * Retrieves a version identifier which indicates the plugin revision, compatibility and
-     * stability.
+     * Retrieves a plugin identifier (such as the ones found in most popular dependency management
+     * systems) which uniquely identifies a plugin in a group of implementations.
      *
-     * @return a version.
+     * @return an identifier.
      */
     @Nonnull
-    PluginVersion getVersion();
+    String getIdentifier();
+
+    /**
+     * Retrieves a path to the source plugin file or a directory of resources which make up the
+     * plugin source.
+     *
+     * @return a source path.
+     */
+    @Nonnull
+    Path getSource();
 
     /**
      * Retrieves the state the plugin is currently in.
@@ -61,6 +63,15 @@ public interface PluginContext {
      */
     @Nonnull
     State getState();
+
+    /**
+     * Retrieves the path to the directory which is supposed to host all permanently stored data for
+     * this plugin.
+     *
+     * @return a directory path.
+     */
+    @Nonnull
+    Path getStorageDirectory();
 
     /**
      * Retrieves the state a plugin is supposed to ultimately reach.
@@ -75,10 +86,19 @@ public interface PluginContext {
     State getTargetState();
 
     /**
+     * Retrieves a version identifier which indicates the plugin revision, compatibility and
+     * stability.
+     *
+     * @return a version.
+     */
+    @Nonnull
+    PluginVersion getVersion();
+
+    /**
      * Provides a list of valid plugin states.
      *
-     * Plugins generally traverse phases as follows: Loaded -> Resolved -> Pre Initialization -> Initialization
-     * -> Post Initialization -> Running -> De-Initialization
+     * Plugins generally traverse phases as follows: Loaded -> Resolved -> Pre Initialization ->
+     * Initialization -> Post Initialization -> Running -> De-Initialization
      */
     enum State {
 
