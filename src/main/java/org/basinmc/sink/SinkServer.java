@@ -16,9 +16,9 @@
  */
 package org.basinmc.sink;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 
+import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
 
 import java.nio.file.Path;
@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public class SinkServer implements Server {
+public class SinkServer implements Server, Handled<DedicatedServer> {
     private final DedicatedServer server;
     private final Server.Configuration configuration = new Configuration();
 
@@ -78,6 +78,11 @@ public class SinkServer implements Server {
     @Override
     public int getLifeTime() {
         return this.server.getTickCounter();
+    }
+
+    @Override
+    public DedicatedServer getHandle() {
+        return server;
     }
 
     private class Configuration implements Server.Configuration {
