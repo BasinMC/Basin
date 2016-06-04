@@ -16,7 +16,11 @@
  */
 package org.basinmc.faucet;
 
+import java.nio.file.Path;
+
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Signed;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
@@ -44,6 +48,33 @@ public interface Server {
     }
 
     /**
+     * Retrieves a path pointing at the base server directory.
+     *
+     * @return a path to the base directory.
+     */
+    @Nonnull
+    Path getBaseDirectory();
+
+    /**
+     * Retrieves a mutable representation of the server configuration.
+     *
+     * @return a server configuration.
+     */
+    @Nonnull
+    Configuration getConfiguration();
+
+    /**
+     * Retrieves the overall time the server has been running for in game ticks.
+     *
+     * This number is equal to the amount of ticks processed by the server during its runtime and
+     * thus may differ from the usual 20 ticks = 1 second scale.
+     *
+     * @return an amount of ticks.
+     */
+    @Nonnegative
+    int getLifeTime();
+
+    /**
      * Retrieves the currently active server version (as in game version such as 1.9.4 or 1.10).
      *
      * @return a server version.
@@ -58,4 +89,201 @@ public interface Server {
      * @return true if in online mode, false otherwise.
      */
     boolean isOnlineMode();
+
+    interface Configuration {
+
+        /**
+         * Checks whether achievements will be publicly announced in chat.
+         *
+         * @return true if enabled, false otherwise.
+         */
+        boolean areAchievementAnnouncementsEnabled();
+
+        /**
+         * Checks whether command blocks are enabled on the server.
+         *
+         * When true, opped players in creative mode will be able to alter command blocks as well as
+         * place new ones in the world.
+         *
+         * @return true if enabled, false otherwise.
+         */
+        boolean areCommandBlocksEnabled();
+
+        /**
+         * Retrieves the address the server is configured to listen on.
+         *
+         * @return an address or hostname.
+         */
+        @Nonnull
+        String getHostname();
+
+        /**
+         * Retrieves the maximum amount of concurrent players connected to the server.
+         *
+         * @return an amount of players.
+         */
+        @Nonnegative
+        int getMaximumConcurrentPlayers();
+
+        /**
+         * Retrieves the maximum height players are allowed to build at.
+         *
+         * @return a height in blocks.
+         */
+        @Nonnegative
+        int getMaximumBuildHeight();
+
+        /**
+         * Retrieves the maximum amount a server is allowed to wait for a single tick to process
+         * before assuming the server is hanging.
+         *
+         * A value of -1 indicates, that the watchdog shall not shutdown the server regardless of
+         * how long a tick needs to process.
+         *
+         * @return a maximum amount of time in milliseconds.
+         */
+        @Signed
+        long getMaximumTickTime();
+
+        /**
+         * Retrieves the threshold at which plugins will be compressed.
+         *
+         * @return a threshold in bytes.
+         */
+        @Signed
+        int getNetworkCompressionThreshold();
+
+        /**
+         * Retrieves the operator permission level.
+         *
+         * Each level grants an additional set of permissions in the vanilla permission system as
+         * follows: <ul> <li><strong>1</strong> - Allows operators to bypass spawn protection.</li>
+         * <li> <strong>2</strong> - Allows operators to utilize /clear, /difficulty, /effect,
+         * /gamemode, /gamerule, /give, and /tp, and can edit command blocks. </li>
+         * <li><strong>3</strong> - Allows operators to utilize /ban, /deop, /kick, and /op</li>
+         * <li><strong>4</strong> - Allows operators to utilize /stop</li> </ul>
+         *
+         * @return an operator permission level.
+         */
+        @Nonnegative
+        int getOperatorPermissionLevel();
+
+        /**
+         * Retrieves the maximum amount of minutes a player is allowed to idle before being kicked
+         * from the server.
+         *
+         * If set to zero, players will not be kicked for idling.
+         *
+         * @return a player idle timeout in minutes.
+         */
+        int getPlayerIdleTimeout();
+
+        /**
+         * Retrieves the port the server is listening on for server status queries.
+         *
+         * @return a port number.
+         */
+        @Nonnegative
+        int getQueryPort();
+
+        /**
+         * Retrieves the password used for authentication purposes on the remote console (RCon)
+         * server.
+         *
+         * @return a password.
+         */
+        @Nonnull
+        String getRemoteConsolePassword();
+
+        /**
+         * Retrieves the port the server is listening on for remote console (RCon) connections.
+         *
+         * @return a port number.
+         */
+        @Nonnegative
+        int getRemoteConsolePort();
+
+        /**
+         * Retrieves the radius (in blocks) which is protected from building by operators.
+         *
+         * @return a block radius.
+         */
+        @Nonnegative
+        int getSpawnProtectionRadius();
+
+        /**
+         * Retrieves a player's view distance in chunks.
+         *
+         * @return a distance.
+         */
+        @Nonnegative
+        int getViewDistance();
+
+        /**
+         * Checks whether flying is allowed outside of creative mode.
+         *
+         * @return true if allowed, false otherwise.
+         */
+        boolean isFlightAllowed();
+
+        /**
+         * Checks whether player game modes will be updated according to the default setting upon
+         * logging into the server.
+         *
+         * @return true if enabled, false otherwise.
+         */
+        boolean isGamemodeForced();
+
+        /**
+         * Checks whether a world is set to hardcore and thus does not allow players to respawn.
+         *
+         * @return true if hardcore, false otherwise.
+         */
+        boolean isHardcore();
+
+        /**
+         * Checks whether native transport is enabled on the server.
+         *
+         * Note: Even if enabled, this feature is only supported on Linux machines as it requires
+         * netty's native epoll implementation to be present.
+         *
+         * @return true if enabled, false otherwise.
+         */
+        boolean isNativeTransportEnabled();
+
+        /**
+         * Checks whether players are allowed to enter the nether.
+         *
+         * @return true if allowed, false otherwise.
+         */
+        boolean isNetherAllowed();
+
+        /**
+         * Checks whether PvP (Player vs. Player) is allowed on the server.
+         *
+         * @return true if enabled, false otherwise.
+         */
+        boolean isPvpEnabled();
+
+        /**
+         * Checks whether the server listens for remote console (RCon) connections.
+         *
+         * @return true if enabled, false otherwise.
+         */
+        boolean isRemoteConsoleEnabled();
+
+        /**
+         * Checks whether the query server is enabled.
+         *
+         * @return true if enabled, false otherwise.
+         */
+        boolean isQueryEnabled();
+
+        /**
+         * Checks whether Minecraft's statistics collection is enabled.
+         *
+         * @return true if enabled, false otherwise.
+         */
+        boolean isSnooperEnabled();
+    }
 }
