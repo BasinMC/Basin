@@ -28,13 +28,12 @@ import javax.annotation.Nonnull;
 public interface PluginContext {
 
     /**
-     * Retrieves a plugin identifier (such as the ones found in most popular dependency management
-     * systems) which uniquely identifies a plugin in a group of implementations.
+     * Retrieves the plugin's metadata.
      *
-     * @return an identifier.
+     * @return the metadata.
      */
     @Nonnull
-    String getIdentifier();
+    PluginMetadata getMetadata();
 
     /**
      * Retrieves a path to the source plugin file or a directory of resources which make up the
@@ -73,15 +72,6 @@ public interface PluginContext {
      */
     @Nonnull
     State getTargetState();
-
-    /**
-     * Retrieves a version identifier which indicates the plugin revision, compatibility and
-     * stability.
-     *
-     * @return a version.
-     */
-    @Nonnull
-    PluginVersion getVersion();
 
     /**
      * Provides a list of valid plugin states.
