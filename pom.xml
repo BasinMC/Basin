@@ -35,6 +35,12 @@
 
         <!-- Dependencies -->
         <dependencies>
+                <!-- Modules -->
+                <dependency>
+                        <groupId>org.basinmc</groupId>
+                        <artifactId>faucet</artifactId>
+                </dependency>
+
                 <!-- Minecraft -->
                 <dependency>
                         <groupId>com.mojang</groupId>
