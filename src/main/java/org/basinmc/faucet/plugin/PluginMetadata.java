@@ -52,19 +52,14 @@ public final class PluginMetadata {
      * will <b>NOT</b> be disabled but rather a warning will be outputted.
      */
     private final Map<String, VersionRange> softDependencies;
-    /**
-     * Represents the main class of the plugin.
-     */
-    private final PluginInstance mainClass;
 
-    public PluginMetadata(String name, String id, PluginVersion version, String desc, Map<String, VersionRange> dependencies, Map<String, VersionRange> softDependencies, PluginInstance mainClass) {
+    public PluginMetadata(String name, String id, PluginVersion version, String desc, Map<String, VersionRange> dependencies, Map<String, VersionRange> softDependencies) {
         this.name = name;
         this.id = id;
         this.version = version;
         this.desc = Optional.ofNullable(desc);
         this.dependencies = dependencies;
         this.softDependencies = softDependencies;
-        this.mainClass = mainClass;
     }
 
     public String getName() {
@@ -91,7 +86,55 @@ public final class PluginMetadata {
         return softDependencies;
     }
 
-    public PluginInstance getMainClass() {
-        return mainClass;
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private String name, id, author, desc;
+        private PluginVersion version;
+        private Map<String, VersionRange> dependencies, softDependencies;
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setAuthor(String author) {
+            this.author = author;
+            return this;
+        }
+
+        public Builder setDesc(String desc) {
+            this.desc = desc;
+            return this;
+        }
+
+        public Builder setVersion(PluginVersion version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder setDependencies(Map<String, VersionRange> dependencies) {
+            this.dependencies = dependencies;
+            return this;
+        }
+
+        public Builder setSoftDependencies(Map<String, VersionRange> softDependencies) {
+            this.softDependencies = softDependencies;
+            return this;
+        }
+
+        public PluginMetadata build() {
+            if (this.name.equals("##ID##")) {
+                this.setName(id);
+            }
+            return new PluginMetadata(name, id, version, desc, dependencies, softDependencies);
+        }
     }
 }

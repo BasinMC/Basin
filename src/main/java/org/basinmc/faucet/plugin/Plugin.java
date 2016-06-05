@@ -50,6 +50,11 @@ public @interface Plugin {
     String version();
 
     /**
+     * {@link org.basinmc.faucet.plugin.PluginMetadata}
+     */
+    String author() default "Anonymous";
+
+    /**
      * {@link org.basinmc.faucet.plugin.PluginMetadata} A list of dependency strings that represent
      * version ranges and dependency plugin IDs. The format for each is "{plugin-id}@{version}". One
      * can append a second version string after the first and separate the two with a hyphen to
