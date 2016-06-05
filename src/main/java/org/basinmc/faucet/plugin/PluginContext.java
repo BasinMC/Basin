@@ -76,8 +76,8 @@ public interface PluginContext {
     /**
      * Provides a list of valid plugin states.
      *
-     * Plugins generally traverse phases as follows: Loaded -> Resolved -> Pre Initialization ->
-     * Initialization -> Post Initialization -> Running -> De-Initialization
+     * Plugins generally traverse phases in order as follows: Loaded, Resolved, Pre Initialization,
+     * Initialization, Post Initialization, Running, De-Initialization
      */
     enum State {
 
