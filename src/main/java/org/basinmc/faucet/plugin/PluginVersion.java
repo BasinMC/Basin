@@ -87,6 +87,7 @@ public final class PluginVersion {
      *
      * @param version the version string.
      * @return the builder.
+     *
      * @throws java.lang.IllegalArgumentException when one or more bits are not within SemVer
      *                                            bounds.
      * @throws java.lang.NumberFormatException    when one or more numeric bits have invalid
@@ -103,6 +104,7 @@ public final class PluginVersion {
      *
      * @param version the version string.
      * @return the version.
+     *
      * @throws java.lang.IllegalArgumentException when one or more bits are not within SemVer
      *                                            bounds.
      * @throws java.lang.NumberFormatException    when one or more numeric bits have invalid
@@ -153,6 +155,7 @@ public final class PluginVersion {
      *
      * @param range the range string.
      * @return the range.
+     *
      * @throws java.lang.IllegalArgumentException when the range or one of the version strings is
      *                                            invalid.
      * @throws java.lang.NumberFormatException    when one or more bits are invalid.
@@ -163,7 +166,15 @@ public final class PluginVersion {
 
         int offset = range.indexOf(',');
         if (offset == -1) {
-            throw new IllegalArgumentException("Invalid version range: Missing separator");
+            PluginVersion version = of(range);
+            PluginVersion endVersion = (version.unstable() ? version : version.minor(version.major + 1));
+
+            return builder
+                    .startBound(version)
+                    .endBound(endVersion)
+                    .startInclusive(true)
+                    .endInclusive(false)
+                    .build();
         }
 
         String startBound = range.substring(0, offset);
@@ -664,6 +675,7 @@ public final class PluginVersion {
          *
          * @param extra the bit.
          * @return the builder.
+         *
          * @throws java.lang.IllegalArgumentException when an invalid character is present.
          */
         @Nonnull
@@ -733,6 +745,7 @@ public final class PluginVersion {
          *
          * @param metadata the metadata.
          * @return the builder.
+         *
          * @throws java.lang.IllegalArgumentException when an invalid character is present.
          */
         @Nonnull
