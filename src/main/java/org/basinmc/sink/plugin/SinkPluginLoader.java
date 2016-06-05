@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.jar.JarFile;
@@ -44,15 +46,15 @@ public class SinkPluginLoader implements PluginLoader {
     public static final Logger logger = LogManager.getLogger("Sink Plugin Loader");
 
     private Queue<File> loadQueue;
-    private Queue<PluginMetadata> transformQueue;
-    private Queue<PluginMetadata> contextQueue;
+    private Map<JarFile, PluginMetadata> transformQueue;
+    private Map<JarFile, PluginMetadata> contextQueue;
     private SinkServer server;
 
     public SinkPluginLoader(SinkServer server) {
         this.server = server;
         this.loadQueue = new LinkedTransferQueue<>();
-        this.transformQueue = new LinkedTransferQueue<>();
-        this.contextQueue = new LinkedTransferQueue<>();
+        this.transformQueue = new LinkedHashMap<>();
+        this.contextQueue = new LinkedHashMap<>();
     }
 
     void loadPlugin(Path path) {
@@ -88,7 +90,7 @@ public class SinkPluginLoader implements PluginLoader {
                         byte[] bytecode = classpath.getResource(entry.getName()).getBytes();
                         ClassReader reader = new ClassReader(bytecode);
                         reader.accept(new MetadataClassVisitor(this, metadata -> {
-                            transformQueue.add(metadata);
+                            transformQueue.put(jarfile, metadata);
                         }), 0);
                     } catch (IOException e) {
                         e.printStackTrace();
