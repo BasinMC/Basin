@@ -167,7 +167,7 @@ public final class PluginVersion {
         int offset = range.indexOf(',');
         if (offset == -1) {
             PluginVersion version = of(range);
-            PluginVersion endVersion = (version.unstable() ? version : version.minor(version.major + 1));
+            PluginVersion endVersion = (version.unstable() ? version : version.major(version.major + 1));
 
             return builder
                     .startBound(version)
