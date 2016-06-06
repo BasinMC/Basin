@@ -38,6 +38,14 @@ public interface PluginManager {
     Optional<PluginContext> getPluginContext(@Nonnull String pluginId);
 
     /**
+     * Retrieves the directory all plugin data is to be stored.
+     *
+     * @return a path.
+     */
+    @Nonnull
+    Path getStorageDirectory();
+
+    /**
      * Attempts to install a plugin from the specified path.
      *
      * @param pluginPackage a plugin package path.
