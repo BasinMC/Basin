@@ -87,6 +87,18 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
     /**
      * {@inheritDoc}
      */
+    @Override
+    public void setTargetState(@Nonnull State state) throws IllegalArgumentException {
+        if (state != State.LOADED && state != State.RUNNING) {
+            throw new IllegalArgumentException("Invalid target state: " + state);
+        }
+
+        this.targetState = state;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public Set<PluginContext> getWiredDependencies() {
