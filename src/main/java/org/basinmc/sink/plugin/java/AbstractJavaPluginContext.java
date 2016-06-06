@@ -42,21 +42,12 @@ import jdk.internal.org.objectweb.asm.Type;
  */
 public abstract class AbstractJavaPluginContext implements PluginContext {
     private final Path source;
-    private final Path storageDirectory;
     private State state = State.LOADED;
     private State targetState = State.RUNNING;
 
-    public AbstractJavaPluginContext(@Nonnull Path source, @Nonnull Path storageDirectory) throws IOException {
+    public AbstractJavaPluginContext(@Nonnull Path source) throws IOException {
         this.source = source;
-        this.storageDirectory = storageDirectory;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Nonnull
-    @Override
-    public abstract PluginMetadata getMetadata();
 
     /**
      * {@inheritDoc}
@@ -74,15 +65,6 @@ public abstract class AbstractJavaPluginContext implements PluginContext {
     @Override
     public State getState() {
         return this.state;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Nonnull
-    @Override
-    public Path getStorageDirectory() {
-        return this.storageDirectory;
     }
 
     /**

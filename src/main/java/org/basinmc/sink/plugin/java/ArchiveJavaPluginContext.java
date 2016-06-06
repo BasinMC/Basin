@@ -36,10 +36,11 @@ import javax.annotation.Nonnull;
  */
 public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
     private final String mainClass;
+    private final Path storageDirectory;
     private final PluginMetadata metadata;
 
     public ArchiveJavaPluginContext(@Nonnull Path source, @Nonnull Path storageDirectory) throws IOException {
-        super(source, storageDirectory);
+        super(source);
 
         LocatorClassVisitor locatorClassVisitor = new LocatorClassVisitor();
         String mainClass = null;
@@ -75,6 +76,8 @@ public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
 
         this.mainClass = mainClass;
         this.metadata = metadata;
+
+        this.storageDirectory = storageDirectory.resolve(this.metadata.getId());
     }
 
     /**
@@ -84,5 +87,14 @@ public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
     @Override
     public PluginMetadata getMetadata() {
         return this.metadata;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public Path getStorageDirectory() {
+        return this.storageDirectory;
     }
 }
