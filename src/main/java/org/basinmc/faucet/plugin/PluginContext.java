@@ -16,7 +16,10 @@
  */
 package org.basinmc.faucet.plugin;
 
+import com.google.common.collect.ImmutableMap;
+
 import java.nio.file.Path;
+import java.util.Map;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -118,10 +121,38 @@ public interface PluginContext {
          */
         DE_INITIALIZATION(6);
 
+        private static final Map<Integer, State> stepMap;
+
+        static {
+            ImmutableMap.Builder<Integer, State> builder = ImmutableMap.builder();
+            {
+                for (State state : values()) {
+                    builder.put(state.numeric, state);
+                }
+            }
+            stepMap = builder.build();
+        }
+
         private final int numeric;
 
         State(@Nonnegative int numeric) {
             this.numeric = numeric;
+        }
+
+        /**
+         * Retrieves the next step to a specific target state.
+         *
+         * @param target a target state.
+         * @return the next step or, if the target is equal to this state, this state.
+         */
+        @Nonnull
+        public State getNextStep(@Nonnull State target) {
+            if (this == target) {
+                return this;
+            }
+
+            int direction = Math.min(1, Math.max(-1, target.numeric - this.numeric));
+            return stepMap.get(this.numeric + direction);
         }
 
         /**
