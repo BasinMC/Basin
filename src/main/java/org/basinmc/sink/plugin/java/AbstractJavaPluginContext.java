@@ -41,7 +41,6 @@ import jdk.internal.org.objectweb.asm.Type;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public abstract class AbstractJavaPluginContext implements PluginContext {
-    private final PluginMetadata metadata;
     private final Path source;
     private final Path storageDirectory;
     private State state = State.LOADED;
@@ -50,27 +49,14 @@ public abstract class AbstractJavaPluginContext implements PluginContext {
     public AbstractJavaPluginContext(@Nonnull Path source, @Nonnull Path storageDirectory) throws IOException {
         this.source = source;
         this.storageDirectory = storageDirectory;
-        this.metadata = this.extractMetadata();
     }
-
-    /**
-     * Extracts a plugin's metadata from the source container by inspecting its bytecode.
-     *
-     * @return a plugin metadata representation.
-     *
-     * @throws IOException when reading from the source archive or directory fails.
-     */
-    @Nonnull
-    abstract PluginMetadata extractMetadata() throws IOException;
 
     /**
      * {@inheritDoc}
      */
     @Nonnull
     @Override
-    public PluginMetadata getMetadata() {
-        return this.metadata;
-    }
+    public abstract PluginMetadata getMetadata();
 
     /**
      * {@inheritDoc}
