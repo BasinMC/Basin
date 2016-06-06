@@ -28,6 +28,7 @@ import org.basinmc.faucet.plugin.error.PluginException;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.TypePath;
 
 import java.io.IOException;
@@ -44,8 +45,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-
-import jdk.internal.org.objectweb.asm.Type;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
