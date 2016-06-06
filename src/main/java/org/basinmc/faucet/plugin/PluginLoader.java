@@ -16,6 +16,8 @@
  */
 package org.basinmc.faucet.plugin;
 
+import org.basinmc.faucet.plugin.error.PluginLoaderException;
+
 import java.nio.file.Path;
 
 import javax.annotation.Nonnull;
@@ -32,7 +34,9 @@ public interface PluginLoader {
      *
      * @param packagePath a package path.
      * @return a plugin context.
+     *
+     * @throws PluginLoaderException when loading a plugin fails.
      */
     @Nonnull
-    PluginContext createContext(@Nonnull Path packagePath);
+    PluginContext createContext(@Nonnull Path packagePath) throws PluginLoaderException;
 }
