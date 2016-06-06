@@ -35,8 +35,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashSet;
@@ -297,44 +295,6 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
                 super.visitEnd();
 
                 this.metadata = this.builder.build();
-            }
-        }
-    }
-
-    /**
-     * Provides a simple class loader implementation which is capable of loading classes from within
-     * the plugin itself as well as any of its wired dependencies.
-     */
-    protected class PluginClassLoader extends URLClassLoader {
-
-        public PluginClassLoader(@Nonnull URL url) {
-            super(new URL[]{url});
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Class<?> loadClass(@Nonnull String name) throws ClassNotFoundException {
-            try {
-                return super.loadClass(name);
-            } catch (ClassNotFoundException ex) {
-                // @formatter:off
-                return AbstractJavaPluginContext.this.wiredPluginDependencies.stream()
-                        .filter((d) -> d instanceof ClassLoaderPluginContext)
-                        .map((d) -> {
-                            ClassLoaderPluginContext ctx = (ClassLoaderPluginContext) d;
-
-                            try {
-                                return ctx.getClassLoader().loadClass(name);
-                            } catch (ClassNotFoundException e) {
-                                return null;
-                            }
-                        })
-                        .filter((d) -> d != null)
-                        .findAny()
-                            .orElseThrow(() -> new ClassNotFoundException(name));
-                // @formatter:on
             }
         }
     }
