@@ -38,6 +38,7 @@ public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
     private final String mainClass;
     private final Path storageDirectory;
     private final PluginMetadata metadata;
+    private final PluginClassLoader classLoader;
 
     public ArchiveJavaPluginContext(@Nonnull Path source, @Nonnull Path storageDirectory) throws IOException {
         super(source);
@@ -78,6 +79,16 @@ public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
         this.metadata = metadata;
 
         this.storageDirectory = storageDirectory.resolve(this.metadata.getId());
+        this.classLoader = new PluginClassLoader(source.toFile().toURI().toURL());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
     }
 
     /**

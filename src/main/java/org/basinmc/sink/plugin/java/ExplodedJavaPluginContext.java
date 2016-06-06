@@ -41,6 +41,7 @@ public class ExplodedJavaPluginContext extends AbstractJavaPluginContext {
     private final String mainClass;
     private final Path storageDirectory;
     private final PluginMetadata metadata;
+    private final PluginClassLoader classLoader;
 
     public ExplodedJavaPluginContext(@Nonnull Path source, @Nonnull Path storageDirectory) throws IOException {
         super(source);
@@ -53,6 +54,16 @@ public class ExplodedJavaPluginContext extends AbstractJavaPluginContext {
         this.metadata = walker.locatorClassVisitor.getMetadata().get();
 
         this.storageDirectory = storageDirectory.resolve(this.metadata.getId());
+        this.classLoader = new PluginClassLoader(source.toFile().toURI().toURL());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
     }
 
     /**

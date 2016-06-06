@@ -18,20 +18,27 @@ package org.basinmc.sink.plugin.java;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.basinmc.faucet.plugin.ClassLoaderPluginContext;
 import org.basinmc.faucet.plugin.Plugin;
 import org.basinmc.faucet.plugin.PluginContext;
 import org.basinmc.faucet.plugin.PluginMetadata;
 import org.basinmc.faucet.plugin.PluginVersion;
 import org.basinmc.faucet.plugin.VersionRange;
+import org.basinmc.sink.SinkServer;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -40,8 +47,9 @@ import jdk.internal.org.objectweb.asm.Type;
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public abstract class AbstractJavaPluginContext implements PluginContext {
+public abstract class AbstractJavaPluginContext implements ClassLoaderPluginContext {
     private final Path source;
+    private final Set<PluginContext> wiredPluginDependencies = new HashSet<>();
     private State state = State.LOADED;
     private State targetState = State.RUNNING;
 
@@ -74,6 +82,23 @@ public abstract class AbstractJavaPluginContext implements PluginContext {
     @Override
     public State getTargetState() {
         return this.targetState;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public Set<PluginContext> getWiredDependencies() {
+        return Collections.unmodifiableSet(this.wiredPluginDependencies);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void wire(@Nonnull PluginContext context) {
+        this.wiredPluginDependencies.add(context);
     }
 
     /**
@@ -210,6 +235,44 @@ public abstract class AbstractJavaPluginContext implements PluginContext {
                 super.visitEnd();
 
                 this.metadata = this.builder.build();
+            }
+        }
+    }
+
+    /**
+     * Provides a simple class loader implementation which is capable of loading classes from within
+     * the plugin itself as well as any of its wired dependencies.
+     */
+    protected class PluginClassLoader extends URLClassLoader {
+
+        public PluginClassLoader(@Nonnull URL url) {
+            super(new URL[]{url});
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Class<?> loadClass(@Nonnull String name) throws ClassNotFoundException {
+            try {
+                return super.loadClass(name);
+            } catch (ClassNotFoundException ex) {
+                // @formatter:off
+                return AbstractJavaPluginContext.this.wiredPluginDependencies.stream()
+                        .filter((d) -> d instanceof ClassLoaderPluginContext)
+                        .map((d) -> {
+                            ClassLoaderPluginContext ctx = (ClassLoaderPluginContext) d;
+
+                            try {
+                                return ctx.getClassLoader().loadClass(name);
+                            } catch (ClassNotFoundException e) {
+                                return null;
+                            }
+                        })
+                        .filter((d) -> d != null)
+                        .findAny()
+                            .orElseThrow(() -> new ClassNotFoundException(name));
+                // @formatter:on
             }
         }
     }
