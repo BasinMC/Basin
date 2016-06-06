@@ -17,25 +17,26 @@
 package org.basinmc.faucet.plugin.error;
 
 /**
- * Provides an exception for cases where loading a plugin fails.
+ * Provides an exception for cases where plugin construction, notifications or other plugin related
+ * operations fail.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public class PluginLoaderException extends PluginException {
+public class PluginException extends Exception {
 
-    public PluginLoaderException() {
+    public PluginException() {
         super();
     }
 
-    public PluginLoaderException(String message) {
+    public PluginException(String message) {
         super(message);
     }
 
-    public PluginLoaderException(String message, Throwable cause) {
+    public PluginException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public PluginLoaderException(Throwable cause) {
+    public PluginException(Throwable cause) {
         super(cause);
     }
 }
