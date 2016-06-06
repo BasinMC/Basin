@@ -18,6 +18,8 @@ package org.basinmc.faucet.plugin;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.basinmc.faucet.plugin.error.PluginException;
+
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -30,6 +32,16 @@ import javax.annotation.Nonnull;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public interface PluginContext {
+
+    /**
+     * Instructs the context to enter a specific state.
+     *
+     * @param state a state.
+     * @throws IllegalArgumentException when the state is too far away.
+     * @throws PluginException          when passing the event to the plugin or initializing the
+     *                                  plugin fails.
+     */
+    void enterState(@Nonnull State state) throws IllegalArgumentException, PluginException;
 
     /**
      * Retrieves the plugin's metadata.
