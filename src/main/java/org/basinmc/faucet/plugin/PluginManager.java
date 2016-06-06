@@ -16,9 +16,12 @@
  */
 package org.basinmc.faucet.plugin;
 
+import org.basinmc.faucet.plugin.error.PluginException;
+
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 
@@ -51,9 +54,11 @@ public interface PluginManager {
      *
      * @param pluginPackage a plugin package path.
      * @return a plugin context.
+     *
+     * @throws PluginException when loading a plugin fails.
      */
     @Nonnull
-    PluginContext install(@Nonnull Path pluginPackage);
+    PluginContext install(@Nonnull Path pluginPackage) throws PluginException;
 
     /**
      * Attempts to install a plugin from the specified path using the specified plugin loader.
@@ -61,9 +66,11 @@ public interface PluginManager {
      * @param pluginPackage a plugin package path.
      * @param loader        a plugin loader.
      * @return a plugin context.
+     *
+     * @throws PluginException when loading a plugin fails.
      */
     @Nonnull
-    PluginContext install(@Nonnull Path pluginPackage, @Nonnull PluginLoader loader);
+    PluginContext install(@Nonnull Path pluginPackage, @Nonnull PluginLoader loader) throws PluginException;
 
     /**
      * Attempts to install all plugins found within the specified path.
@@ -72,7 +79,18 @@ public interface PluginManager {
      * @return a set of created plugin contexts.
      */
     @Nonnull
-    Set<PluginContext> installDirectory(@Nonnull Path pluginDirectory);
+    Set<PluginContext> installDirectory(@Nonnull Path pluginDirectory) throws PluginException;
+
+    /**
+     * Attempts to install all plugins found within the specified path.
+     *
+     * @param pluginDirectory    a directory containing a set of jars to exploded jars.
+     * @param exceptionPredicate a predicate which decides upon continuing upon receiving an error
+     *                           from the backing loader.
+     * @return a set of created plugin contexts.
+     */
+    @Nonnull
+    Set<PluginContext> installDirectory(@Nonnull Path pluginDirectory, @Nonnull Predicate<PluginException> exceptionPredicate);
 
     /**
      * Attempts to uninstall a plugin.
