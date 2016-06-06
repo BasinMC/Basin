@@ -17,6 +17,7 @@
 package org.basinmc.sink.plugin.java;
 
 import org.basinmc.faucet.plugin.PluginMetadata;
+import org.basinmc.faucet.plugin.error.PluginException;
 import org.objectweb.asm.ClassReader;
 
 import java.io.FileInputStream;
@@ -55,6 +56,19 @@ public class ExplodedJavaPluginContext extends AbstractJavaPluginContext {
 
         this.storageDirectory = storageDirectory.resolve(this.metadata.getId());
         this.classLoader = new PluginClassLoader(source.toFile().toURI().toURL());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    protected Class<?> getMainClass() throws PluginException {
+        try {
+            return Class.forName(this.mainClass, true, this.classLoader);
+        } catch (ClassNotFoundException ex) {
+            throw new PluginException("Could not load main class: " + ex.getMessage(), ex);
+        }
     }
 
     /**

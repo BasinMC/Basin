@@ -24,13 +24,16 @@ import org.basinmc.faucet.plugin.PluginContext;
 import org.basinmc.faucet.plugin.PluginMetadata;
 import org.basinmc.faucet.plugin.PluginVersion;
 import org.basinmc.faucet.plugin.VersionRange;
-import org.basinmc.sink.SinkServer;
+import org.basinmc.faucet.plugin.error.PluginException;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
@@ -52,10 +55,58 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
     private final Set<PluginContext> wiredPluginDependencies = new HashSet<>();
     private State state = State.LOADED;
     private State targetState = State.RUNNING;
+    private Object instance;
+    private MethodHandle instanceFactory;
 
     public AbstractJavaPluginContext(@Nonnull Path source) throws IOException {
         this.source = source;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void enterState(@Nonnull State state) throws IllegalArgumentException, PluginException {
+        if ((this.state != State.DE_INITIALIZATION || state != State.LOADED) && state.isClosestStep(this.state)) {
+            throw new IllegalArgumentException("Cannot switch from " + this.state + " to " + state + ": Too far away");
+        }
+
+        switch (state) {
+            case RESOLVED:
+                if (instanceFactory == null) {
+                    // FIXME: Add support for constructor level injection?
+                    try {
+                        Class<?> mainClass = this.getMainClass();
+                        this.instanceFactory = MethodHandles.publicLookup().findConstructor(mainClass, MethodType.methodType(void.class));
+                    } catch (IllegalAccessException | NoSuchMethodException ex) {
+                        throw new PluginException("Cannot construct main plugin class: " + ex.getMessage(), ex);
+                    }
+                }
+
+                try {
+                    this.instance = this.instanceFactory.invoke();
+                } catch (Throwable ex) {
+                    throw new PluginException("Could not call plugin factory: " + ex.getMessage(), ex);
+                }
+                break;
+            case PRE_INITIALIZATION:
+            case INITIALIZATION:
+            case POST_INITIALIZATION:
+            case DE_INITIALIZATION:
+                // FIXME: This needs the event system
+                throw new UnsupportedOperationException("Not implemented");
+        }
+    }
+
+    /**
+     * Retrieves the main plugin class to initialize when the appropriate state is reached.
+     *
+     * @return a plugin type.
+     *
+     * @throws PluginException when loading the class fails.
+     */
+    @Nonnull
+    protected abstract Class<?> getMainClass() throws PluginException;
 
     /**
      * {@inheritDoc}
