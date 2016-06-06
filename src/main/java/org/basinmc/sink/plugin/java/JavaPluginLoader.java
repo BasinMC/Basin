@@ -32,7 +32,7 @@ import java.nio.file.Path;
 import javax.annotation.Nonnull;
 
 public class JavaPluginLoader implements PluginLoader {
-    public static final Logger logger = LogManager.getFormatterLogger("Sink Plugin Loader");
+    public static final Logger logger = LogManager.getFormatterLogger(JavaPluginLoader.class);
     private final PluginManager pluginManager;
 
     public JavaPluginLoader(@Nonnull PluginManager pluginManager) {
