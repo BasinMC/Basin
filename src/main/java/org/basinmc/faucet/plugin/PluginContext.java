@@ -78,6 +78,15 @@ public interface PluginContext {
     State getTargetState();
 
     /**
+     * Sets the target lifecycle state.
+     *
+     * @param state a state
+     * @throws IllegalArgumentException when a state other than {@link State#LOADED} or {@link
+     *                                  State#RUNNING} is passed.
+     */
+    void setTargetState(@Nonnull State state) throws IllegalArgumentException;
+
+    /**
      * Provides a list of valid plugin states.
      *
      * Plugins generally traverse phases in order as follows: Loaded, Resolved, Pre Initialization,
