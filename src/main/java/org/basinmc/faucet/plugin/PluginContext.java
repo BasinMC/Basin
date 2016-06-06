@@ -18,6 +18,7 @@ package org.basinmc.faucet.plugin;
 
 import java.nio.file.Path;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
@@ -84,37 +85,79 @@ public interface PluginContext {
         /**
          * Represents a loaded plugin which has been verified and constructed by the system.
          */
-        LOADED,
+        LOADED(0),
 
         /**
          * Represents a resolved plugin (e.g. all of its dependencies where found and the load order
          * has been designated).
          */
-        RESOLVED,
+        RESOLVED(1),
 
         /**
          * Represents a loaded plugin during its first initialization stage.
          */
-        PRE_INITIALIZATION,
+        PRE_INITIALIZATION(2),
 
         /**
          * Represents a loaded plugin during its initialization stage.
          */
-        INITIALIZATION,
+        INITIALIZATION(3),
 
         /**
          * Represents a loaded plugin during its post initialization stage.
          */
-        POST_INITIALIZATION,
+        POST_INITIALIZATION(4),
 
         /**
          * Represents an installed and running plugin.
          */
-        RUNNING,
+        RUNNING(5),
 
         /**
          * Represents an installed plugin during its de-initialization stage.
          */
-        DE_INITIALIZATION
+        DE_INITIALIZATION(6);
+
+        private final int numeric;
+
+        State(@Nonnegative int numeric) {
+            this.numeric = numeric;
+        }
+
+        /**
+         * Checks whether the passed state is one step or less away from this state.
+         *
+         * @param state a state.
+         * @return true if closest step or equal, false otherwise.
+         */
+        public boolean isClosestStep(@Nonnull State state) {
+            if (this == state) {
+                return true;
+            }
+
+            return Math.abs(this.numeric - state.numeric) == 1;
+        }
+
+        /**
+         * Checks whether this state is closer to the target than the supplied state.
+         *
+         * @param target a target state.
+         * @param state  a state to compare against.
+         * @return true if closer, false otherwise.
+         */
+        public boolean isCloserTo(@Nonnull State target, @Nonnull State state) {
+            if (this == state) {
+                return false;
+            }
+
+            if (this == target) {
+                return true;
+            }
+
+            int i1 = Math.abs((target.numeric - this.numeric));
+            int i2 = Math.abs((target.numeric - state.numeric));
+
+            return (i1 < i2);
+        }
     }
 }
