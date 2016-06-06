@@ -18,6 +18,7 @@ package org.basinmc.faucet.plugin;
 
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -63,6 +64,15 @@ public interface PluginManager {
      */
     @Nonnull
     PluginContext install(@Nonnull Path pluginPackage, @Nonnull PluginLoader loader);
+
+    /**
+     * Attempts to install all plugins found within the specified path.
+     *
+     * @param pluginDirectory a directory containing a set of jars or exploded jars.
+     * @return a set of created plugin contexts.
+     */
+    @Nonnull
+    Set<PluginContext> installDirectory(@Nonnull Path pluginDirectory);
 
     /**
      * Attempts to uninstall a plugin.
