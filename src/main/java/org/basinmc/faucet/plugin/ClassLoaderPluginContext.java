@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public interface ClassLoaderPluginContext extends PluginContext {
+public interface ClassLoaderPluginContext extends WiredPluginContext {
 
     /**
      * Retrieves the backing class loader implementation.
