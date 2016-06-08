@@ -17,6 +17,7 @@
 package org.basinmc.faucet.plugin;
 
 import org.basinmc.faucet.plugin.error.PluginException;
+import org.basinmc.faucet.plugin.error.PluginLoaderException;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -90,7 +91,7 @@ public interface PluginManager {
      * @return a set of created plugin contexts.
      */
     @Nonnull
-    Set<PluginContext> installDirectory(@Nonnull Path pluginDirectory, @Nonnull Predicate<PluginException> exceptionPredicate);
+    Set<PluginContext> installDirectory(@Nonnull Path pluginDirectory, @Nonnull Predicate<PluginException> exceptionPredicate) throws PluginLoaderException;
 
     /**
      * Attempts to uninstall a plugin.
