@@ -55,7 +55,7 @@ public class ExplodedJavaPluginContext extends AbstractJavaPluginContext {
         this.metadata = walker.locatorClassVisitor.getMetadata().get();
 
         this.storageDirectory = storageDirectory.resolve(this.metadata.getId());
-        this.classLoader = new PluginClassLoader(source.toFile().toURI().toURL());
+        this.classLoader = new PluginClassLoader(this, source.toFile().toURI().toURL());
     }
 
     /**

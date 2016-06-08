@@ -80,7 +80,7 @@ public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
         this.metadata = metadata;
 
         this.storageDirectory = storageDirectory.resolve(this.metadata.getId());
-        this.classLoader = new PluginClassLoader(source.toFile().toURI().toURL());
+        this.classLoader = new PluginClassLoader(this, source.toFile().toURI().toURL());
     }
 
     /**

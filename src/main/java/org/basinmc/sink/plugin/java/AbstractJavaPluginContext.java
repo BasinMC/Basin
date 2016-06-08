@@ -161,6 +161,10 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
         this.wiredPluginDependencies.add(context);
     }
 
+    public Object getInstance() {
+        return instance;
+    }
+
     /**
      * Provides a class visitor capable of locating a plugin main class as well as processing its
      * metadata.
@@ -177,12 +181,12 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
          * {@inheritDoc}
          */
         @Override
-        public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible) {
+        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
             if (Type.getDescriptor(Plugin.class).equals(desc)) {
                 return this.annotationVisitor = new PluginAnnotationVisitor();
             }
 
-            return super.visitTypeAnnotation(typeRef, typePath, desc, visible);
+            return super.visitAnnotation(desc, visible);
         }
 
         /**
