@@ -16,6 +16,7 @@
  */
 package org.basinmc.faucet.service;
 
+import org.basinmc.faucet.plugin.PluginContext;
 import org.basinmc.faucet.util.Priority;
 
 import java.util.Optional;
@@ -42,21 +43,42 @@ public interface ServiceManager {
     <T> Optional<ServiceReference<T>> getReference(@Nonnull Class<T> serviceType);
 
     /**
+     * Injects registered services into annotated fields within the supplied object.
+     *
+     * @param object the object to process and inject into.
+     */
+    void inject(@Nonnull Object object);
+
+    /**
+     * Constructs and injects an instance of the specified type.
+     *
+     * @param type a type.
+     * @param <T>  a type.
+     * @return a constructed and injected instance.
+     *
+     * @throws Throwable when construction fails.
+     */
+    @Nonnull
+    <T> T inject(@Nonnull Class<T> type) throws Throwable;
+
+    /**
      * Registers a new service.
      *
+     * @param ctx            the source plugin context.
      * @param interfaceType  an interface type.
      * @param implementation a service implementation.
      * @param <I>            an interface type.
      * @return a registration descriptor.
      */
     @Nonnull
-    default <I> ServiceRegistration<I> register(@Nonnull Class<I> interfaceType, @Nonnull I implementation) {
-        return this.register(interfaceType, implementation, Priority.NORMAL);
+    default <I> ServiceRegistration<I> register(@Nonnull PluginContext ctx, @Nonnull Class<I> interfaceType, @Nonnull I implementation) {
+        return this.register(ctx, interfaceType, implementation, Priority.NORMAL);
     }
 
     /**
      * Registers a new service.
      *
+     * @param ctx            the source plugin context.
      * @param interfaceType  an interface type.
      * @param implementation a service implementation.
      * @param priority       a service priority.
@@ -64,5 +86,5 @@ public interface ServiceManager {
      * @return a registration descriptor.
      */
     @Nonnull
-    <I> ServiceRegistration<I> register(@Nonnull Class<I> interfaceType, @Nonnull I implementation, @Nonnull Priority priority);
+    <I> ServiceRegistration<I> register(@Nonnull PluginContext ctx, @Nonnull Class<I> interfaceType, @Nonnull I implementation, @Nonnull Priority priority);
 }
