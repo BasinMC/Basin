@@ -35,5 +35,5 @@ public interface Observer<T> {
      * @param newValue   a new value.
      * @return if true allows altering of the property value, if false retains the old value.
      */
-    boolean change(@Nonnull ObservableProperty<T> observable, T oldValue, T newValue);
+    boolean change(@Nonnull ObservableProperty<? extends T> observable, T oldValue, T newValue);
 }
