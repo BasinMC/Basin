@@ -64,21 +64,19 @@ public interface ServiceManager {
     /**
      * Registers a new service.
      *
-     * @param ctx            the source plugin context.
      * @param interfaceType  an interface type.
      * @param implementation a service implementation.
      * @param <I>            an interface type.
      * @return a registration descriptor.
      */
     @Nonnull
-    default <I> ServiceRegistration<I> register(@Nonnull PluginContext ctx, @Nonnull Class<I> interfaceType, @Nonnull I implementation) {
-        return this.register(ctx, interfaceType, implementation, Priority.NORMAL);
+    default <I> ServiceRegistration<I> register(@Nonnull Class<I> interfaceType, @Nonnull I implementation) {
+        return this.register(interfaceType, implementation, Priority.NORMAL);
     }
 
     /**
      * Registers a new service.
      *
-     * @param ctx            the source plugin context.
      * @param interfaceType  an interface type.
      * @param implementation a service implementation.
      * @param priority       a service priority.
@@ -86,5 +84,5 @@ public interface ServiceManager {
      * @return a registration descriptor.
      */
     @Nonnull
-    <I> ServiceRegistration<I> register(@Nonnull PluginContext ctx, @Nonnull Class<I> interfaceType, @Nonnull I implementation, @Nonnull Priority priority);
+    <I> ServiceRegistration<I> register(@Nonnull Class<I> interfaceType, @Nonnull I implementation, @Nonnull Priority priority);
 }
