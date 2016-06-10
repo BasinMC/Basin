@@ -81,7 +81,7 @@ public class SinkServiceManager implements ServiceManager {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    private static <I> I createWeakProxy(@Nonnull Class<I> interfaceType, @Nonnull I implementation) {
+    public static <I> I createWeakProxy(@Nonnull Class<I> interfaceType, @Nonnull I implementation) {
         // TODO: This method is great but doesn't cover abstract classes
         // TODO: For now all users are forced to provide interfaces (which is a sane concept anyways)
         if (!interfaceType.isInterface()) {
