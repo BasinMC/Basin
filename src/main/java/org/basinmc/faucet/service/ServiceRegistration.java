@@ -16,12 +16,24 @@
  */
 package org.basinmc.faucet.service;
 
+import org.basinmc.faucet.util.Priority;
+
+import javax.annotation.Nonnull;
+
 /**
  * Represents a registered service.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public interface ServiceRegistration<T> extends ServiceReference<T> {
+
+    /**
+     * Retrieves the registration priority.
+     *
+     * @return the priority.
+     */
+    @Nonnull
+    Priority getPriority();
 
     /**
      * Un-registers a service from the manager and thus makes it un-available for newly injected
