@@ -16,6 +16,8 @@
  */
 package org.basinmc.sink.plugin;
 
+import com.google.common.collect.MapMaker;
+
 import org.basinmc.faucet.plugin.PluginContext;
 import org.basinmc.faucet.plugin.PluginLoader;
 import org.basinmc.faucet.plugin.PluginManager;
@@ -23,6 +25,7 @@ import org.basinmc.faucet.plugin.error.PluginException;
 import org.basinmc.faucet.plugin.error.PluginLoaderException;
 import org.basinmc.sink.SinkServer;
 import org.basinmc.sink.plugin.java.JavaPluginLoader;
+import org.basinmc.sink.service.SinkServiceManager;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,24 +41,22 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 
 /**
+ * TODO: Thread Safety?
+ *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public class SinkPluginManager implements PluginManager {
     private final SinkServer server;
     private final PluginLoader defaultPluginLoader = new JavaPluginLoader(this); // TODO: Allow plugins to replace this?
     private final Map<String, PluginContext> pluginContextMap = new HashMap<>();
+    private final Map<PluginContext, PluginContext> pluginContextProxyMap;
 
     public SinkPluginManager(@Nonnull SinkServer server) {
         this.server = server;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Nonnull
-    @Override
-    public Optional<PluginContext> getPluginContext(@Nonnull String pluginId) {
-        return Optional.ofNullable(this.pluginContextMap.get(pluginId));
+        this.pluginContextProxyMap = (new MapMaker())
+                .weakKeys()
+                .weakValues()
+                .makeMap();
     }
 
     /**
