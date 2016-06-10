@@ -17,12 +17,14 @@
 package org.basinmc.faucet.service;
 
 import org.basinmc.faucet.observable.ObservableProperty;
-import org.basinmc.faucet.util.Priority;
-
-import javax.annotation.Nonnull;
 
 /**
  * Represents a registered service.
+ *
+ * <strong>Note:</strong> Do not permanently store any of the values returned by this interface.
+ * These values might become invalidated in the future due to plugin unloading and thus will be
+ * replaced through this reference. If you require initialization to occur on a service, please do
+ * so by using an observer.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
