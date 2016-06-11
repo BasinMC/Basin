@@ -282,6 +282,23 @@
                                         </executions>
                                 </plugin>
 
+                                <!-- Binary Diff -->
+                                <plugin>
+                                        <groupId>org.basinmc.maven.plugins</groupId>
+                                        <artifactId>bsdiff-maven-plugin</artifactId>
+                                        <version>1.0-SNAPSHOT</version>
+
+                                        <executions>
+                                                <execution>
+                                                        <id>generate-diff</id>
+
+                                                        <goals>
+                                                                <goal>generate-diff</goal>
+                                                        </goals>
+                                                </execution>
+                                        </executions>
+                                </plugin>
+
                                 <!-- Attach Sources -->
                                 <plugin>
                                         <groupId>org.apache.maven.plugins</groupId>
