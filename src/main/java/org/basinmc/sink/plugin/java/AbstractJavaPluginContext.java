@@ -29,7 +29,6 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.TypePath;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
@@ -37,19 +36,21 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public abstract class AbstractJavaPluginContext implements ClassLoaderPluginContext {
     private final Path source;
-    private final Set<PluginContext> wiredPluginDependencies = new HashSet<>();
+    private final Map<String, PluginContext> wiredPluginDependencies = new HashMap<>();
     private State state = State.LOADED;
     private State targetState = State.RUNNING;
     private Object instance;
@@ -96,6 +97,16 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
     }
 
     /**
+     * Retrieves the current plugin instance.
+     *
+     * @return an instance.
+     */
+    @Nullable
+    public Object getInstance() {
+        return this.instance;
+    }
+
+    /**
      * Retrieves the main plugin class to initialize when the appropriate state is reached.
      *
      * @return a plugin type.
@@ -104,6 +115,15 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
      */
     @Nonnull
     protected abstract Class<?> getMainClass() throws PluginException;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public Optional<PluginContext> getDependencyContext(@Nonnull String pluginId) {
+        return Optional.ofNullable(this.wiredPluginDependencies.get(pluginId));
+    }
 
     /**
      * {@inheritDoc}
@@ -150,7 +170,7 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
     @Nonnull
     @Override
     public Set<PluginContext> getWiredDependencies() {
-        return Collections.unmodifiableSet(this.wiredPluginDependencies);
+        return Collections.unmodifiableSet(new HashSet<>(this.wiredPluginDependencies.values()));
     }
 
     /**
@@ -158,11 +178,7 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
      */
     @Override
     public void wire(@Nonnull PluginContext context) {
-        this.wiredPluginDependencies.add(context);
-    }
-
-    public Object getInstance() {
-        return instance;
+        this.wiredPluginDependencies.put(context.getMetadata().getId(), context);
     }
 
     /**
