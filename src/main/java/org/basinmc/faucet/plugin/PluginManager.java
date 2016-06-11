@@ -34,15 +34,6 @@ import javax.annotation.Nonnull;
 public interface PluginManager {
 
     /**
-     * Retrieves a plugin's context based on its group and plugin identifiers.
-     *
-     * @param pluginId a plugin identifier.
-     * @return a plugin context or, if no such plugin could be located, an empty optional.
-     */
-    @Nonnull
-    Optional<PluginContext> getPluginContext(@Nonnull String pluginId);
-
-    /**
      * Retrieves the directory all plugin data is to be stored.
      *
      * @return a path.
