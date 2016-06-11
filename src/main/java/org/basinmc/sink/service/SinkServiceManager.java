@@ -25,10 +25,8 @@ import org.basinmc.faucet.service.ServiceRegistration;
 import org.basinmc.faucet.util.Priority;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.Map;
@@ -44,6 +42,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * TODO: Leak detection?
+ *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 @ThreadSafe
@@ -158,9 +157,10 @@ public class SinkServiceManager implements ServiceManager {
 
     /**
      * Pushes an update to all known service references.
+     *
      * @param registration a registration.
-     * @param value a new implementation.
-     * @param <I> an interface type.
+     * @param value        a new implementation.
+     * @param <I>          an interface type.
      */
     @SuppressWarnings("unchecked")
     private <I> void pushUpdate(@Nonnull SimpleServiceRegistration<I> registration, @Nullable I value) {
