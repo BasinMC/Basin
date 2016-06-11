@@ -43,25 +43,6 @@ public interface ServiceManager {
     <T> Optional<ServiceReference<T>> getReference(@Nonnull Class<T> serviceType);
 
     /**
-     * Injects registered services into annotated fields within the supplied object.
-     *
-     * @param object the object to process and inject into.
-     */
-    void inject(@Nonnull Object object);
-
-    /**
-     * Constructs and injects an instance of the specified type.
-     *
-     * @param type a type.
-     * @param <T>  a type.
-     * @return a constructed and injected instance.
-     *
-     * @throws Throwable when construction fails.
-     */
-    @Nonnull
-    <T> T inject(@Nonnull Class<T> type) throws Throwable;
-
-    /**
      * Registers a new service.
      *
      * @param interfaceType  an interface type.
