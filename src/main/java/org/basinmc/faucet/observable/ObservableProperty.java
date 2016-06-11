@@ -19,7 +19,7 @@ package org.basinmc.faucet.observable;
 import javax.annotation.Nonnull;
 
 /**
- * Represents an obvervable value (e.g. a value that can be changed by third party code at any time
+ * Represents an observable value (e.g. a value that can be changed by third party code at any time
  * but notifies all of its watchers of such modification).
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
