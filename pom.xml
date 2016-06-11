@@ -76,6 +76,11 @@
                         <groupId>com.google.guava</groupId>
                         <artifactId>guava</artifactId>
                 </dependency>
+                <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm-all</artifactId>
+                        <version>5.0.3</version>
+                </dependency>
 
                 <!-- Code Quality -->
                 <dependency>
