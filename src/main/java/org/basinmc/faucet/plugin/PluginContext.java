@@ -22,6 +22,7 @@ import org.basinmc.faucet.plugin.error.PluginException;
 
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -50,6 +51,16 @@ public interface PluginContext {
      */
     @Nonnull
     PluginMetadata getMetadata();
+
+    /**
+     * Retrieves the context of another plugin this context depends on.
+     *
+     * @param pluginId a plugin identifier.
+     * @return a context or, if dependencies have not been resolved or this specific dependency has
+     * never been fulfilled, an empty optional.
+     */
+    @Nonnull
+    Optional<PluginContext> getDependencyContext(@Nonnull String pluginId);
 
     /**
      * Retrieves a path to the source plugin file or a directory of resources which make up the
