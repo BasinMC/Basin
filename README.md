@@ -10,7 +10,10 @@ A modular Minecraft API.
 
 ## Building
 
-1. Execute `git clone --recursive --remote https://github.com/BasinMC/Basin.git` from your shell
+1. Execute `git clone https://github.com/BasinMC/Basin.git` from your shell
+1. Execute `cd Basin`
+1. Execute `git submodule init`
+1. Execute `git submodule update --remote`
 1. Execute `mvn clean install`
 
 ## Writing Patches
