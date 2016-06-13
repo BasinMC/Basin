@@ -63,17 +63,4 @@ class PluginClassLoader extends URLClassLoader {
             // @formatter:on
         }
     }
-
-    /**
-     * A simple delegating classloader to allow for runtime rewriting of classes.
-     */
-    class AsmClassLoader extends ClassLoader {
-        public AsmClassLoader(ClassLoader parent) {
-            super(parent);
-        }
-
-        public Class<?> define(String name, byte[] bytecode) {
-            return defineClass(name, bytecode, 0, bytecode.length);
-        }
-    }
 }
