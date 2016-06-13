@@ -41,11 +41,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
- * TODO: Add leak detection to this implementation.
- *
- * TODO: This implementation utilizes weak references in order to store its data securely!
- *
- * TODO: This allows people to create custom versions of Server ... intended?!
+ * TODO: Leak detection?
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
@@ -110,25 +106,6 @@ public class SinkServiceManager implements ServiceManager {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void inject(@Nonnull Object object) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Nonnull
-    @Override
-    public <T> T inject(@Nonnull Class<T> type) throws Throwable {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Nonnull
     @Override
     @SuppressWarnings("unchecked")
@@ -180,9 +157,10 @@ public class SinkServiceManager implements ServiceManager {
 
     /**
      * Pushes an update to all known service references.
+     *
      * @param registration a registration.
-     * @param value a new implementation.
-     * @param <I> an interface type.
+     * @param value        a new implementation.
+     * @param <I>          an interface type.
      */
     @SuppressWarnings("unchecked")
     private <I> void pushUpdate(@Nonnull SimpleServiceRegistration<I> registration, @Nullable I value) {
