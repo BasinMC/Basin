@@ -31,9 +31,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,69 +43,77 @@ import javax.annotation.concurrent.ThreadSafe;
 
 @ThreadSafe
 public class SinkEventBus implements EventBus {
-    private ReadWriteLock lock;
     private Map<Class<? extends Event>, CopyOnWriteArraySet<EventHandler>> handlers;
     private Map<Class<?>, EventHandler[]> handlerHolders;
     private AsmWrapperFactory<EventHandler, Event> wrapperFactory;
 
     public SinkEventBus() {
-        this.lock = new ReentrantReadWriteLock();
         this.handlers = new ConcurrentHashMap<>();
         this.handlerHolders = new ConcurrentHashMap<>();
         this.wrapperFactory = new AsmWrapperFactory<>(EventSubscribe.class, EventHandler.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T extends Event> boolean subscribe(@Nonnull EventHandler<T> handler, @Nonnull Class<T>... eventType) {
-        lock.writeLock().lock();
-        lock.readLock().lock();
         boolean added = false;
+
         for (Class<T> clazz : eventType) {
             CopyOnWriteArraySet<EventHandler> handlerList;
+
             if (!handlers.containsKey(clazz)) {
                 handlerList = new CopyOnWriteArraySet<>();
             } else {
                 handlerList = handlers.get(clazz);
             }
+
             if (handlerList.contains(handler)) {
                 continue;
             }
+
             handlerList.add(handler);
             handlers.put(clazz, handlerList);
             added = true;
         }
-        lock.writeLock().unlock();
-        lock.readLock().unlock();
         return added;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T extends Event> boolean unsubscribe(@Nullable EventHandler<T> handler) {
-        lock.readLock().lock();
-        lock.writeLock().lock();
         final boolean[] removed = {false}; // Whatever. I'll do something better later. Maybe.
+
         handlers.forEach((type, handlerList) -> {
             if (handlerList.contains(handler)) {
                 handlerList.remove(handler);
                 removed[0] = true;
             }
         });
-        lock.readLock().unlock();
-        lock.writeLock().unlock();
+
         return removed[0];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Event> Collection<EventHandler<? extends T>> unsubscribeAll(@Nonnull Class<T> eventType) {
         Collection<EventHandler<? extends T>> removed = new HashSet<>();
-        lock.readLock().lock();
-        lock.writeLock().lock();
+
         handlers.get(eventType).forEach(removed::add);
         handlers.get(eventType).removeAll(removed);
+
         return removed;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean subscribe(@Nonnull Object holder) {
         Class clazz = holder.getClass();
@@ -121,28 +131,41 @@ public class SinkEventBus implements EventBus {
         return r;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean subscribe(@Nonnull Class<?> type) {
         // TODO Not sure exactly how I'm gonna implement this.
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean unsubscribe(@Nullable Object holder) {
-        lock.readLock().lock();
         if (holder == null) return true;
+
         Class<?> clazz = holder.getClass();
-        handlers.values().stream().forEach(list -> list.stream()
+
+        this.handlers.values().stream().forEach(list -> list.stream()
                 .filter(handler -> handler.getClass().getDeclaredFields()[0].getType().equals(clazz))
                 .forEach(handler -> handlers.values().forEach(set -> set.remove(handler))));
         return true; // TODO figure this one out
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean unsubscribe(@Nullable Class<?> type) {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean subscribe(@Nonnull Method method) {
         if (!method.isAnnotationPresent(EventSubscribe.class)) return false;
@@ -159,22 +182,27 @@ public class SinkEventBus implements EventBus {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T extends Event> boolean isRegistered(@Nonnull EventHandler<T> handler) {
-        lock.readLock().lock();
         boolean r = handlers.values().stream().anyMatch(list -> list.contains(handler));
-        lock.readLock().unlock();
         return r;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Event> Collection<EventHandler<? super T>> getHandlers(@Nullable Class<T> eventType) {
-        lock.readLock().lock();
         Collection<EventHandler<? super T>> handlerList = new HashSet<>();
+
         if (eventType == null) {
             return handlerList;
         }
+
         handlers.keySet().stream().filter(eventType::isAssignableFrom).forEach(clazz -> handlerList.add((EventHandler<? super T>) handlers.get(clazz)));
         return handlerList;
     }
