@@ -99,7 +99,7 @@ public class SinkEventBus implements EventBus {
         Collection<EventHandler<? extends T>> removed = new HashSet<>();
         lock.readLock().lock();
         lock.writeLock().lock();
-        removed.addAll((Collection<? extends EventHandler<? extends T>>) handlers.get(eventType));
+        handlers.get(eventType).forEach(removed::add);
         handlers.get(eventType).removeAll(removed);
         return removed;
     }
