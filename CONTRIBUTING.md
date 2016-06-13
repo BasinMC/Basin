@@ -20,6 +20,9 @@ We generally recommend, that all contributors configure their IDEs to maintain t
 automatically. A set of ready-to-use code styles can be found in Google's
 [Java Styleguide Repository][Google Java Style Presets].
 
+Another important aspect of the Basin code style: Always reference object local variables using
+`this`. This guarantees no accidental shadowing occurs and clarifies the code further.
+
 [Google Java Style]: https://google.github.io/styleguide/javaguide.html
 [Google Java Style Presets]: https://github.com/google/styleguide
 
