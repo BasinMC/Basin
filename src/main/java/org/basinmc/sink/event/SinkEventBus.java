@@ -63,10 +63,10 @@ public class SinkEventBus implements EventBus {
         for (Class<T> clazz : eventType) {
             CopyOnWriteArraySet<EventHandler> handlerList;
 
-            if (!handlers.containsKey(clazz)) {
+            if (!this.handlers.containsKey(clazz)) {
                 handlerList = new CopyOnWriteArraySet<>();
             } else {
-                handlerList = handlers.get(clazz);
+                handlerList = this.handlers.get(clazz);
             }
 
             if (handlerList.contains(handler)) {
@@ -74,7 +74,7 @@ public class SinkEventBus implements EventBus {
             }
 
             handlerList.add(handler);
-            handlers.put(clazz, handlerList);
+            this.handlers.put(clazz, handlerList);
             added = true;
         }
         return added;
@@ -87,7 +87,7 @@ public class SinkEventBus implements EventBus {
     public <T extends Event> boolean unsubscribe(@Nullable EventHandler<T> handler) {
         final boolean[] removed = {false}; // Whatever. I'll do something better later. Maybe.
 
-        handlers.forEach((type, handlerList) -> {
+        this.handlers.forEach((type, handlerList) -> {
             if (handlerList.contains(handler)) {
                 handlerList.remove(handler);
                 removed[0] = true;
@@ -105,8 +105,8 @@ public class SinkEventBus implements EventBus {
     public <T extends Event> Collection<EventHandler<? extends T>> unsubscribeAll(@Nonnull Class<T> eventType) {
         Collection<EventHandler<? extends T>> removed = new HashSet<>();
 
-        handlers.get(eventType).forEach(removed::add);
-        handlers.get(eventType).removeAll(removed);
+        this.handlers.get(eventType).forEach(removed::add);
+        this.handlers.get(eventType).removeAll(removed);
 
         return removed;
     }
@@ -151,7 +151,7 @@ public class SinkEventBus implements EventBus {
 
         this.handlers.values().stream().forEach(list -> list.stream()
                 .filter(handler -> handler.getClass().getDeclaredFields()[0].getType().equals(clazz))
-                .forEach(handler -> handlers.values().forEach(set -> set.remove(handler))));
+                .forEach(handler -> this.handlers.values().forEach(set -> set.remove(handler))));
         return true; // TODO figure this one out
     }
 
@@ -169,7 +169,7 @@ public class SinkEventBus implements EventBus {
     @Override
     public boolean subscribe(@Nonnull Method method) {
         if (!method.isAnnotationPresent(EventSubscribe.class)) return false;
-        Class<? extends EventHandler> wrapper = wrapperFactory.createWrapper(method);
+        Class<? extends EventHandler> wrapper = this.wrapperFactory.createWrapper(method);
         List<Class<? extends Event>> types = new ArrayList<>();
         types.addAll(Arrays.asList(method.getAnnotation(EventSubscribe.class).value()));
         types.stream().filter(clazz -> clazz.isAssignableFrom(method.getParameterTypes()[0])).forEach(types::remove);
@@ -187,8 +187,7 @@ public class SinkEventBus implements EventBus {
      */
     @Override
     public <T extends Event> boolean isRegistered(@Nonnull EventHandler<T> handler) {
-        boolean r = handlers.values().stream().anyMatch(list -> list.contains(handler));
-        return r;
+        return this.handlers.values().stream().anyMatch(list -> list.contains(handler));
     }
 
     /**
@@ -203,7 +202,7 @@ public class SinkEventBus implements EventBus {
             return handlerList;
         }
 
-        handlers.keySet().stream().filter(eventType::isAssignableFrom).forEach(clazz -> handlerList.add((EventHandler<? super T>) handlers.get(clazz)));
+        this.handlers.keySet().stream().filter(eventType::isAssignableFrom).forEach(clazz -> handlerList.add((EventHandler<? super T>) this.handlers.get(clazz)));
         return handlerList;
     }
 }
