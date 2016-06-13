@@ -33,23 +33,39 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ACC_SUPER;
+import static org.objectweb.asm.Opcodes.ACC_SYNTHETIC;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.GETFIELD;
+import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.PUTFIELD;
+import static org.objectweb.asm.Opcodes.RETURN;
+import static org.objectweb.asm.Opcodes.V1_8;
 
 /**
  * Okay, so this is a big mess.
- * @param <I> Interface type to make our wrapper implement. Should only have 1 method (and should probably be a {@link FunctionalInterface}.
- * @param <T> General supertype for property types - interface should have this type as a generic type parameter
+ *
+ * @param <I> Interface type to make our wrapper implement. Should only have 1 method (and should
+ *            probably be a {@link FunctionalInterface}.
+ * @param <T> General supertype for property types - interface should have this type as a generic
+ *            type parameter
  */
 public class AsmWrapperFactory<I, T> {
-    private Map<Method, Class<? extends I>> methodCache = new HashMap<>();
-    private static Logger logger = LogManager.getLogger("Sink Wrapper Factory");
-    private Class<? extends Annotation> annotation;
-    private Class<I> interfaceType;
+    private static final Logger logger = LogManager.getLogger(AsmWrapperFactory.class);
+
+    private final Map<Method, Class<? extends I>> methodCache = new HashMap<>();
+    private final Class<? extends Annotation> annotation;
+    private final Class<I> interfaceType;
 
     /**
      * Creates a new instance of the wrapper factory
-     * @param annotation The annotation type that methods will be annotated with. Should have a single "value" parameter with signature "()Ljava/lang/Class;"
-     * @param interfaceType The interface type that the wrapper classes should implement. Should conform to the type parameter.
+     *
+     * @param annotation    The annotation type that methods will be annotated with. Should have a
+     *                      single "value" parameter with signature "()Ljava/lang/Class;"
+     * @param interfaceType The interface type that the wrapper classes should implement. Should
+     *                      conform to the type parameter.
      */
     public AsmWrapperFactory(@Nonnull Class<? extends Annotation> annotation, @Nonnull Class<I> interfaceType) {
         try {
@@ -63,23 +79,25 @@ public class AsmWrapperFactory<I, T> {
 
     /**
      * Creates a wrapper class for a method and loads it.
-     * @param method The method to create the wrapper for. Must be annotated with the predefined annotation type.
+     *
+     * @param method The method to create the wrapper for. Must be annotated with the predefined
+     *               annotation type.
      * @return The generated class
      */
     @SuppressWarnings("all")
     public Class<? extends I> createWrapper(@Nonnull Method method) {
-        if (methodCache.containsKey(method)) {
+        if (this.methodCache.containsKey(method)) {
             logger.warn("Attempted to add duplicate wrapper for method " + method.getDeclaringClass().getName() + "#" + method.getName());
-            return methodCache.get(method);
+            return this.methodCache.get(method);
         }
 
-        if (!method.isAnnotationPresent(annotation)) {
-            throw new IllegalArgumentException("Attempted to add wrapper for method that is not annotated with @" + annotation.getName());
+        if (!method.isAnnotationPresent(this.annotation)) {
+            throw new IllegalArgumentException("Attempted to add wrapper for method that is not annotated with @" + this.annotation.getName());
         }
-        Annotation a = method.getAnnotation(annotation);
+        Annotation a = method.getAnnotation(this.annotation);
         Class<? extends T> propertyType = null;
         try {
-            propertyType = (Class<? extends T>) annotation.getClass().getDeclaredMethod("value", Class.class).invoke(a);
+            propertyType = (Class<? extends T>) this.annotation.getClass().getDeclaredMethod("value", Class.class).invoke(a);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             // This will /never/ happen. Ever. If it happens I'll eat my socks.
         } catch (ClassCastException e) {
@@ -88,15 +106,15 @@ public class AsmWrapperFactory<I, T> {
 
         ClassWriter cw = new ClassWriter(0);
         MethodVisitor mv;
-        String className = method.getDeclaringClass().getName() + "_" + interfaceType.getName() + methodCache.size() + method.getName();
+        String className = method.getDeclaringClass().getName() + "_" + this.interfaceType.getName() + this.methodCache.size() + method.getName();
         String classDesc = className.replace(".", "/");
         String targetType = Type.getInternalName(propertyType);
         String callbackType = Type.getInternalName(method.getDeclaringClass());
         String callbackDesc = Type.getDescriptor(method.getDeclaringClass());
 
         cw.visit(V1_8, ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC, classDesc,
-                "Ljava/lang/Object;L" + Type.getInternalName(interfaceType) + "<"+ Type.getDescriptor(propertyType) +">;",
-                Type.getInternalName(Object.class), new String[]{Type.getInternalName(interfaceType)});
+                "Ljava/lang/Object;L" + Type.getInternalName(this.interfaceType) + "<" + Type.getDescriptor(propertyType) + ">;",
+                Type.getInternalName(Object.class), new String[]{Type.getInternalName(this.interfaceType)});
 
         cw.visitSource("dynamic.java", null);
 
@@ -116,7 +134,7 @@ public class AsmWrapperFactory<I, T> {
         mv.visitEnd();
 
         // "change" method
-        mv = cw.visitMethod(ACC_PUBLIC, "process", Type.getMethodDescriptor(interfaceType.getDeclaredMethods()[0]), null, null);
+        mv = cw.visitMethod(ACC_PUBLIC, "process", Type.getMethodDescriptor(this.interfaceType.getDeclaredMethods()[0]), null, null);
         mv.visitCode();
         mv.visitFieldInsn(GETFIELD, classDesc, "handle", callbackDesc);
         int i;
@@ -125,22 +143,23 @@ public class AsmWrapperFactory<I, T> {
         }
         mv.visitMethodInsn(INVOKEVIRTUAL, callbackType, method.getName(), Type.getMethodDescriptor(method), false);
         mv.visitInsn(RETURN);
-        mv.visitMaxs(i+1, i+1);
+        mv.visitMaxs(i + 1, i + 1);
         mv.visitEnd();
 
         cw.visitEnd();
         Class<? extends I> clazz = new AsmClassLoader(method.getClass().getClassLoader()).define(className, cw.toByteArray());
-        methodCache.put(method, clazz);
+        this.methodCache.put(method, clazz);
         return clazz;
     }
 
     /**
      * Creates a wrapper for each valid method in a class
+     *
      * @param holder An instance of the object to register wrappers for.
      */
     public void registerHolder(Object holder) {
-        Arrays.stream(holder.getClass().getDeclaredMethods()).filter(method -> method.isAnnotationPresent(annotation))
-                .filter(method -> Arrays.deepEquals(method.getParameterTypes(), interfaceType.getDeclaredMethods()[0].getParameterTypes()))
+        Arrays.stream(holder.getClass().getDeclaredMethods()).filter(method -> method.isAnnotationPresent(this.annotation))
+                .filter(method -> Arrays.deepEquals(method.getParameterTypes(), this.interfaceType.getDeclaredMethods()[0].getParameterTypes()))
                 .forEach(this::createWrapper);
     }
 }
