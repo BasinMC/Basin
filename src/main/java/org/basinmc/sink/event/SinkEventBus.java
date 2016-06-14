@@ -81,16 +81,12 @@ public class SinkEventBus implements EventBus {
      */
     @Override
     public <T extends Event> boolean unsubscribe(@Nullable EventHandler<T> handler) {
-        final boolean[] removed = {false}; // Whatever. I'll do something better later. Maybe.
-
-        this.handlers.forEach((type, handlerList) -> {
-            if (handlerList.contains(handler)) {
-                handlerList.remove(handler);
-                removed[0] = true;
-            }
-        });
-
-        return removed[0];
+        return this.handlers.values().stream()
+                .filter((l) -> {
+                    l.remove(handler);
+                    return l.contains(handler);
+                })
+                .findAny().isPresent();
     }
 
     /**
