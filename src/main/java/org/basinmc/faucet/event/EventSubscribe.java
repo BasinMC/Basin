@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 /**
  * Annotates a method that is to be subscribed to events. Can annotate a class for this operation
  * to be applied to all methods within it annotated with this annotation upon construction.
+ * This is also used to annotate synthetic {@link EventHandler} implementations internally.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})

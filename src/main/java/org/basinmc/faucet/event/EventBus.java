@@ -111,4 +111,13 @@ public interface EventBus {
      * @return A collection of all event handlers that are subscribed to this event type.
      */
     <T extends Event> Collection<EventHandler<? super T>> getHandlers(@Nullable Class<T> eventType);
+
+    /**
+     * Posts an event to the event bus. Each handler configured to
+     * accept a supertype or equivalent type of event will receive
+     * the event.
+     * @param event The even to post
+     * @param <T> The type of event
+     */
+    <T extends Event> void post(@Nonnull T event);
 }

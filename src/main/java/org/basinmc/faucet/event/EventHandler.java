@@ -18,6 +18,11 @@
  */
 package org.basinmc.faucet.event;
 
+/**
+ * Represents an executor of an event. If this is implemented manually,
+ * it must have an {@link EventSubscribe} annotation on it.
+ * @param <T> The type of event being executed.
+ */
 @FunctionalInterface
 public interface EventHandler<T extends Event> {
     void handle(T event);
