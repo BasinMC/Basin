@@ -20,6 +20,7 @@ package org.basinmc.sink.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
@@ -111,6 +112,21 @@ public class AsmWrapperFactory<I, T> {
         String targetType = Type.getInternalName(propertyType);
         String callbackType = Type.getInternalName(method.getDeclaringClass());
         String callbackDesc = Type.getDescriptor(method.getDeclaringClass());
+
+        // Copy any annotations found on the base method onto the target class.
+        // This is why all annotations that this use should be able to target both.
+        AnnotationVisitor av;
+        av = cw.visitAnnotation(Type.getInternalName(annotation), true);
+        try {
+            for (Method m : annotation.getDeclaredMethods()) {
+                av.visit(m.getName(), m.invoke(a, null));
+            }
+        } catch (ReflectiveOperationException e) {
+            logger.error("There was an error copying annotations for method " + method.getDeclaringClass().getName() + "." + method.getName());
+            logger.error(e);
+        } finally {
+            av.visitEnd();
+        }
 
         cw.visit(V1_8, ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC, classDesc,
                 "Ljava/lang/Object;L" + Type.getInternalName(this.interfaceType) + "<" + Type.getDescriptor(propertyType) + ">;",

@@ -21,6 +21,7 @@ import org.basinmc.faucet.event.Event;
 import org.basinmc.faucet.event.EventBus;
 import org.basinmc.faucet.event.EventHandler;
 import org.basinmc.faucet.event.EventSubscribe;
+import org.basinmc.faucet.util.Priority;
 import org.basinmc.sink.util.AsmWrapperFactory;
 
 import java.lang.reflect.Method;
@@ -31,7 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,13 +40,11 @@ import javax.annotation.concurrent.ThreadSafe;
 
 @ThreadSafe
 public class SinkEventBus implements EventBus {
-    private Map<Class<? extends Event>, CopyOnWriteArraySet<EventHandler>> handlers;
-    private Map<Class<?>, EventHandler[]> handlerHolders;
+    private Map<Class<? extends Event>, CopyOnWriteArrayList<EventHandler>> handlers;
     private AsmWrapperFactory<EventHandler, Event> wrapperFactory;
 
     public SinkEventBus() {
         this.handlers = new ConcurrentHashMap<>();
-        this.handlerHolders = new ConcurrentHashMap<>();
         this.wrapperFactory = new AsmWrapperFactory<>(EventSubscribe.class, EventHandler.class);
     }
 
@@ -57,10 +56,10 @@ public class SinkEventBus implements EventBus {
         boolean added = false;
 
         for (Class<T> clazz : eventType) {
-            CopyOnWriteArraySet<EventHandler> handlerList;
+            CopyOnWriteArrayList<EventHandler> handlerList;
 
             if (!this.handlers.containsKey(clazz)) {
-                handlerList = new CopyOnWriteArraySet<>();
+                handlerList = new CopyOnWriteArrayList<>();
             } else {
                 handlerList = this.handlers.get(clazz);
             }
@@ -69,7 +68,23 @@ public class SinkEventBus implements EventBus {
                 continue;
             }
 
-            handlerList.add(handler);
+            // Should always be present.
+            if (!handler.getClass().isAnnotationPresent(EventSubscribe.class)) {
+                throw new IllegalArgumentException("Event handler " + handler.getClass().getName() + " has no @EventSubscribe annotation.");
+            }
+            EventSubscribe annotation = handler.getClass().getAnnotation(EventSubscribe.class);
+            Priority priority = annotation.priority();
+            int insertIndex = 0;
+            for (int i = 0; i < handlerList.size(); i++) {
+                EventHandler h = handlerList.get(i);
+                Priority priority1 = h.getClass().getAnnotation(EventSubscribe.class).priority();
+                if (priority.ordinal() < priority1.ordinal()) {
+                    insertIndex = i - 1;
+                    break;
+                }
+            }
+
+            handlerList.add(insertIndex, handler);
             this.handlers.put(clazz, handlerList);
             added = true;
         }
@@ -196,5 +211,17 @@ public class SinkEventBus implements EventBus {
 
         this.handlers.keySet().stream().filter(eventType::isAssignableFrom).forEach(clazz -> handlerList.add((EventHandler<? super T>) this.handlers.get(clazz)));
         return handlerList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Event> void post(@Nonnull T event) {
+        Class<T> eventType = (Class<T>) event.getClass();
+        handlers.keySet().stream().filter(clazz -> clazz.isAssignableFrom(eventType))
+                .forEachOrdered(clazz -> handlers.get(clazz)
+                .forEach(handler -> handler.handle(event)));
     }
 }
