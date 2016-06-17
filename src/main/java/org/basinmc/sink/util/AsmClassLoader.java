@@ -24,6 +24,6 @@ public class AsmClassLoader extends ClassLoader {
 
     @SuppressWarnings("unchecked")
     public <T> Class<T> define(String name, byte[] bytecode) {
-        return (Class<T>) defineClass(name, bytecode, 0, 0);
+        return (Class<T>) defineClass(name, bytecode, 0, bytecode.length);
     }
 }

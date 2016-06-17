@@ -21,12 +21,20 @@ package org.basinmc.sink.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.util.CheckClassAdapter;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -69,11 +77,6 @@ public class AsmWrapperFactory<I, T> {
      *                      conform to the type parameter.
      */
     public AsmWrapperFactory(@Nonnull Class<? extends Annotation> annotation, @Nonnull Class<I> interfaceType) {
-        try {
-            annotation.getDeclaredMethod("value", Class.class);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Annotation type " + annotation.getName() + " must have a \"value\" method with the signature ()Ljava/lang/class;");
-        }
         this.annotation = annotation;
         this.interfaceType = interfaceType;
     }
@@ -98,16 +101,16 @@ public class AsmWrapperFactory<I, T> {
         Annotation a = method.getAnnotation(this.annotation);
         Class<? extends T> propertyType = null;
         try {
-            propertyType = (Class<? extends T>) this.annotation.getClass().getDeclaredMethod("value", Class.class).invoke(a);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            // This will /never/ happen. Ever. If it happens I'll eat my socks.
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException("Illegal annotation type " + a.getClass().getName() + " - not compatible with generic arguments.");
+            propertyType = (Class<? extends T>) method.getParameterTypes()[0];
+        } catch (ClassCastException | IndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("Illegal method signature " + Type.getMethodDescriptor(method) + " - not compatible with generic arguments.");
         }
 
+        boolean wizardMode = Boolean.getBoolean("org.basinmc.event.sanitycheck") || true;
         ClassWriter cw = new ClassWriter(0);
+
         MethodVisitor mv;
-        String className = method.getDeclaringClass().getName() + "_" + this.interfaceType.getName() + this.methodCache.size() + method.getName();
+        String className = method.getDeclaringClass().getSimpleName() + "_" + this.interfaceType.getSimpleName() + this.methodCache.size() + method.getName();
         String classDesc = className.replace(".", "/");
         String targetType = Type.getInternalName(propertyType);
         String callbackType = Type.getInternalName(method.getDeclaringClass());
@@ -116,10 +119,30 @@ public class AsmWrapperFactory<I, T> {
         // Copy any annotations found on the base method onto the target class.
         // This is why all annotations that this use should be able to target both.
         AnnotationVisitor av;
-        av = cw.visitAnnotation(Type.getInternalName(annotation), true);
+        av = cw.visitAnnotation(Type.getDescriptor(annotation), true);
         try {
             for (Method m : annotation.getDeclaredMethods()) {
-                av.visit(m.getName(), m.invoke(a, null));
+                Object o = m.invoke(a, null);
+                if (o instanceof Enum) {
+                    av.visitEnum(m.getName(), Type.getDescriptor(o.getClass()), ((Enum) o).name());
+                } else if (o instanceof Class) {
+                    av.visit(m.getName(), Type.getDescriptor((Class) o));
+                } else if (o instanceof Enum[]) {
+                    Enum[] array = (Enum[]) o;
+                    AnnotationVisitor arrayVisitor = av.visitArray(m.getName());
+                    for (Enum e : array) {
+                        String enumDesc = Type.getDescriptor(e.getClass());
+                        arrayVisitor.visitEnum(null, enumDesc, e.name());
+                    }
+                } else if (o instanceof Class[]) {
+                    Class[] array = (Class[]) o;
+                    AnnotationVisitor arrayVisitor = av.visitArray(m.getName());
+                    for (Class clazz : array) {
+                        arrayVisitor.visit(null, Type.getDescriptor(clazz));
+                    }
+                } else {
+                    av.visit(m.getName(), o);
+                }
             }
         } catch (ReflectiveOperationException e) {
             logger.error("There was an error copying annotations for method " + method.getDeclaringClass().getName() + "." + method.getName());
@@ -128,8 +151,7 @@ public class AsmWrapperFactory<I, T> {
             av.visitEnd();
         }
 
-        cw.visit(V1_8, ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC, classDesc,
-                "Ljava/lang/Object;L" + Type.getInternalName(this.interfaceType) + "<" + Type.getDescriptor(propertyType) + ">;",
+        cw.visit(V1_8, ACC_PUBLIC | ACC_SUPER, classDesc, null,
                 Type.getInternalName(Object.class), new String[]{Type.getInternalName(this.interfaceType)});
 
         cw.visitSource("dynamic.java", null);
@@ -137,33 +159,56 @@ public class AsmWrapperFactory<I, T> {
         // handle field
         cw.visitField(ACC_PUBLIC, "handle", callbackDesc, null, null).visitEnd();
 
-        // constructor
-        mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(" + callbackDesc + ")V", null, null);
-        mv.visitCode();
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitFieldInsn(PUTFIELD, classDesc, "handle", callbackDesc);
-        mv.visitInsn(RETURN);
-        mv.visitMaxs(2, 2);
-        mv.visitEnd();
-
-        // "change" method
-        mv = cw.visitMethod(ACC_PUBLIC, "process", Type.getMethodDescriptor(this.interfaceType.getDeclaredMethods()[0]), null, null);
-        mv.visitCode();
-        mv.visitFieldInsn(GETFIELD, classDesc, "handle", callbackDesc);
-        int i;
-        for (i = 0; i < method.getParameterTypes().length; i++) {
-            mv.visitVarInsn(ALOAD, i);
+        {
+            // constructor
+            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(" + callbackDesc + ")V", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitFieldInsn(PUTFIELD, classDesc, "handle", callbackDesc);
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(3, 3);
+            mv.visitEnd();
         }
-        mv.visitMethodInsn(INVOKEVIRTUAL, callbackType, method.getName(), Type.getMethodDescriptor(method), false);
-        mv.visitInsn(RETURN);
-        mv.visitMaxs(i + 1, i + 1);
-        mv.visitEnd();
+
+        {
+            // "process" method
+            mv = cw.visitMethod(ACC_PUBLIC, "process", Type.getMethodDescriptor(this.interfaceType.getDeclaredMethods()[0]), null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, classDesc, "handle", callbackDesc);
+            int i;
+            for (i = 0; i < method.getParameterTypes().length; i++) {
+                mv.visitVarInsn(ALOAD, i+1);
+            }
+            mv.visitMethodInsn(INVOKEVIRTUAL, callbackType, method.getName(), Type.getMethodDescriptor(method), false);
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(i + 1, i + 1);
+            mv.visitEnd();
+        }
 
         cw.visitEnd();
-        Class<? extends I> clazz = new AsmClassLoader(method.getClass().getClassLoader()).define(className, cw.toByteArray());
+
+        byte[] bytes = cw.toByteArray();
+        if (wizardMode) {
+            ClassReader cr = new ClassReader(bytes);
+            ClassWriter cw1 = new ClassWriter(0);
+            cr.accept(cw1, 0);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            try {
+                stream.write(cw1.toByteArray());
+                File f = new File("Test.class");
+                f.delete();
+                f.createNewFile();
+                stream.writeTo(new FileOutputStream(f));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            CheckClassAdapter.verify(cr, true, new PrintWriter(System.out));
+        }
+        Class<? extends I> clazz = new AsmClassLoader(method.getClass().getClassLoader()).define(className, bytes);
         this.methodCache.put(method, clazz);
         return clazz;
     }

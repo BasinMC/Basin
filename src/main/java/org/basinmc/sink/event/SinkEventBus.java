@@ -52,6 +52,7 @@ public class SinkEventBus implements EventBus {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends Event> boolean subscribe(@Nonnull EventHandler<T> handler, @Nonnull Class<T>... eventType) {
         boolean added = false;
 
