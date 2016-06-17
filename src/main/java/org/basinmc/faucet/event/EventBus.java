@@ -91,10 +91,11 @@ public interface EventBus {
     /**
      * Creates a wrapper for a method and registers it as an event handler.
      * This is mostly for internal use.
+     * @param holder An instance of the object holding the method.
      * @param method The method to wrap
      * @return Whether the wrapper was successfully generated and subscription was successful.
      */
-    boolean subscribe(@Nonnull Method method);
+    boolean subscribe(@Nonnull Object holder, @Nonnull Method method);
 
     /**
      * Checks to see if a handler object is registered.
