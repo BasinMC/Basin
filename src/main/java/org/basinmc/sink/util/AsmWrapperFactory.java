@@ -175,7 +175,7 @@ public class AsmWrapperFactory<I, T> {
 
         {
             // "process" method
-            mv = cw.visitMethod(ACC_PUBLIC, "process", Type.getMethodDescriptor(this.interfaceType.getDeclaredMethods()[0]), null, null);
+            mv = cw.visitMethod(ACC_PUBLIC, "handle", Type.getMethodDescriptor(this.interfaceType.getDeclaredMethods()[0]), null, null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn(GETFIELD, classDesc, "handle", callbackDesc);

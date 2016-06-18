@@ -183,7 +183,9 @@ public class SinkEventBus implements EventBus {
         Class<? extends EventHandler> wrapper = this.wrapperFactory.createWrapper(method);
         List<Class<? extends Event>> types = new ArrayList<>();
         types.addAll(Arrays.asList(method.getAnnotation(EventSubscribe.class).value()));
-        Collection<Class<? extends Event>> toRemove = types.stream().filter(clazz -> clazz.isAssignableFrom(method.getParameterTypes()[0])).collect(Collectors.toSet());
+        Collection<Class<? extends Event>> toRemove = types.stream()
+                .filter(clazz -> clazz.isAssignableFrom(method.getParameterTypes()[0])
+                        && !clazz.equals(method.getParameterTypes()[0])).collect(Collectors.toSet());
         types.removeAll(toRemove);
         try {
             EventHandler<T> handler = wrapper.getDeclaredConstructor(method.getDeclaringClass()).newInstance(holder);
@@ -218,7 +220,10 @@ public class SinkEventBus implements EventBus {
         }
 
         this.handlers.keySet().stream().filter(type -> type.isAssignableFrom(eventType))
-                .forEach(clazz -> handlerList.addAll((Collection<? extends EventHandler<? super T>>) this.handlers.get(clazz)));
+                .map(eventClass -> (Class<? super T>) eventClass)
+                .forEach(clazz -> handlers.get(clazz).stream()
+                    .map(handler -> (EventHandler<? super T>) handler)
+                    .forEach(handlerList::add));
         return handlerList;
     }
 
@@ -231,11 +236,11 @@ public class SinkEventBus implements EventBus {
         Class<T> eventType = (Class<T>) event.getClass();
         handlers.keySet().stream()
                 .filter(clazz -> clazz.isAssignableFrom(eventType))
-                .forEachOrdered(clazz -> handlers
+                .forEach(clazz -> handlers
                         .get(clazz)
                         .stream()
                         .map((h) -> (EventHandler<T>) h)
-                        .forEach(handler -> handler.handle(event))
+                        .forEachOrdered(handler -> handler.handle(event))
                 );
     }
 }

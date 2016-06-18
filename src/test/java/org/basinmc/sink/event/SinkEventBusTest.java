@@ -32,7 +32,7 @@ public class SinkEventBusTest {
         SinkEventBus eventBus = new SinkEventBus();
         sb = new StringBuilder();
         EventHandler<Event> handler = new TestEventHandler();
-        eventBus.subscribe(handler, Event.class);
+        eventBus.subscribe(handler, new Class[]{Event.class});
         Event event = new Event() {};
         eventBus.post(event);
         Assert.assertEquals(event.toString(), sb.toString());
@@ -42,7 +42,12 @@ public class SinkEventBusTest {
     public void testWrapperCreation() {
         SinkEventBus eventBus = new SinkEventBus();
         sb = new StringBuilder();
-        eventBus.subscribe(this);
+        try {
+            eventBus.subscribe(this, this.getClass().getDeclaredMethod("handleWrapper", Event.class));
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        eventBus.getHandlers(Event.class).forEach(handler -> System.out.println("Test - " + handler.toString()));
         Event event = new Event() {};
         eventBus.post(event);
         Assert.assertEquals(event.toString(), sb.toString());
@@ -50,6 +55,7 @@ public class SinkEventBusTest {
 
     @EventSubscribe
     public void handleWrapper(Event event) {
+        System.out.println(event.toString());
         sb.append(event.toString());
     }
 
