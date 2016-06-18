@@ -229,8 +229,13 @@ public class SinkEventBus implements EventBus {
     @SuppressWarnings("unchecked")
     public <T extends Event> void post(@Nonnull T event) {
         Class<T> eventType = (Class<T>) event.getClass();
-        handlers.keySet().stream().filter(clazz -> clazz.isAssignableFrom(eventType))
-                .forEachOrdered(clazz -> handlers.get(clazz)
-                .forEach(handler -> handler.handle(event)));
+        handlers.keySet().stream()
+                .filter(clazz -> clazz.isAssignableFrom(eventType))
+                .forEachOrdered(clazz -> handlers
+                        .get(clazz)
+                        .stream()
+                        .map((h) -> (EventHandler<T>) h)
+                        .forEach(handler -> handler.handle(event))
+                );
     }
 }
