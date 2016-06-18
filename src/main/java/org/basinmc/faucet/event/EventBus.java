@@ -39,7 +39,7 @@ public interface EventBus {
      * @param eventType If the type of event is abstract, what types to allow through the filter.
      * @return Whether the registration was successful.
      */
-    <T extends Event> boolean subscribe(@Nonnull EventHandler<T> handler, @Nonnull Class<T>... eventType);
+    <T extends Event> boolean subscribe(@Nonnull EventHandler<T> handler, @Nonnull Class<? extends Event>[] eventType);
 
     /**
      * Unsubscribes an event handler.
@@ -91,11 +91,12 @@ public interface EventBus {
     /**
      * Creates a wrapper for a method and registers it as an event handler.
      * This is mostly for internal use.
+     * @param <T> The type of event the method will listen to.
      * @param holder An instance of the object holding the method.
      * @param method The method to wrap
      * @return Whether the wrapper was successfully generated and subscription was successful.
      */
-    boolean subscribe(@Nonnull Object holder, @Nonnull Method method);
+    <T extends Event> boolean subscribe(@Nonnull Object holder, @Nonnull Method method);
 
     /**
      * Checks to see if a handler object is registered.
