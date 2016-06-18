@@ -208,7 +208,7 @@ public class AsmWrapperFactory<I, T> {
             }
             CheckClassAdapter.verify(cr, true, new PrintWriter(System.out));
         }
-        Class<? extends I> clazz = new AsmClassLoader(method.getClass().getClassLoader()).define(className, bytes);
+        Class<? extends I> clazz = new AsmClassLoader(this.getClass().getClassLoader()).define(className, bytes);
         this.methodCache.put(method, clazz);
         return clazz;
     }

@@ -24,6 +24,7 @@ import org.basinmc.faucet.event.EventSubscribe;
 import org.basinmc.faucet.util.Priority;
 import org.basinmc.sink.util.AsmWrapperFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,7 +42,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 @ThreadSafe
 public class SinkEventBus implements EventBus {
-    private Map<Class<? extends Event>, CopyOnWriteArrayList<EventHandler>> handlers;
+    private Map<Class<? extends Event>, CopyOnWriteArrayList<EventHandler<? extends Event>>> handlers;
     private AsmWrapperFactory<EventHandler, Event> wrapperFactory;
 
     public SinkEventBus() {
@@ -53,11 +55,11 @@ public class SinkEventBus implements EventBus {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Event> boolean subscribe(@Nonnull EventHandler<T> handler, @Nonnull Class<T>... eventType) {
+    public <T extends Event> boolean subscribe(@Nonnull EventHandler<T> handler, @Nonnull Class<? extends Event>[] eventType) {
         boolean added = false;
 
-        for (Class<T> clazz : eventType) {
-            CopyOnWriteArrayList<EventHandler> handlerList;
+        for (Class<? extends Event> clazz : eventType) {
+            CopyOnWriteArrayList<EventHandler<? extends Event>> handlerList;
 
             if (!this.handlers.containsKey(clazz)) {
                 handlerList = new CopyOnWriteArrayList<>();
@@ -113,7 +115,7 @@ public class SinkEventBus implements EventBus {
     public <T extends Event> Collection<EventHandler<? extends T>> unsubscribeAll(@Nonnull Class<T> eventType) {
         Collection<EventHandler<? extends T>> removed = new HashSet<>();
 
-        this.handlers.get(eventType).forEach(removed::add);
+        this.handlers.get(eventType).forEach(handler -> removed.add((EventHandler<? extends T>) handler));
         this.handlers.get(eventType).removeAll(removed);
 
         return removed;
@@ -131,7 +133,7 @@ public class SinkEventBus implements EventBus {
         boolean r = true;
         for (Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(EventSubscribe.class)) {
-                if (!subscribe(method)) {
+                if (!subscribe(holder, method)) {
                     r = false;
                 }
             }
@@ -175,17 +177,22 @@ public class SinkEventBus implements EventBus {
      * {@inheritDoc}
      */
     @Override
-    public boolean subscribe(@Nonnull Method method) {
+    @SuppressWarnings("unchecked")
+    public <T extends Event> boolean subscribe(@Nonnull Object holder, @Nonnull Method method) {
         if (!method.isAnnotationPresent(EventSubscribe.class)) return false;
         Class<? extends EventHandler> wrapper = this.wrapperFactory.createWrapper(method);
         List<Class<? extends Event>> types = new ArrayList<>();
         types.addAll(Arrays.asList(method.getAnnotation(EventSubscribe.class).value()));
-        types.stream().filter(clazz -> clazz.isAssignableFrom(method.getParameterTypes()[0])).forEach(types::remove);
+        Collection<Class<? extends Event>> toRemove = types.stream().filter(clazz -> clazz.isAssignableFrom(method.getParameterTypes()[0])).collect(Collectors.toSet());
+        types.removeAll(toRemove);
         try {
-            EventHandler handler = wrapper.newInstance();
-            subscribe(handler, (Class[]) types.toArray());
-        } catch (InstantiationException | IllegalAccessException e) {
+            EventHandler<T> handler = wrapper.getDeclaredConstructor(method.getDeclaringClass()).newInstance(holder);
+            Class<? extends Event>[] typeArray = new Class[types.size()];
+            types.toArray(typeArray);
+            subscribe(handler, typeArray);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
+            return false;
         }
         return true;
     }
@@ -210,7 +217,8 @@ public class SinkEventBus implements EventBus {
             return handlerList;
         }
 
-        this.handlers.keySet().stream().filter(eventType::isAssignableFrom).forEach(clazz -> handlerList.add((EventHandler<? super T>) this.handlers.get(clazz)));
+        this.handlers.keySet().stream().filter(type -> type.isAssignableFrom(eventType))
+                .forEach(clazz -> handlerList.addAll((Collection<? extends EventHandler<? super T>>) this.handlers.get(clazz)));
         return handlerList;
     }
 
