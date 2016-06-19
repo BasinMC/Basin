@@ -20,6 +20,7 @@ package org.basinmc.sink.event;
 import org.basinmc.faucet.event.Event;
 import org.basinmc.faucet.event.EventHandler;
 import org.basinmc.faucet.event.EventSubscribe;
+import org.basinmc.faucet.util.Priority;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,10 +48,30 @@ public class SinkEventBusTest {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        eventBus.getHandlers(Event.class).forEach(handler -> System.out.println("Test - " + handler.toString()));
         Event event = new Event() {};
         eventBus.post(event);
         Assert.assertEquals(event.toString(), sb.toString());
+    }
+
+    @Test
+    public void testInstanceWrappers() {
+        SinkEventBus eventBus = new SinkEventBus();
+        sb = new StringBuilder();
+        eventBus.subscribe(this);
+        Event event = new Event() {};
+        eventBus.post(event);
+        Assert.assertEquals(event.toString(), sb.toString());
+    }
+
+    @Test
+    public void testPriorities() {
+        SinkEventBus eventBus = new SinkEventBus();
+        sb = new StringBuilder();
+        eventBus.subscribe(new TestEventHandler1(), new Class[]{Event.class});
+        eventBus.subscribe(new TestEventHandler(), new Class[]{Event.class});
+        Event event = new Event() {};
+        eventBus.post(event);
+        Assert.assertEquals(event.toString() + event.toString().hashCode(), sb.toString());
     }
 
     @EventSubscribe
@@ -65,6 +86,15 @@ public class SinkEventBusTest {
         @Override
         public void handle(Event event) {
             sb.append(event.toString());
+        }
+    }
+
+    @EventSubscribe(priority = Priority.HIGH)
+    private static class TestEventHandler1 implements EventHandler<Event> {
+
+        @Override
+        public void handle(Event event) {
+            sb.append(event.toString().hashCode());
         }
     }
 }

@@ -82,7 +82,7 @@ public class SinkEventBus implements EventBus {
                 EventHandler h = handlerList.get(i);
                 Priority priority1 = h.getClass().getAnnotation(EventSubscribe.class).priority();
                 if (priority.ordinal() < priority1.ordinal()) {
-                    insertIndex = i - 1;
+                    insertIndex = i;
                     break;
                 }
             }

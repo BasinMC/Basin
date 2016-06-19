@@ -106,7 +106,7 @@ public class AsmWrapperFactory<I, T> {
             throw new IllegalArgumentException("Illegal method signature " + Type.getMethodDescriptor(method) + " - not compatible with generic arguments.");
         }
 
-        boolean wizardMode = Boolean.getBoolean("org.basinmc.event.sanitycheck") || true;
+        boolean wizardMode = Boolean.getBoolean("org.basinmc.event.sanitycheck");
         ClassWriter cw = new ClassWriter(0);
 
         MethodVisitor mv;
@@ -175,7 +175,7 @@ public class AsmWrapperFactory<I, T> {
 
         {
             // "process" method
-            mv = cw.visitMethod(ACC_PUBLIC, "handle", Type.getMethodDescriptor(this.interfaceType.getDeclaredMethods()[0]), null, null);
+            mv = cw.visitMethod(ACC_PUBLIC, this.interfaceType.getDeclaredMethods()[0].getName(), Type.getMethodDescriptor(this.interfaceType.getDeclaredMethods()[0]), null, null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn(GETFIELD, classDesc, "handle", callbackDesc);
