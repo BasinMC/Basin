@@ -1,4 +1,4 @@
-From e7628fd9548cee5c1a15fdc5d763572d7b2f4eaf Mon Sep 17 00:00:00 2001
+From ea8df7477418010b3382b91af5e3c8e72f8622e0 Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Fri, 3 Jun 2016 11:33:41 +0200
 Subject: [PATCH] Eastereggs!
@@ -48,5 +48,5 @@ index 23f46da..f790810 100644
  
    public boolean attackEntityFrom(DamageSource var1, float var2) {
 -- 
-2.7.1.windows.2
+2.5.5
 

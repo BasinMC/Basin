@@ -1,4 +1,4 @@
-From 2eafcfd73199d36b2277a044f85b32fc6d615bac Mon Sep 17 00:00:00 2001
+From 769f4f6dfadd03dd4f0082813ce79fb080f3ae9d Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Sat, 4 Jun 2016 10:35:00 +0200
 Subject: [PATCH] Enable access to the dedicated server settings.
@@ -22,5 +22,5 @@ index a20b751..d37d824 100644
      return this.settings.getBooleanProperty("broadcast-rcon-to-ops", true);
    }
 -- 
-2.7.1.windows.2
+2.5.5
 

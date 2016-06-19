@@ -1,4 +1,4 @@
-From b51a78f1eeee60ec9f13c5119402aa46e8e54213 Mon Sep 17 00:00:00 2001
+From 4c1b4db6129d31f79cd6515deed296f13e67da34 Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Thu, 2 Jun 2016 19:57:10 -0600
 Subject: [PATCH] Fixed compilation errors.
@@ -1611,5 +1611,5 @@ index 4fa4ead..b161b2b 100644
  
        for (Entry var6 : var3) {
 -- 
-2.7.1.windows.2
+2.5.5
 

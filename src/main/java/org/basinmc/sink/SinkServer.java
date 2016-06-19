@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
@@ -35,6 +36,13 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
 
     public SinkServer(DedicatedServer server) {
         this.server = server;
+
+        Runtime.getRuntime().addShutdownHook(new Thread("Sink Shutdown Thread") {
+            @Override
+            public void run() {
+                SinkServer.this.shutdown("Server Shutdown");
+            }
+        });
     }
 
     /**
@@ -52,6 +60,18 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     @Override
     public boolean isOnlineMode() {
         return this.server.isServerInOnlineMode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void shutdown(@Nullable String reason) {
+        // TODO Fire shutdown event here, once I add it. :)
+        server.logInfo("Server Shutdown: " + reason);
+        server.getPlayerList().getPlayerList().stream()
+            .forEach(player -> player.connection.kickPlayerFromServer(reason));
+        server.stopServer();
     }
 
     /**
