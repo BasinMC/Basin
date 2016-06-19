@@ -20,6 +20,7 @@ import java.nio.file.Path;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.Signed;
 
 /**
@@ -89,6 +90,16 @@ public interface Server {
      * @return true if in online mode, false otherwise.
      */
     boolean isOnlineMode();
+
+    /**
+     * Stop the server gracefully with a given reason. The reason will be printed to the console and
+     * optionally broadcast to players (as part of the kick message). Why is this method deprecated
+     * from the beginning, you ask? Because it should theoretically use a chat component API that I
+     * haven't designed yet. TODO.
+     * @param reason The reason the server is shutting down (if null, "Server Shutdown" is used).
+     */
+    @Deprecated
+    void shutdown(@Nullable String reason);
 
     interface Configuration {
 
