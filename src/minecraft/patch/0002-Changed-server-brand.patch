@@ -1,14 +1,14 @@
-From 385ca026bec64761b7f5dc963b5669c44779d5c4 Mon Sep 17 00:00:00 2001
-From: Johannes Donath <johannesd@torchmind.com>
-Date: Fri, 3 Jun 2016 05:36:14 +0200
-Subject: [PATCH] Changed server brand.
+From 361272e3063c11ce87dd655897f78a4c6aac81e8 Mon Sep 17 00:00:00 2001
+From: 0x277F <0x277F@gmail.com>
+Date: Tue, 28 Jun 2016 15:53:27 -0600
+Subject: [PATCH] Changed server brand
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index f1f2598..82a7ce5 100644
+index 87209d9..b6ebe74 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -781,7 +781,7 @@ public abstract class MinecraftServer
+@@ -783,7 +783,7 @@ public abstract class MinecraftServer
    }
  
    public String getServerModName() {
@@ -18,5 +18,5 @@ index f1f2598..82a7ce5 100644
  
    public CrashReport addServerInfoToCrashReport(CrashReport var1) {
 -- 
-2.5.5
+2.7.4
 

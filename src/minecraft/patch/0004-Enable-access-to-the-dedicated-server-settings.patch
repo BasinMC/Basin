@@ -1,14 +1,14 @@
-From 769f4f6dfadd03dd4f0082813ce79fb080f3ae9d Mon Sep 17 00:00:00 2001
-From: Johannes Donath <johannesd@torchmind.com>
-Date: Sat, 4 Jun 2016 10:35:00 +0200
-Subject: [PATCH] Enable access to the dedicated server settings.
+From f7e3b90eb50e6198071270980881073f3534df46 Mon Sep 17 00:00:00 2001
+From: 0x277F <0x277F@gmail.com>
+Date: Tue, 28 Jun 2016 15:54:45 -0600
+Subject: [PATCH] Enable access to the dedicated server settings
 
 
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index a20b751..d37d824 100644
+index b89e185..75b4cf1 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -471,6 +471,12 @@ public class DedicatedServer extends MinecraftServer implements IServer {
+@@ -472,6 +472,12 @@ public class DedicatedServer extends MinecraftServer implements IServer {
      this.saveProperties();
    }
  
@@ -22,5 +22,5 @@ index a20b751..d37d824 100644
      return this.settings.getBooleanProperty("broadcast-rcon-to-ops", true);
    }
 -- 
-2.5.5
+2.7.4
 

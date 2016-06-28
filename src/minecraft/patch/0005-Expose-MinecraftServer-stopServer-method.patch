@@ -1,14 +1,14 @@
-From 028690683822213621a8e563a4777087d423370d Mon Sep 17 00:00:00 2001
+From cfef98e59f7c45c2197a8d82f1bad75795c7911a Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
-Date: Sun, 19 Jun 2016 16:06:32 -0600
+Date: Tue, 28 Jun 2016 15:55:48 -0600
 Subject: [PATCH] Expose MinecraftServer stopServer method
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 82a7ce5..046a013 100644
+index b6ebe74..3ab2b4f 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -340,7 +340,7 @@ public abstract class MinecraftServer
+@@ -342,7 +342,7 @@ public abstract class MinecraftServer
      }
    }
  
@@ -17,7 +17,7 @@ index 82a7ce5..046a013 100644
      LOG.info("Stopping server");
      if (this.getNetworkSystem() != null) {
        this.getNetworkSystem().terminateEndpoints();
-@@ -711,13 +711,13 @@ public abstract class MinecraftServer
+@@ -713,13 +713,13 @@ public abstract class MinecraftServer
        }
  
        var12.startServerThread();
@@ -34,5 +34,5 @@ index 82a7ce5..046a013 100644
        LOG.fatal("Failed to start the minecraft server", var14);
      }
 -- 
-2.5.5
+2.7.4
 
