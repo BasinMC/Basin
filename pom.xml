@@ -31,8 +31,8 @@
         <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-                <game.version>1.10</game.version>
-                <mcp.version>snapshot-20160602</mcp.version>
+                <game.version>1.10.2</game.version>
+                <mcp.version>snapshot-20160628</mcp.version>
         </properties>
 
         <licenses>
