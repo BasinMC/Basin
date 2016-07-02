@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -40,6 +42,7 @@ public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
     private final Path storageDirectory;
     private final PluginMetadata metadata;
     private final PluginClassLoader classLoader;
+    private final Set<String> adapters;
 
     public ArchiveJavaPluginContext(@Nonnull Path source, @Nonnull Path storageDirectory) throws IOException {
         super(source);
@@ -47,6 +50,7 @@ public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
         LocatorClassVisitor locatorClassVisitor = new LocatorClassVisitor();
         String mainClass = null;
         PluginMetadata metadata = null;
+        this.adapters = new HashSet<>();
 
         try (ZipFile file = new ZipFile(source.toFile())) {
             Enumeration<? extends ZipEntry> enumeration = file.entries();
@@ -67,6 +71,8 @@ public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
                         mainClass = locatorClassVisitor.getClassName().get();
                         // noinspection OptionalGetWithoutIsPresent
                         metadata = locatorClassVisitor.getMetadata().get();
+
+                        this.adapters.addAll(locatorClassVisitor.getTransformers());
                     }
                 }
             }
@@ -121,5 +127,14 @@ public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
     @Override
     public Path getStorageDirectory() {
         return this.storageDirectory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public Set<String> getAdapters() {
+        return adapters;
     }
 }

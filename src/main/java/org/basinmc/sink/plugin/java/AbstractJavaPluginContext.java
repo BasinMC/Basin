@@ -25,6 +25,7 @@ import org.basinmc.faucet.plugin.PluginMetadata;
 import org.basinmc.faucet.plugin.PluginVersion;
 import org.basinmc.faucet.plugin.VersionRange;
 import org.basinmc.faucet.plugin.error.PluginException;
+import org.basinmc.faucet.plugin.loading.BytecodeAdapter;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
@@ -35,6 +36,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -187,6 +189,7 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
      */
     protected static class LocatorClassVisitor extends ClassVisitor {
         private String className = null;
+        private Set<String> transformers = new HashSet<>();
         private PluginAnnotationVisitor annotationVisitor = null;
 
         public LocatorClassVisitor() {
@@ -227,10 +230,22 @@ public abstract class AbstractJavaPluginContext implements ClassLoaderPluginCont
         }
 
         /**
+         * Retrieves a set of all classes implemented {@link BytecodeAdapter}
+         *
+         * @return A set.
+         */
+        public Set<String> getTransformers() {
+            return transformers;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
         public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+            if (Arrays.asList(interfaces).contains(Type.getInternalName(BytecodeAdapter.class))) {
+                transformers.add(name);
+            }
             this.className = name.replace('/', '.');
         }
 

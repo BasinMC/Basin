@@ -27,6 +27,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -96,6 +98,12 @@ public class ExplodedJavaPluginContext extends AbstractJavaPluginContext {
     @Override
     public Path getStorageDirectory() {
         return this.storageDirectory;
+    }
+
+    @Nonnull
+    @Override
+    public Set<String> getAdapters() {
+        return new HashSet<>(); // TODO I'll do it later.
     }
 
     /**
