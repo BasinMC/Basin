@@ -23,6 +23,7 @@ import org.basinmc.faucet.plugin.error.PluginException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -108,6 +109,14 @@ public interface PluginContext {
      *                                  State#RUNNING} is passed.
      */
     void setTargetState(@Nonnull State state) throws IllegalArgumentException;
+
+    /**
+     * Gets a set of the internal names of all classes implementing {@link org.basinmc.faucet.plugin.loading.BytecodeAdapter}
+     *
+     * @return A set.
+     */
+    @Nonnull
+    Set<String> getAdapters();
 
     /**
      * Provides a list of valid plugin states.
