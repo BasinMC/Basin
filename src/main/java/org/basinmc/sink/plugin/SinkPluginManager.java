@@ -46,13 +46,13 @@ import javax.annotation.Nonnull;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public class SinkPluginManager implements PluginManager {
-    private final SinkServer server;
+    private final Path storageDirectory;
     private final PluginLoader defaultPluginLoader = new JavaPluginLoader(this); // TODO: Allow plugins to replace this?
     private final Map<String, PluginContext> pluginContextMap = new HashMap<>();
     private final Map<PluginContext, PluginContext> pluginContextProxyMap;
 
-    public SinkPluginManager(@Nonnull SinkServer server) {
-        this.server = server;
+    public SinkPluginManager(@Nonnull Path storageDirectory) {
+    this.storageDirectory = storageDirectory;
         this.pluginContextProxyMap = (new MapMaker())
                 .weakKeys()
                 .weakValues()
@@ -66,7 +66,7 @@ public class SinkPluginManager implements PluginManager {
     @Override
     public Path getStorageDirectory() {
         // TODO: Generally it might be smart to keep the data out of the user's way and store our configuration files in a dedicated directory
-        return this.server.getBaseDirectory().resolve("data");
+        return this.storageDirectory;
     }
 
     /**
