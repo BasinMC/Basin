@@ -31,6 +31,8 @@ import java.util.zip.ZipFile;
 
 import javax.annotation.Nonnull;
 
+import jdk.internal.org.objectweb.asm.Type;
+
 /**
  * Provides an archive based Java plugin loader capable of loading JAR or ZIP files which contain
  * a set of bytecode classes.
@@ -72,6 +74,7 @@ public class ArchiveJavaPluginContext extends AbstractJavaPluginContext {
                         // noinspection OptionalGetWithoutIsPresent
                         metadata = locatorClassVisitor.getMetadata().get();
 
+                        this.adapters.add(Type.getInternalName(VersionRestrictingClassAdapter.class));
                         this.adapters.addAll(locatorClassVisitor.getTransformers());
                     }
                 }
