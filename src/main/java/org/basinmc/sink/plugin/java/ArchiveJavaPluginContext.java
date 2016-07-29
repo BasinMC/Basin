@@ -19,6 +19,7 @@ package org.basinmc.sink.plugin.java;
 import org.basinmc.faucet.plugin.PluginMetadata;
 import org.basinmc.faucet.plugin.error.PluginException;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Type;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,8 +31,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.annotation.Nonnull;
-
-import jdk.internal.org.objectweb.asm.Type;
 
 /**
  * Provides an archive based Java plugin loader capable of loading JAR or ZIP files which contain
