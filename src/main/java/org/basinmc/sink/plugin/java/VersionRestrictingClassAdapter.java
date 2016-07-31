@@ -22,8 +22,11 @@ import org.basinmc.faucet.plugin.VersionOnly;
 import org.basinmc.faucet.plugin.loading.BytecodeAdapter;
 import org.basinmc.sink.Launcher;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.commons.RemappingClassAdapter;
+import org.objectweb.asm.commons.SimpleRemapper;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -53,6 +56,8 @@ public class VersionRestrictingClassAdapter implements BytecodeAdapter {
                                     String classInternalName = altMapping.get(requestedVersion).replace(".", "/");
                                     try {
                                         ClassReader repIn = new ClassReader(Launcher.class.getResourceAsStream("/" + classInternalName));
+                                        ClassVisitor renamer = new RemappingClassAdapter(cn, new SimpleRemapper(cn.name, classInternalName));
+                                        repIn.accept(renamer, 0);
                                         ClassWriter out = new ClassWriter(0);
                                         repIn.accept(out, 0);
                                         return out.toByteArray();
