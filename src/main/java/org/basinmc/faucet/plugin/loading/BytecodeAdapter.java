@@ -19,9 +19,14 @@ package org.basinmc.faucet.plugin.loading;
 
 public interface BytecodeAdapter {
     /**
-     * Called in attempt to transform the given bytecode <i>before</i> loading
+     * Called in attempt to transform the given bytecode <i>before</i> loading. ASM's tree API
+     * is definitely the easiest way to modify classes, but note that it is resource intensive.
+     * Thus, make sure you check the class name to make sure you need to transform the given class.
+     * @param internalName The internal name of the class (using / as the package delimiter)
+     * @param superName The name of the given class's superclass
+     * @param interfaces An array of internal names for each interface this class implements
      * @param bytecode The bytecode to perform the transformation on
      * @return A transformed version of the provided bytecode
      */
-    byte[] adapt(byte[] bytecode);
+    byte[] adapt(String internalName, String superName, String[] interfaces, byte[] bytecode);
 }
