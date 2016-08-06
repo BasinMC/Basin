@@ -18,6 +18,7 @@ package org.basinmc.sink.plugin.java;
 
 import org.basinmc.faucet.plugin.PluginMetadata;
 import org.basinmc.faucet.plugin.error.PluginException;
+import org.basinmc.sink.transformers.VersionRestrictingClassAdapter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
 

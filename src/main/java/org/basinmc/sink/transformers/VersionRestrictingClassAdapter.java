@@ -1,4 +1,5 @@
 /*
+ *
  *  Copyright 2016 __0x277F <0x277F@gmail.com>
  *  and other copyright owners as documented in the project's IP log.
  *
@@ -13,17 +14,15 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
+ * /
  */
-package org.basinmc.sink.plugin.java;
+package org.basinmc.sink.transformers;
 
 import org.basinmc.faucet.Basin;
 import org.basinmc.faucet.plugin.VersionOnly;
-import org.basinmc.faucet.plugin.loading.BytecodeAdapter;
 import org.basinmc.sink.Launcher;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.objectweb.asm.commons.SimpleRemapper;
@@ -36,42 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class VersionRestrictingClassAdapter implements BytecodeAdapter {
-    @Override
-    public byte[] adapt(byte[] bytecode) { // TODO Handle method adapting
-        ClassReader cr = new ClassReader(bytecode);
-        ClassNode cn = new ClassNode();
-        cr.accept(cn, 0);
-        for (AnnotationNode an : ((List<AnnotationNode>) cn.visibleAnnotations)) {
-            if (!an.desc.equals(Type.getDescriptor(VersionOnly.class))) continue;
-                    Map<String, Object> values = annotationValues(an);
-                    String version = (String) values.get("version");
-                    if (!isInRange(version, Basin.MINECRAFT_VERSION)) {
-                        List<AnnotationNode> altNodes = (List<AnnotationNode>) values.get("alt");
-                        for (AnnotationNode alt : altNodes) {
-                            Map<String, String> altMapping = new HashMap<>();
-                            annotationValues(alt).forEach((p1, p2) -> altMapping.put(p1, (String) p2));
-                            for (String requestedVersion : altMapping.keySet()) {
-                                if (isInRange(requestedVersion, Basin.MINECRAFT_VERSION)) {
-                                    String classInternalName = altMapping.get(requestedVersion).replace(".", "/");
-                                    try {
-                                        ClassReader repIn = new ClassReader(Launcher.class.getResourceAsStream("/" + classInternalName));
-                                        ClassVisitor renamer = new RemappingClassAdapter(cn, new SimpleRemapper(cn.name, classInternalName));
-                                        repIn.accept(renamer, 0);
-                                        ClassWriter out = new ClassWriter(0);
-                                        repIn.accept(out, 0);
-                                        return out.toByteArray();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }
-                    }
-        }
-        return bytecode;
-    }
-
+public class VersionRestrictingClassAdapter extends SinkClassAdapter {
     private static Map<String, Object> annotationValues(AnnotationNode visitor) {
         Map<String, Object> map = new HashMap<>();
         for (int i = 0; i < visitor.values.size(); i+=2) {
@@ -112,5 +76,42 @@ public class VersionRestrictingClassAdapter implements BytecodeAdapter {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isAdaptable(String internalName, String superName, String[] interfaces, byte[] bytecode) {
+        return true; // We adapt every class.
+    }
+
+    @Override
+    public ClassNode adaptClass(ClassNode cn) {
+        for (AnnotationNode an : ((List<AnnotationNode>) cn.visibleAnnotations)) {
+            if (!an.desc.equals(Type.getDescriptor(VersionOnly.class))) continue;
+            Map<String, Object> values = annotationValues(an);
+            String version = (String) values.get("version");
+            if (!isInRange(version, Basin.MINECRAFT_VERSION)) {
+                List<AnnotationNode> altNodes = (List<AnnotationNode>) values.get("alt");
+                for (AnnotationNode alt : altNodes) {
+                    Map<String, String> altMapping = new HashMap<>();
+                    annotationValues(alt).forEach((p1, p2) -> altMapping.put(p1, (String) p2));
+                    for (String requestedVersion : altMapping.keySet()) {
+                        if (isInRange(requestedVersion, Basin.MINECRAFT_VERSION)) {
+                            String classInternalName = altMapping.get(requestedVersion).replace(".", "/");
+                            try {
+                                ClassReader repIn = new ClassReader(Launcher.class.getResourceAsStream("/" + classInternalName));
+                                ClassVisitor renamer = new RemappingClassAdapter(cn, new SimpleRemapper(cn.name, classInternalName));
+                                repIn.accept(renamer, 0);
+                                ClassNode newNode = new ClassNode();
+                                repIn.accept(newNode, 0);
+                                return newNode;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return cn; // We don't adapt if the annotation isn't found.
     }
 }

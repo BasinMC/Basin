@@ -25,11 +25,9 @@ import org.basinmc.faucet.plugin.error.PluginException;
 import org.basinmc.faucet.plugin.error.PluginLoaderException;
 import org.basinmc.faucet.plugin.loading.BytecodeAdapter;
 import org.basinmc.sink.Launcher;
-import org.basinmc.sink.SinkServer;
 import org.basinmc.sink.plugin.java.JavaPluginLoader;
-import org.basinmc.sink.service.SinkServiceManager;
+import org.objectweb.asm.ClassReader;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +39,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -222,8 +219,12 @@ public class SinkPluginManager implements PluginManager {
             }
 
             byte[] output = reader.toByteArray();
+            ClassReader cr;
             for (BytecodeAdapter adapter : pluginManager.adapters) {
-                output = adapter.adapt(reader.toByteArray());
+                cr = new ClassReader(output);
+                TransformationDataVisitor dataVisitor = new TransformationDataVisitor();
+                cr.accept(dataVisitor, 0);
+                output = adapter.adapt(dataVisitor.data.internalName, dataVisitor.data.superName, dataVisitor.data.interfaces, output);
             }
             Class<?> clazz = defineClass(name, output, 0, output.length, null);
             classCache.put(name, clazz);
