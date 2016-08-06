@@ -36,14 +36,6 @@ import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class VersionRestrictingClassAdapter extends SinkClassAdapter {
-    private static Map<String, Object> annotationValues(AnnotationNode visitor) {
-        Map<String, Object> map = new HashMap<>();
-        for (int i = 0; i < visitor.values.size(); i+=2) {
-            map.put((String) visitor.values.get(i), visitor.values.get(i+1));
-        }
-        return map;
-    }
-
     private static boolean isInRange(String rangeString, String version) {
         if (!rangeString.contains("-")) {
             return rangeString.equalsIgnoreCase(version);

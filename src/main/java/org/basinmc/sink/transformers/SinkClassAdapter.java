@@ -20,10 +20,13 @@ package org.basinmc.sink.transformers;
 import org.basinmc.faucet.plugin.loading.BytecodeAdapter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class SinkClassAdapter implements BytecodeAdapter {
@@ -31,6 +34,7 @@ public abstract class SinkClassAdapter implements BytecodeAdapter {
 
     public SinkClassAdapter() {
         adapters.add(new VersionRestrictingClassAdapter());
+        adapters.add(new LocalizationClassAdapter());
     }
 
     @Override
@@ -56,5 +60,13 @@ public abstract class SinkClassAdapter implements BytecodeAdapter {
 
     protected void register(SinkClassAdapter adapter) {
         adapters.add(adapter);
+    }
+
+    static Map<String, Object> annotationValues(AnnotationNode visitor) {
+        Map<String, Object> map = new HashMap<>();
+        for (int i = 0; i < visitor.values.size(); i+=2) {
+            map.put((String) visitor.values.get(i), visitor.values.get(i+1));
+        }
+        return map;
     }
 }
