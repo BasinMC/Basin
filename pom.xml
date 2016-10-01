@@ -286,7 +286,7 @@
                                 <!-- Binary Diff -->
                                 <plugin>
                                         <groupId>org.basinmc.maven.plugins</groupId>
-                                        <artifactId>bsdiff-maven-plugin</artifactId>
+                                        <artifactId>flange-maven-plugin</artifactId>
                                         <version>1.0-SNAPSHOT</version>
 
                                         <executions>
