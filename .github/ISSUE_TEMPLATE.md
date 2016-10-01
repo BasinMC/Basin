@@ -38,7 +38,7 @@ You may obviously attach worlds and example plugins in order to make these steps
 
 ## Error Messages
 ```
-Paste any relevant error messages between these backticks
+Paste any relevant error messages between these backticks.
 If you don't know which part of your logs is relevant, just upload your report to
 https://paste.basinmc.org and link it here!
 ```
