@@ -130,10 +130,11 @@
                         <!-- Binary Diff -->
                         <plugin>
                                 <groupId>org.basinmc.maven.plugins</groupId>
-                                <artifactId>bsdiff-maven-plugin</artifactId>
+                                <artifactId>flange-maven-plugin</artifactId>
 
                                 <configuration>
                                         <artifact>org.basinmc.minecraft:server:${game.version}</artifact>
+                                        <gameVersion>${game.version}</gameVersion>
                                 </configuration>
                         </plugin>
 
