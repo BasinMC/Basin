@@ -100,6 +100,10 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         return this.server.getTickCounter();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
     @Override
     public DedicatedServer getHandle() {
         return server;
@@ -279,7 +283,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public boolean isQueryEnabled() {
-            throw new UnsupportedOperationException();
+            return SinkServer.this.server.getSettings().getBooleanProperty("enable-query", false);
         }
 
         /**
