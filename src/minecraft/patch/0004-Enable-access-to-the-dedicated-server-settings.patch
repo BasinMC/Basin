@@ -1,26 +1,22 @@
-From 769f4f6dfadd03dd4f0082813ce79fb080f3ae9d Mon Sep 17 00:00:00 2001
+From 62381738c6e216931dad37d92f2c527c9a5e5459 Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Sat, 4 Jun 2016 10:35:00 +0200
 Subject: [PATCH] Enable access to the dedicated server settings.
 
 
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index a20b751..d37d824 100644
+index 7835300..7201c31 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -471,6 +471,12 @@ public class DedicatedServer extends MinecraftServer implements IServer {
-     this.saveProperties();
+@@ -337,7 +337,7 @@ public class DedicatedServer extends MinecraftServer implements IServer {
+     System.exit(0);
    }
  
-+  // Basin Start
-+  public PropertyManager getSettings() {
-+    return this.settings;
-+  }
-+  // Basin End
-+
-   public boolean shouldBroadcastRconToOps() {
-     return this.settings.getBooleanProperty("broadcast-rcon-to-ops", true);
+-  protected void updateTimeLightAndEntities() {
++  public void updateTimeLightAndEntities() { // BCMP
+     super.updateTimeLightAndEntities();
+     this.executePendingCommands();
    }
 -- 
-2.5.5
+2.11.0.windows.1
 
