@@ -16,6 +16,8 @@
  */
 package org.basinmc.faucet;
 
+import org.osgi.framework.launch.Framework;
+
 import java.nio.file.Path;
 
 import javax.annotation.Nonnegative;
@@ -74,6 +76,12 @@ public interface Server {
      */
     @Nonnegative
     int getLifeTime();
+
+    /**
+     * Retrieves the backing plugin framework instance as provided by the OSGi specification.
+     */
+    @Nonnull
+    Framework getPluginFramework();
 
     /**
      * Retrieves the currently active server version (as in game version such as 1.9.4 or 1.10).
