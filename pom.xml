@@ -127,16 +127,6 @@
                                 </configuration>
                         </plugin>
 
-                        <!-- Binary Diff -->
-                        <plugin>
-                                <groupId>org.basinmc.maven.plugins</groupId>
-                                <artifactId>bsdiff-maven-plugin</artifactId>
-
-                                <configuration>
-                                        <artifact>org.basinmc.minecraft:server:${game.version}</artifact>
-                                </configuration>
-                        </plugin>
-
                         <!-- Uber Jar -->
                         <plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
