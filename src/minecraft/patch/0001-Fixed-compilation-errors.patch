@@ -1,4 +1,4 @@
-From d132ea5e0aeca953937f51ab93fe56e4b782c280 Mon Sep 17 00:00:00 2001
+From f19de14af1fbe3f9de875b8ef45a53136e675e33 Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Thu, 2 Jun 2016 19:57:10 -0600
 Subject: [PATCH] Fixed compilation errors.
@@ -251,7 +251,7 @@ index 26740e6..46b2ab9 100644
  
      for (ScoreObjective var5 : var2) {
 diff --git a/net/minecraft/command/EntitySelector.java b/net/minecraft/command/EntitySelector.java
-index 00a8818..456ab7e 100644
+index 00a8818..7a64be9 100644
 --- a/net/minecraft/command/EntitySelector.java
 +++ b/net/minecraft/command/EntitySelector.java
 @@ -62,7 +62,7 @@ public class EntitySelector {
@@ -290,7 +290,29 @@ index 00a8818..456ab7e 100644
  
      boolean var6 = !var1.equals("e");
      boolean var7 = var1.equals("r") && var3 != null;
-@@ -229,11 +232,14 @@ public class EntitySelector {
+@@ -204,13 +207,19 @@ public class EntitySelector {
+       }
+ 
+       final GameType var4;
++      // BCMP Start
++      GameType tmp;
++
+       try {
+         int var5 = Integer.parseInt(var2);
+-        var4 = GameType.parseGameTypeWithDefault(var5, GameType.NOT_SET);
++        tmp = GameType.parseGameTypeWithDefault(var5, GameType.NOT_SET);
+       } catch (Throwable var6) {
+-        var4 = GameType.parseGameTypeWithDefault(var2, GameType.NOT_SET);
++        tmp = GameType.parseGameTypeWithDefault(var2, GameType.NOT_SET);
+       }
+ 
++      var4 = tmp;
++      // BCMP End
++
+       var1.add(
+           new Predicate<Entity>() {
+             public boolean apply(@Nullable Entity var1) {
+@@ -229,11 +238,14 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getTeamPredicates(Map<String, String> var0) {
      ArrayList var1 = Lists.newArrayList();
@@ -308,7 +330,7 @@ index 00a8818..456ab7e 100644
  
      if (var2 != null) {
        var1.add(
-@@ -256,7 +262,7 @@ public class EntitySelector {
+@@ -256,7 +268,7 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getScorePredicates(
        final ICommandSender var0, Map<String, String> var1) {
@@ -317,7 +339,7 @@ index 00a8818..456ab7e 100644
      return (List<Predicate<Entity>>)
          (var2.isEmpty()
              ? Collections.emptyList()
-@@ -311,11 +317,14 @@ public class EntitySelector {
+@@ -311,11 +323,14 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getNamePredicates(Map<String, String> var0) {
      ArrayList var1 = Lists.newArrayList();
@@ -335,7 +357,7 @@ index 00a8818..456ab7e 100644
  
      if (var2 != null) {
        var1.add(
-@@ -331,11 +340,14 @@ public class EntitySelector {
+@@ -331,11 +346,14 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getTagPredicates(Map<String, String> var0) {
      ArrayList var1 = Lists.newArrayList();
@@ -353,7 +375,7 @@ index 00a8818..456ab7e 100644
  
      if (var2 != null) {
        var1.add(
-@@ -514,7 +526,7 @@ public class EntitySelector {
+@@ -514,7 +532,7 @@ public class EntitySelector {
          && var6 == 1
          && ((List) var0).contains(var7)
          && !"r".equals(var4)) {
