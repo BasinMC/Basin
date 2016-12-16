@@ -177,12 +177,12 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public int getPlayerIdleTimeout() {
-            return SinkServer.this.server.getSettings().getIntProperty("player-idle-timeout", 0);
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int getQueryPort() {
-            return SinkServer.this.server.getSettings().getIntProperty("query.port", 25565);
+            throw new UnsupportedOperationException();
         }
 
         /**
@@ -191,7 +191,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         @Nonnull
         @Override
         public String getRemoteConsolePassword() {
-            return SinkServer.this.server.getSettings().getStringProperty("rcon.password", "");
+            throw new UnsupportedOperationException();
         }
 
         /**
@@ -199,7 +199,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public int getRemoteConsolePort() {
-            return SinkServer.this.server.getSettings().getIntProperty("rcon.port", 25575);
+            throw new UnsupportedOperationException();
         }
 
         /**
@@ -215,7 +215,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public int getViewDistance() {
-            return SinkServer.this.server.getSettings().getIntProperty("view-distance", 10);
+            throw new UnsupportedOperationException();
         }
 
         /**
@@ -271,7 +271,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public boolean isRemoteConsoleEnabled() {
-            return SinkServer.this.server.getSettings().getBooleanProperty("enable-rcon", false);
+            throw new UnsupportedOperationException();
         }
 
         /**
@@ -279,7 +279,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public boolean isQueryEnabled() {
-            return SinkServer.this.server.getSettings().getBooleanProperty("enable-query", false);
+            throw new UnsupportedOperationException();
         }
 
         /**
