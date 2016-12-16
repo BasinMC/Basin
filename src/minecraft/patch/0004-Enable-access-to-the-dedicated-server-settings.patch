@@ -1,11 +1,11 @@
-From 62381738c6e216931dad37d92f2c527c9a5e5459 Mon Sep 17 00:00:00 2001
+From 11e17054be3892dfe4030be50d02ccc21795ab5e Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Sat, 4 Jun 2016 10:35:00 +0200
 Subject: [PATCH] Enable access to the dedicated server settings.
 
 
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 7835300..7201c31 100644
+index bcd6dc9..b89e185 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -337,7 +337,7 @@ public class DedicatedServer extends MinecraftServer implements IServer {

@@ -1,4 +1,4 @@
-From d33f83a77a90c8897c9bc309bbc1c7c2507ec3c2 Mon Sep 17 00:00:00 2001
+From d132ea5e0aeca953937f51ab93fe56e4b782c280 Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Thu, 2 Jun 2016 19:57:10 -0600
 Subject: [PATCH] Fixed compilation errors.
@@ -577,6 +577,28 @@ index 290cbf0..ac12345 100644
        }
  
        var4.getRecursivePassengersByType(var1, var2);
+diff --git a/net/minecraft/entity/EntityAreaEffectCloud.java b/net/minecraft/entity/EntityAreaEffectCloud.java
+index 8d00ecf..283aa22 100644
+--- a/net/minecraft/entity/EntityAreaEffectCloud.java
++++ b/net/minecraft/entity/EntityAreaEffectCloud.java
+@@ -293,7 +293,7 @@ public class EntityAreaEffectCloud extends Entity {
+           }
+         }
+ 
+-        ArrayList var18 = Lists.newArrayList();
++        ArrayList<PotionEffect> var18 = Lists.newArrayList(); // BCMP
+ 
+         for (PotionEffect var24 : this.potion.getEffects()) {
+           var18.add(
+@@ -309,7 +309,7 @@ public class EntityAreaEffectCloud extends Entity {
+         if (var18.isEmpty()) {
+           this.reapplicationDelayMap.clear();
+         } else {
+-          List var22 =
++          List<EntityLivingBase> var22 = // BCMP
+               this.worldObj.getEntitiesWithinAABB(
+                   EntityLivingBase.class, this.getEntityBoundingBox());
+           if (!var22.isEmpty()) {
 diff --git a/net/minecraft/entity/EntityAreaEffectCloud.java.rej b/net/minecraft/entity/EntityAreaEffectCloud.java.rej
 new file mode 100644
 index 0000000..4be8323
@@ -707,7 +729,7 @@ index da761a8..a86e592 100644
              this.theAnimal.getClass(), this.theAnimal.getEntityBoundingBox().expandXyz(8.0D));
      double var2 = Double.MAX_VALUE;
 diff --git a/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java b/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java
-index 244fb32..9d5fa4d 100644
+index 244fb32..0e605dc 100644
 --- a/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java
 +++ b/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java
 @@ -68,7 +68,7 @@ public class EntityAINearestAttackableTarget<T extends EntityLivingBase> extends
@@ -719,6 +741,30 @@ index 244fb32..9d5fa4d 100644
            this.taskOwner.worldObj.getEntitiesWithinAABB(
                this.targetClass,
                this.getTargetableArea(this.getTargetDistance()),
+@@ -77,12 +77,12 @@ public class EntityAINearestAttackableTarget<T extends EntityLivingBase> extends
+         return false;
+       } else {
+         Collections.sort(var1, this.theNearestAttackableTargetSorter);
+-        this.targetEntity = (EntityLivingBase) var1.get(0);
++        this.targetEntity = var1.get(0); // BCMP
+         return true;
+       }
+     } else {
+       this.targetEntity =
+-          this.taskOwner.worldObj.getNearestAttackablePlayer(
++              (T) this.taskOwner.worldObj.getNearestAttackablePlayer( // BCMP
+               this.taskOwner.posX,
+               this.taskOwner.posY + (double) this.taskOwner.getEyeHeight(),
+               this.taskOwner.posZ,
+@@ -114,7 +114,7 @@ public class EntityAINearestAttackableTarget<T extends EntityLivingBase> extends
+                   return Double.valueOf(1.0D);
+                 }
+               },
+-              this.targetEntitySelector);
++                      (Predicate<EntityPlayer>) this.targetEntitySelector); // BCMP
+       return this.targetEntity != null;
+     }
+   }
 diff --git a/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java.rej b/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java.rej
 new file mode 100644
 index 0000000..2789323
@@ -856,6 +902,19 @@ index 30ef5df..e7a71cd 100644
              Lists.newArrayList(
                  this.worldObj.getEntitiesWithinAABBExcludingEntity(
                      this, this.getEntityBoundingBox()));
+diff --git a/net/minecraft/entity/monster/EntityPolarBear.java b/net/minecraft/entity/monster/EntityPolarBear.java
+index 5c90e3c..099a1ab 100644
+--- a/net/minecraft/entity/monster/EntityPolarBear.java
++++ b/net/minecraft/entity/monster/EntityPolarBear.java
+@@ -179,7 +179,7 @@ public class EntityPolarBear extends EntityAnimal {
+ 
+   class AIAttackPlayer extends EntityAINearestAttackableTarget<EntityPlayer> {
+     public AIAttackPlayer() {
+-      super(EntityPolarBear.this, EntityPlayer.class, 20, true, true, (Predicate<? super T>) null);
++      super(EntityPolarBear.this, EntityPlayer.class, 20, true, true, null); // BCMP
+     }
+ 
+     public boolean shouldExecute() {
 diff --git a/net/minecraft/entity/monster/EntityShulker.java b/net/minecraft/entity/monster/EntityShulker.java
 index 42937bb..046ee6e 100644
 --- a/net/minecraft/entity/monster/EntityShulker.java
@@ -1016,8 +1075,30 @@ index 9d36664..d26c263 100644
  
      for (int var4 = 0; var4 < var1.getHeight(); ++var4) {
        for (int var5 = 0; var5 < var1.getWidth(); ++var5) {
+diff --git a/net/minecraft/nbt/NBTUtil.java b/net/minecraft/nbt/NBTUtil.java
+index 73aab1d..5054475 100644
+--- a/net/minecraft/nbt/NBTUtil.java
++++ b/net/minecraft/nbt/NBTUtil.java
+@@ -197,7 +197,7 @@ public final class NBTUtil {
+ 
+   private static <T extends Comparable<T>> IBlockState func_190007_a(
+       IBlockState var0, IProperty<T> var1, String var2) {
+-    return var0.withProperty(var1, (Comparable) var1.parseValue(var2).get());
++    return var0.withProperty(var1, var1.parseValue(var2).get()); // BCMP
+   }
+ 
+   public static NBTTagCompound func_190009_a(NBTTagCompound var0, IBlockState var1) {
+@@ -218,7 +218,7 @@ public final class NBTUtil {
+   }
+ 
+   private static <T extends Comparable<T>> String func_190010_a(
+-      IProperty<T> var0, Comparable<?> var1) {
++      IProperty<T> var0, T var1) { // BCMP
+     return var0.getName(var1);
+   }
+ }
 diff --git a/net/minecraft/network/EnumConnectionState.java b/net/minecraft/network/EnumConnectionState.java
-index 451a46f..1a27b8a 100644
+index 451a46f..f3c9bb0 100644
 --- a/net/minecraft/network/EnumConnectionState.java
 +++ b/net/minecraft/network/EnumConnectionState.java
 @@ -271,7 +271,7 @@ public enum EnumConnectionState {
@@ -1029,6 +1110,15 @@ index 451a46f..1a27b8a 100644
      if (var3 == null) {
        var3 = HashBiMap.create();
        this.directionMaps.put(var1, var3);
+@@ -325,7 +325,7 @@ public enum EnumConnectionState {
+       STATES_BY_ID[var4 - -1] = var3;
+ 
+       for (EnumPacketDirection var6 : var3.directionMaps.keySet()) {
+-        for (Class var8 : ((BiMap) var3.directionMaps.get(var6)).values()) {
++        for (Class<? extends Packet<?>> var8 : var3.directionMaps.get(var6).values()) { // BCMP
+           if (STATES_BY_CLASS.containsKey(var8) && STATES_BY_CLASS.get(var8) != var3) {
+             throw new Error(
+                 "Packet "
 diff --git a/net/minecraft/network/EnumConnectionState.java.rej b/net/minecraft/network/EnumConnectionState.java.rej
 new file mode 100644
 index 0000000..41d5551
@@ -1059,9 +1149,18 @@ index d43bae5..f33cd52 100644
        try {
          var2.processPacket(this.packetListener);
 diff --git a/net/minecraft/pathfinding/WalkNodeProcessor.java b/net/minecraft/pathfinding/WalkNodeProcessor.java
-index e3918db..a753bbe 100644
+index e3918db..1a50732 100644
 --- a/net/minecraft/pathfinding/WalkNodeProcessor.java
 +++ b/net/minecraft/pathfinding/WalkNodeProcessor.java
+@@ -76,7 +76,7 @@ public class WalkNodeProcessor extends NodeProcessor {
+     BlockPos var9 = new BlockPos(this.entity);
+     PathNodeType var10 = this.getPathNodeType(this.entity, var9.getX(), var1, var9.getZ());
+     if (this.entity.getPathPriority(var10) < 0.0F) {
+-      HashSet var4 = Sets.newHashSet();
++      HashSet<BlockPos> var4 = Sets.newHashSet(); // BCMP
+       var4.add(
+           new BlockPos(
+               this.entity.getEntityBoundingBox().minX,
 @@ -314,7 +314,7 @@ public class WalkNodeProcessor extends NodeProcessor {
        int var8,
        boolean var9,
@@ -1170,6 +1269,37 @@ index 735cb67..87209d9 100644
        if (!var8.isEmpty()) {
          for (String var10 : var8) {
            if (var7) {
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index 7835300..bcd6dc9 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -87,7 +87,7 @@ public class DedicatedServer extends MinecraftServer implements IServer {
+         };
+   }
+ 
+-  protected boolean startServer() throws IOException {
++  public boolean startServer() throws IOException { // BCMP
+     Thread var1 =
+         new Thread("Server console handler") {
+           public void run() {
+@@ -307,7 +307,7 @@ public class DedicatedServer extends MinecraftServer implements IServer {
+     return this.settings.getBooleanProperty("hardcore", false);
+   }
+ 
+-  protected void finalTick(CrashReport var1) {}
++  public void finalTick(CrashReport var1) {} // BCMP
+ 
+   public CrashReport addServerInfoToCrashReport(CrashReport var1) {
+     var1 = super.addServerInfoToCrashReport(var1);
+@@ -333,7 +333,7 @@ public class DedicatedServer extends MinecraftServer implements IServer {
+     return var1;
+   }
+ 
+-  protected void systemExitNow() {
++  public void systemExitNow() { // BCMP
+     System.exit(0);
+   }
+ 
 diff --git a/net/minecraft/server/management/PlayerList.java b/net/minecraft/server/management/PlayerList.java
 index efd6044..857e9b4 100644
 --- a/net/minecraft/server/management/PlayerList.java
@@ -1288,6 +1418,15 @@ index 5c70b02..d949952 100644
      } else {
        var3.add(var1);
      }
+diff --git a/net/minecraft/util/IObjectIntIterable.java b/net/minecraft/util/IObjectIntIterable.java
+index 94354d8..e14a0c8 100644
+--- a/net/minecraft/util/IObjectIntIterable.java
++++ b/net/minecraft/util/IObjectIntIterable.java
+@@ -1,3 +1,3 @@
+ package net.minecraft.util;
+ 
+-public interface IObjectIntIterable extends Iterable {}
++public interface IObjectIntIterable<V> extends Iterable<V> {} // BCMP
 diff --git a/net/minecraft/util/IntHashMap.java b/net/minecraft/util/IntHashMap.java
 index 46fee47..9b77225 100644
 --- a/net/minecraft/util/IntHashMap.java
@@ -1476,22 +1615,19 @@ index 2ec7fc0..73a8d9a 100644
          if (!var5.isEmpty()) {
            var1.append("(");
            int var6 = 0;
-diff --git a/net/minecraft/world/gen/layer/GenLayer.java.rej b/net/minecraft/world/gen/layer/GenLayer.java.rej
-new file mode 100644
-index 0000000..3aa7074
---- /dev/null
-+++ b/net/minecraft/world/gen/layer/GenLayer.java.rej
-@@ -0,0 +1,10 @@
-+diff a/net/minecraft/world/gen/layer/GenLayer.java b/net/minecraft/world/gen/layer/GenLayer.java	(rejected hunks)
-+@@ -69,7 +69,7 @@ public abstract class GenLayer {
-+     GenLayer var37 = GenLayerZoom.magnify(1000L, var9, 2);
-+     GenLayerBiomeEdge var38 = new GenLayerBiomeEdge(1000L, var37);
-+     GenLayer var10 = GenLayerZoom.magnify(1000L, var32, 2);
-+-    GenLayerHills var39 = new GenLayerHills(1000L, var38, var10);
-++    GenLayer var39 = new GenLayerHills(1000L, var38, var10); // BCMP WTF
-+     GenLayer var33 = GenLayerZoom.magnify(1000L, var32, 2);
-+     var33 = GenLayerZoom.magnify(1000L, var33, var7);
-+     GenLayerRiver var35 = new GenLayerRiver(1L, var33);
+diff --git a/net/minecraft/world/gen/layer/GenLayer.java b/net/minecraft/world/gen/layer/GenLayer.java
+index 83ef36d..9c092a8 100644
+--- a/net/minecraft/world/gen/layer/GenLayer.java
++++ b/net/minecraft/world/gen/layer/GenLayer.java
+@@ -68,7 +68,7 @@ public abstract class GenLayer {
+     GenLayer var36 = GenLayerZoom.magnify(1000L, var9, 2);
+     GenLayerBiomeEdge var37 = new GenLayerBiomeEdge(1000L, var36);
+     GenLayer var10 = GenLayerZoom.magnify(1000L, var31, 2);
+-    GenLayerHills var38 = new GenLayerHills(1000L, var37, var10);
++    GenLayer var38 = new GenLayerHills(1000L, var37, var10); // BCMP
+     GenLayer var32 = GenLayerZoom.magnify(1000L, var31, 2);
+     var32 = GenLayerZoom.magnify(1000L, var32, var7);
+     GenLayerRiver var34 = new GenLayerRiver(1L, var32);
 diff --git a/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java b/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java
 index 36437bc..9cea7b5 100644
 --- a/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java

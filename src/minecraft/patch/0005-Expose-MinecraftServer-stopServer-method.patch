@@ -1,4 +1,4 @@
-From fb2a08d7974a46bdce97288a3b1985fce0cd4fd3 Mon Sep 17 00:00:00 2001
+From bbe201b19d776fc0708a76d37bea4add3c4c90ef Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Sun, 19 Jun 2016 16:06:32 -0600
 Subject: [PATCH] Expose MinecraftServer stopServer method
