@@ -32,8 +32,6 @@ public interface Server {
 
     /**
      * Retrieves the currently active API version.
-     *
-     * @return an api version.
      */
     @Nonnull
     default String getApiVersion() {
@@ -52,16 +50,12 @@ public interface Server {
 
     /**
      * Retrieves a path pointing at the base server directory.
-     *
-     * @return a path to the base directory.
      */
     @Nonnull
     Path getBaseDirectory();
 
     /**
      * Retrieves a mutable representation of the server configuration.
-     *
-     * @return a server configuration.
      */
     @Nonnull
     Configuration getConfiguration();
@@ -71,8 +65,6 @@ public interface Server {
      *
      * This number is equal to the amount of ticks processed by the server during its runtime and
      * thus may differ from the usual 20 ticks = 1 second scale.
-     *
-     * @return an amount of ticks.
      */
     @Nonnegative
     int getLifeTime();
@@ -85,8 +77,6 @@ public interface Server {
 
     /**
      * Retrieves the currently active server version (as in game version such as 1.9.4 or 1.10).
-     *
-     * @return a server version.
      */
     @Nonnull
     String getVersion();
@@ -130,24 +120,18 @@ public interface Server {
 
         /**
          * Retrieves the address the server is configured to listen on.
-         *
-         * @return an address or hostname.
          */
         @Nonnull
         String getHostname();
 
         /**
          * Retrieves the maximum amount of concurrent players connected to the server.
-         *
-         * @return an amount of players.
          */
         @Nonnegative
         int getMaximumConcurrentPlayers();
 
         /**
          * Retrieves the maximum height players are allowed to build at.
-         *
-         * @return a height in blocks.
          */
         @Nonnegative
         int getMaximumBuildHeight();
@@ -158,8 +142,6 @@ public interface Server {
          *
          * A value of -1 indicates, that the watchdog shall not shutdown the server regardless of
          * how long a tick needs to process.
-         *
-         * @return a maximum amount of time in milliseconds.
          */
         @Signed
         long getMaximumTickTime();
@@ -192,15 +174,11 @@ public interface Server {
          * from the server.
          *
          * If set to zero, players will not be kicked for idling.
-         *
-         * @return a player idle timeout in minutes.
          */
         int getPlayerIdleTimeout();
 
         /**
          * Retrieves the port the server is listening on for server status queries.
-         *
-         * @return a port number.
          */
         @Nonnegative
         int getQueryPort();
@@ -208,32 +186,24 @@ public interface Server {
         /**
          * Retrieves the password used for authentication purposes on the remote console (RCon)
          * server.
-         *
-         * @return a password.
          */
         @Nonnull
         String getRemoteConsolePassword();
 
         /**
          * Retrieves the port the server is listening on for remote console (RCon) connections.
-         *
-         * @return a port number.
          */
         @Nonnegative
         int getRemoteConsolePort();
 
         /**
          * Retrieves the radius (in blocks) which is protected from building by operators.
-         *
-         * @return a block radius.
          */
         @Nonnegative
         int getSpawnProtectionRadius();
 
         /**
          * Retrieves a player's view distance in chunks.
-         *
-         * @return a distance.
          */
         @Nonnegative
         int getViewDistance();
