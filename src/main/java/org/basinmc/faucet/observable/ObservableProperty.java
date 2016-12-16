@@ -22,8 +22,8 @@ import javax.annotation.Nonnull;
  * Represents an observable value (e.g. a value that can be changed by third party code at any time
  * but notifies all of its watchers of such modification).
  *
- * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  * @param <T> the property type.
+ * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public interface ObservableProperty<T> {
 
