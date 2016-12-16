@@ -159,6 +159,18 @@
                                 <version>4.0.23.Final</version>
                         </dependency>
 
+                        <!-- Plugin Framework -->
+                        <dependency>
+                                <groupId>org.osgi</groupId>
+                                <artifactId>osgi.core</artifactId>
+                                <version>6.0.0</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>org.apache.felix</groupId>
+                                <artifactId>org.apache.felix.framework</artifactId>
+                                <version>5.6.1</version>
+                        </dependency>
+
                         <!-- Utility -->
                         <dependency>
                                 <groupId>com.google.guava</groupId>
