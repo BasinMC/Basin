@@ -16,8 +16,6 @@
  */
 package org.basinmc.faucet.util;
 
-import javax.annotation.Signed;
-
 /**
  * Provides a list of valid priorities in their natural order.
  *
