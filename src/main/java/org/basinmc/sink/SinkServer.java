@@ -17,6 +17,7 @@
 package org.basinmc.sink;
 
 import com.google.common.collect.Iterators;
+import com.google.common.reflect.ClassPath;
 
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
@@ -45,9 +46,11 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
+import org.reflections.Reflections;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.Proxy;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,6 +59,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -97,6 +101,34 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         });
     }
 
+    private static void buildExposedPackages(@Nonnull StringBuilder builder, @Nonnull String topLevelPackageName, @Nonnull String v) throws IOException {
+        // while OSGi does specify Semantic Version as its versioning scheme of choice, it does not
+        // seem to understand dashes as part of these versions and thus we will replace any
+        // occurrences of dashes with dots in order to comply with its specification
+        // this is more of a hack but should not actually have any effects on the behavior of the
+        // framework
+        final String version;
+
+        if (v.contains("-")) {
+            version = v.replace('-', '.');
+        } else {
+            version = v;
+        }
+
+        ClassPath.from(SinkServer.class.getClassLoader()).getTopLevelClassesRecursive(topLevelPackageName).stream()
+                .map(ClassPath.ClassInfo::getPackageName)
+                .distinct()
+                .filter((p) -> !p.contains("internal"))
+                .forEach((p) -> {
+                    if (builder.length() != 0) {
+                        builder.append(',');
+                    }
+
+                    builder.append(p).append(";").append(version);
+                    logger.debug("Exposing package: %s", p + "; version=" + version);
+                });
+    }
+
     /**
      * Builds a specialized framework configuration.
      */
@@ -106,7 +138,17 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         {
             cnf.put(Constants.FRAMEWORK_STORAGE, "cache");
             cnf.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
-            // TODO: Host Bundle
+
+            final StringBuilder exposedPackages = new StringBuilder();
+            try {
+                buildExposedPackages(exposedPackages, "org.basinmc.faucet", FaucetVersion.API_VERSION);
+                // TODO: Expose Sink
+                buildExposedPackages(exposedPackages, "net.minecraft", FaucetVersion.MINECRAFT_VERSION);
+                // TODO: Expose dependencies such as Guava and netty
+            } catch (IOException ex) {
+                throw new RuntimeException("Could not discover application packages: " + ex.getMessage(), ex);
+            }
+            cnf.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, exposedPackages.toString());
         }
         return cnf;
     }
@@ -142,7 +184,6 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         FrameworkFactory factory = buildFrameworkFactory();
         return factory.newFramework(buildFrameworkConfiguration());
     }
-
 
     /**
      * {@inheritDoc}
