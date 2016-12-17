@@ -19,7 +19,7 @@ package org.basinmc.faucet.entity;
 
 import org.basinmc.faucet.CapabilityHolder;
 import org.basinmc.faucet.math.Vector3;
-import org.basinmc.faucet.math.WorldPosition;
+import org.basinmc.faucet.world.WorldObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 /**
  * Base interface for all entities in the game.
  */
-public interface Entity extends CapabilityHolder {
+public interface Entity extends CapabilityHolder, WorldObject<Entity> {
     /**
      * Gets the internal entity ID of the entity. This value should not be used
      * by API methods.
@@ -42,12 +42,6 @@ public interface Entity extends CapabilityHolder {
      */
     @Nullable
     Entity getVehicle();
-
-    /**
-     * Gets the position and world of this entity
-     */
-    @Nonnull
-    WorldPosition getPosition();
 
     /**
      * Gets the current motion values for this entity.

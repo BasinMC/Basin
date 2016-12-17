@@ -18,23 +18,17 @@
 package org.basinmc.faucet.world;
 
 import org.basinmc.faucet.CapabilityHolder;
-import org.basinmc.faucet.math.WorldPosition;
 
 import javax.annotation.Nonnull;
 
 /**
  * Represents a block in the world
  */
-public interface Block extends CapabilityHolder {
+public interface Block extends CapabilityHolder, WorldObject<Block> {
     /**
      * Get the material type associated with this block
      */
     @Nonnull
     BlockType getBlockType();
 
-    /**
-     * Get the block's position in the world.
-     */
-    @Nonnull
-    WorldPosition getPosition();
 }

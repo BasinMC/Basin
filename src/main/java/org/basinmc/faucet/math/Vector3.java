@@ -199,4 +199,15 @@ public class Vector3 implements Cloneable {
                 (this.x == Math.floor(this.x) && this.y == Math.floor(this.y) && this.z == Math.floor(this.z)
                 && !Double.isInfinite(this.x) && !Double.isInfinite(this.y) && !Double.isInfinite(this.z));
     }
+
+    /**
+     * Creates a 2-dimensional vector from this vector by flooring all values then flattening
+     * each.
+     *
+     * @return a new 2-dimensional integer vector
+     */
+    @Nonnull
+    public Vector2I flatten() {
+        return new Vector2I((int) x, (int) z);
+    }
 }
