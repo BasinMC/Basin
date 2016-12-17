@@ -350,7 +350,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public boolean isQueryEnabled() {
-            return SinkServer.this.server.getSettings().getBooleanProperty("enable-query", false);
+            throw new UnsupportedOperationException();
         }
 
         /**
