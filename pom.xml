@@ -35,6 +35,14 @@
 
         <game.version>1.10.2</game.version>
         <mcp.version>snapshot-20160628</mcp.version>
+
+        <guava.version>19.0</guava.version>
+        <log4j.version>2.0-beta9</log4j.version>
+        <commons-lang.version>3.3.2</commons-lang.version>
+        <gson.version>2.2.4</gson.version>
+        <netty.version>4.0.23.Final</netty.version>
+        <findbugs.version>3.0.1</findbugs.version>
+        <osgi.version>6.0.0</osgi.version>
     </properties>
 
     <licenses>
@@ -133,22 +141,22 @@
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
-                <version>2.0-beta9</version>
+                <version>${log4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
-                <version>2.0-beta9</version>
+                <version>${log4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.3.2</version>
+                <version>${commons-lang.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>2.2.4</version>
+                <version>${gson.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.unimi.dsi</groupId>
@@ -158,14 +166,14 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
-                <version>4.0.23.Final</version>
+                <version>${netty.version}</version>
             </dependency>
 
             <!-- Plugin Framework -->
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>osgi.core</artifactId>
-                <version>6.0.0</version>
+                <version>${osgi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.felix</groupId>
@@ -182,14 +190,14 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>19.0</version>
+                <version>${guava.version}</version>
             </dependency>
 
             <!-- Code Quality -->
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
-                <version>3.0.1</version>
+                <version>${findbugs.version}</version>
                 <scope>provided</scope>
             </dependency>
 
