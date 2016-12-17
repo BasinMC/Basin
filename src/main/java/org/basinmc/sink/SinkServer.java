@@ -33,8 +33,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.basinmc.faucet.BasinVersion;
 import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
@@ -66,6 +69,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
             .addOption(Option.builder().longOpt("help").desc("Prints this help message before gracefully shutting the application down.").build())
             .addOption(Option.builder("b").longOpt("bundle-directory").hasArg().desc("Declares the directory to store plugin and library bundles in.").build())
             .addOption(Option.builder("c").longOpt("cache-directory").hasArg().desc("Declares the directory to store framework cache files in.").build())
+            .addOption(Option.builder().longOpt("debug").desc("Increases the log level to include debug messages (this generates a lot of messages and should not be used in production environments).").build())
             .addOption(Option.builder().longOpt("enable-development-features").desc("Enables features which are designed to assist developers with creating plugins.").build())
             .addOption(Option.builder().longOpt("disable-easter-eggs").desc("Disables all easter eggs which have been introduced by the Basin team.").build())
             .addOption(Option.builder().longOpt("disable-gui").desc("Prevents the server GUI to be displayed (this setting is automatically activated in headless environments).").build())
@@ -200,6 +204,19 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
             System.exit(0);
         }
 
+        if (cmd.hasOption("debug")) {
+            logger.info("Enabled debug logging");
+
+            // Note this is a hack since it makes use of log4j internals - May need updating when
+            // the core version is updated
+            LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+            org.apache.logging.log4j.core.config.Configuration cnf = ctx.getConfiguration();
+
+            LoggerConfig config = cnf.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+            config.setLevel(Level.DEBUG);
+            ctx.updateLoggers();
+        }
+
         logger.info("Initializing Minecraft %s", BasinVersion.MINECRAFT_VERSION);
         Bootstrap.register(); // apparently this is how the registries work ... don't question it
 
@@ -265,6 +282,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         try {
             logger.info("Starting plugin framework");
             this.framework.start();
+            logger.debug("Plugin framework has been initialized");
         } catch (BundleException ex) {
             logger.error("Failed to initialize plugin framework: " + ex.getMessage(), ex);
             logger.error("Cannot continue - Server is shutting down");
@@ -273,6 +291,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
 
         logger.info("Starting Minecraft Server");
         this.server.startServerThread();
+        logger.debug("Server thread has been started");
     }
 
     /**
