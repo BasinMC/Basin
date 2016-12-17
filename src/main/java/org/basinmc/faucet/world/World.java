@@ -17,7 +17,13 @@
  */
 package org.basinmc.faucet.world;
 
+import org.basinmc.faucet.math.Vector3;
+
+import java.util.Random;
+import java.util.Set;
+
 import javax.annotation.Nonnull;
+import javax.swing.text.html.parser.Entity;
 
 public interface World {
 
@@ -29,4 +35,27 @@ public interface World {
      */
     @Nonnull
     WorldProperties getProperties();
+
+    /**
+     * Gets a set of entities in this world, even if they're dead.
+     */
+    @Nonnull
+    Set<Entity> getEntities();
+
+    /**
+     * Searches the given spherical area for entities.
+     * @param location the center of the search sphere
+     * @param radius the radius of the search sphere
+     * @return a set of entities within the sphere
+     */
+    @Nonnull
+    Set<Entity> getEntitiesAt(Vector3 location, double radius);
+
+    /**
+     * Gets the Random object used by the internal Minecraft world.
+     */
+    @Nonnull
+    Random getWorldRandom();
+
+
 }
