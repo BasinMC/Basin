@@ -17,13 +17,13 @@
  */
 package org.basinmc.faucet.world;
 
+import org.basinmc.faucet.entity.Entity;
 import org.basinmc.faucet.math.Vector3;
 
 import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.swing.text.html.parser.Entity;
 
 public interface World {
 
