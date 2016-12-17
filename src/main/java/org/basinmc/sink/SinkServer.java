@@ -46,7 +46,6 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
-import org.reflections.Reflections;
 
 import java.awt.*;
 import java.io.File;
@@ -59,7 +58,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
 import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -101,7 +100,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         });
     }
 
-    private static void buildExposedPackages(@Nonnull StringBuilder builder, @Nonnull String topLevelPackageName, @Nonnull String v) throws IOException {
+    private static void buildExposedPackages(@Nonnull StringBuilder builder, @Nonnull String topLevelPackageName, @Nonnull String v, @Nonnull Predicate<String> filter) throws IOException {
         // while OSGi does specify Semantic Version as its versioning scheme of choice, it does not
         // seem to understand dashes as part of these versions and thus we will replace any
         // occurrences of dashes with dots in order to comply with its specification
@@ -118,7 +117,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         ClassPath.from(SinkServer.class.getClassLoader()).getTopLevelClassesRecursive(topLevelPackageName).stream()
                 .map(ClassPath.ClassInfo::getPackageName)
                 .distinct()
-                .filter((p) -> !p.contains("internal"))
+                .filter(filter)
                 .forEach((p) -> {
                     if (builder.length() != 0) {
                         builder.append(',');
@@ -127,6 +126,10 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
                     builder.append(p).append(";").append(version);
                     logger.debug("Exposing package: %s", p + "; version=" + version);
                 });
+    }
+
+    private static void buildExposedPackages(@Nonnull StringBuilder builder, @Nonnull String topLevelPackageName, @Nonnull String v) throws IOException {
+        buildExposedPackages(builder, topLevelPackageName, v, (p) -> !p.contains("internal"));
     }
 
     /**
@@ -142,9 +145,26 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
             final StringBuilder exposedPackages = new StringBuilder();
             try {
                 buildExposedPackages(exposedPackages, "org.basinmc.faucet", FaucetVersion.API_VERSION);
-                // TODO: Expose Sink
+                buildExposedPackages(exposedPackages, "org.basinmc.sink", SinkVersion.IMPLEMENTATION_VERSION);
                 buildExposedPackages(exposedPackages, "net.minecraft", FaucetVersion.MINECRAFT_VERSION);
-                // TODO: Expose dependencies such as Guava and netty
+
+                // FIXME: This part is more than messy and does not actually respect internal
+                // packages as declared by the respective libraries
+                // as such it should be considered to move the plugin framework to a bootstrap
+                // library (e.g. flange) which will provide an appropriate runtime and proper
+                // integration with the Basin specific OSGi extensions in the future
+                // this would also allow us to restart the entire server on demand without requiring
+                // an external script to do so
+                // in addition such an interface would open up an entire new ecosystem to authors
+                // of third party integrations since they could easily provide their own console
+                // implementations and the like without having to fork Basin itself
+                buildExposedPackages(exposedPackages, "com.google.common", SinkVersion.GUAVA_VERSION);
+                buildExposedPackages(exposedPackages, "org.apache.logging.log4j", SinkVersion.LOG4J_VERSION, (p) -> !p.contains("core"));
+                buildExposedPackages(exposedPackages, "org.apache.commons.lang3", SinkVersion.COMMONS_LANG_VERSION);
+                buildExposedPackages(exposedPackages, "com.google.gson", SinkVersion.GSON_VERSION);
+                buildExposedPackages(exposedPackages, "io.netty", SinkVersion.NETTY_VERSION);
+                buildExposedPackages(exposedPackages, "javax.annotation", SinkVersion.FINDBUGS_VERSION);
+                buildExposedPackages(exposedPackages, "org.osgi", SinkVersion.OSGI_VERSION);
             } catch (IOException ex) {
                 throw new RuntimeException("Could not discover application packages: " + ex.getMessage(), ex);
             }
