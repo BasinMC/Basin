@@ -83,5 +83,19 @@ Think twice before writing and submitting a pull request! Make sure your changes
 vanilla functionality. Also verify their documentation and code style.
 
 Requests that do not comply to above's guidelines will not be accepted and closed if they fall
-victim to in-activity (you will be asked to fix issues and given a few weeks time to do so before
-your request is considered in-active and closed)!
+victim to inactivity (you will be asked to fix issues and given a few weeks time to do so before
+your request is considered inactive and closed)!
+
+Philosophy
+----------
+
+Breaking vanilla functionality is not ideal, but sometimes necessary in order to achieve a particular
+goal, most often a performance patch. If your changes break vanilla functionality, while we would prefer
+that it didn't, please mark it as such and extensively document exactly what it changes, no matter how
+trivial. 
+
+The Faucet API is in an extremely volatile state and, as such, we expect anyone using it to remain
+up-to-date. We will refrain from backporting changes to outdated versions except in very extreme
+situations. This being said, we would **prefer** to not break plugin-facing API without good reason.
+Between update cycles, effort must be kept to keep plugins functional. If you have a change that would
+break plugin functionality, mark it as such and it will be reviewed during the next update cycle.
