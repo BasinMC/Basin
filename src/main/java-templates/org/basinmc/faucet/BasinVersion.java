@@ -21,8 +21,8 @@ package org.basinmc.faucet;
  * Stores compile-time information about the server.
  */
 // TODO Find a good way of including Sink versioning.
-public final class Basin {
-    private Basin() { }
+public final class BasinVersion {
+    private BasinVersion() { }
 
     public static final String MINECRAFT_VERSION = "${game.version}";
     public static final String API_VERSION = "${describe}";
