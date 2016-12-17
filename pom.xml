@@ -29,7 +29,7 @@
 
     <!-- Artifact Information -->
     <artifactId>faucet</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <properties>
         <describe/>
@@ -109,10 +109,16 @@
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
 
-            <!-- Jar Creation -->
+            <!-- Bundle Creation -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.basinmc.faucet.*</Export-Package>
+                    </instructions>
+                </configuration>
             </plugin>
 
             <!-- Attach Sources -->
