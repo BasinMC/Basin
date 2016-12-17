@@ -38,7 +38,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.basinmc.faucet.BasinVersion;
+import org.basinmc.faucet.FaucetVersion;
 import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
 import org.osgi.framework.BundleException;
@@ -189,12 +189,12 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         // since this output is intended to be used by bash scripts or other third party software
         // in order to detect compatibility, we'll give this argument the highest possible priority
         if (cmd.hasOption("version")) {
-            System.out.println(BasinVersion.MINECRAFT_VERSION);
-            System.out.println(BasinVersion.API_VERSION);
+            System.out.println(FaucetVersion.MINECRAFT_VERSION);
+            System.out.println(FaucetVersion.API_VERSION);
             return;
         }
 
-        System.out.println("Basin Sink for Minecraft " + BasinVersion.MINECRAFT_VERSION + " (implementing Faucet " + BasinVersion.API_VERSION + ")");
+        System.out.println("Basin Sink for Minecraft " + FaucetVersion.MINECRAFT_VERSION + " (implementing Faucet " + FaucetVersion.API_VERSION + "+" + FaucetVersion.API_VERSION_EXTRA + ")");
         System.out.println("Provided under the terms of the Apache License, Version 2.0");
 
         // print the help message before starting the server since we won't need its capabilities
@@ -217,7 +217,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
             ctx.updateLoggers();
         }
 
-        logger.info("Initializing Minecraft %s", BasinVersion.MINECRAFT_VERSION);
+        logger.info("Initializing Minecraft %s", FaucetVersion.MINECRAFT_VERSION);
         Bootstrap.register(); // apparently this is how the registries work ... don't question it
 
         // log some environment information
