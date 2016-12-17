@@ -133,6 +133,7 @@
 
             <!-- Minecraft -->
             <!-- Note: Some newer dependency versions might be included later -->
+            <!-- TODO: Create bundle for dependency -->
             <dependency>
                 <groupId>com.mojang</groupId>
                 <artifactId>authlib</artifactId>
@@ -158,11 +159,13 @@
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
             </dependency>
+            <!-- TODO: Create bundle for dependency -->
             <dependency>
                 <groupId>it.unimi.dsi</groupId>
                 <artifactId>fastutil</artifactId>
                 <version>7.0.12_mojang</version>
             </dependency>
+            <!-- TODO: Switch to respective netty modules to retain OSGi metadata -->
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
@@ -175,6 +178,7 @@
                 <artifactId>osgi.core</artifactId>
                 <version>${osgi.version}</version>
             </dependency>
+            <!-- FIXME: This dependency is no longer needed and should be removed -->
             <dependency>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>org.apache.felix.framework</artifactId>
@@ -278,6 +282,14 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+
+                <!-- Bundle Creation -->
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <extensions>true</extensions>
                 </plugin>
 
                 <!-- Jar Creation -->
