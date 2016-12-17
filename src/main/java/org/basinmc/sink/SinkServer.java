@@ -128,8 +128,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     public void shutdown(@Nullable String reason) {
         // TODO Fire shutdown event here, once I add it. :)
         server.logInfo("Server Shutdown: " + reason);
-        server.getPlayerList().getPlayerList().stream()
-                .forEach(player -> player.connection.kickPlayerFromServer(reason));
+        server.getPlayerList().getPlayerList().forEach(player -> player.connection.kickPlayerFromServer(reason));
         server.stopServer();
     }
 
