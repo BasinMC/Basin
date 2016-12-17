@@ -105,6 +105,18 @@
     <build>
         <finalName>Sink-${project.version}</finalName>
 
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resource</directory>
+                <targetPath>.</targetPath>
+                <filtering>true</filtering>
+
+                <includes>
+                    <include>sink-version.properties</include>
+                </includes>
+            </resource>
+        </resources>
+
         <plugins>
             <!-- Java Compiler -->
             <plugin>
