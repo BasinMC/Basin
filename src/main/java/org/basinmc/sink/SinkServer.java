@@ -243,7 +243,9 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
      * {@link net.minecraft.server.MinecraftServer#main(String[])} to maintain compatibility.
      *
      * @param arguments an array of command line arguments.
+     * @deprecated This method is temporarily retained to aid in development.
      */
+    @Deprecated
     public static void main(@Nonnull String[] arguments) {
         try {
             main(new DefaultParser().parse(OPTIONS, arguments));
@@ -258,7 +260,10 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     /**
      * Provides a simplified internal entry point to decouple command line parsing from the actual
      * main method implementation.
+     *
+     * @deprecated This method is temporarily retained to aid in development.
      */
+    @Deprecated
     private static void main(@Nonnull CommandLine cmd) {
         // since this output is intended to be used by bash scripts or other third party software
         // in order to detect compatibility, we'll give this argument the highest possible priority
