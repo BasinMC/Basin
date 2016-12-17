@@ -100,6 +100,15 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         });
     }
 
+    /**
+     * Extends a passed list of exposed packages with all packages within a top-level package.
+     *
+     * @param builder             a string builder which may contain previous declarations.
+     * @param topLevelPackageName a top level package name to limit the search to.
+     * @param v                   a version number.
+     * @param filter              a filter predicate.
+     * @throws IOException when accessing one or more Class-Path resources fails.
+     */
     private static void buildExposedPackages(@Nonnull StringBuilder builder, @Nonnull String topLevelPackageName, @Nonnull String v, @Nonnull Predicate<String> filter) throws IOException {
         // while OSGi does specify Semantic Version as its versioning scheme of choice, it does not
         // seem to understand dashes as part of these versions and thus we will replace any
@@ -128,6 +137,10 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
                 });
     }
 
+    /**
+     * @see #buildExposedPackages(StringBuilder, String, String, Predicate) for a full description
+     * of parameters and their use.
+     */
     private static void buildExposedPackages(@Nonnull StringBuilder builder, @Nonnull String topLevelPackageName, @Nonnull String v) throws IOException {
         buildExposedPackages(builder, topLevelPackageName, v, (p) -> !p.contains("internal"));
     }
