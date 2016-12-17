@@ -29,6 +29,10 @@
         <artifactId>faucet</artifactId>
         <packaging>jar</packaging>
 
+        <properties>
+                <describe />
+        </properties>
+
         <!-- Artifact Metadata -->
         <name>Faucet</name>
         <description>A Minecraft plugin API.</description>
@@ -84,6 +88,18 @@
 
         <!-- Build Settings -->
         <build>
+                <resources>
+                        <resource>
+                                <directory>${project.basedir}/src/main/resources</directory>
+                                <targetPath>.</targetPath>
+                                <filtering>true</filtering>
+
+                                <includes>
+                                        <include>faucet-version.properties</include>
+                                </includes>
+                        </resource>
+                </resources>
+
                 <plugins>
                         <!-- Java Compiler -->
                         <plugin>
@@ -119,24 +135,6 @@
                                                 <goals>
                                                         <goal>describe</goal>
                                                 </goals>
-                                        </execution>
-                                </executions>
-                        </plugin>
-                        <!-- Compile-Time Constant Injection -->
-                        <plugin>
-                                <groupId>org.codehaus.mojo</groupId>
-                                <artifactId>templating-maven-plugin</artifactId>
-                                <executions>
-                                        <execution>
-                                                <id>filter-src</id>
-                                                <goals>
-                                                        <goal>filter-sources</goal>
-                                                </goals>
-                                                <configuration>
-                                                        <sourceDirectory>${basedir}/src/main/java-templates</sourceDirectory>
-                                                        <outputDirectory>${project.build.directory}/generated-sources/java-templates
-                                                        </outputDirectory>
-                                                </configuration>
                                         </execution>
                                 </executions>
                         </plugin>
