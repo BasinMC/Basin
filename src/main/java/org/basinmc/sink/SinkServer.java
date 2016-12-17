@@ -16,13 +16,23 @@
  */
 package org.basinmc.sink;
 
+import com.google.common.collect.Iterators;
+
 import net.minecraft.server.dedicated.DedicatedServer;
 
+import org.apache.felix.framework.util.FelixConstants;
 import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
+import org.osgi.framework.Constants;
+import org.osgi.framework.launch.Framework;
+import org.osgi.framework.launch.FrameworkFactory;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.ServiceLoader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,9 +43,11 @@ import javax.annotation.Nullable;
 public class SinkServer implements Server, Handled<DedicatedServer> {
     private final DedicatedServer server;
     private final Server.Configuration configuration = new Configuration();
+    private final Framework framework;
 
-    public SinkServer(DedicatedServer server) {
+    public SinkServer(@Nonnull DedicatedServer server) throws ClassNotFoundException, IllegalStateException {
         this.server = server;
+        this.framework = buildFrameworkInstance();
 
         Runtime.getRuntime().addShutdownHook(new Thread("Sink Shutdown Thread") {
             @Override
@@ -44,6 +56,53 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
             }
         });
     }
+
+    /**
+     * Builds a specialized framework configuration.
+     */
+    @Nonnull
+    private static Map<String, String> buildFrameworkConfiguration() {
+        Map<String, String> cnf = new HashMap<>();
+        {
+            cnf.put(Constants.FRAMEWORK_STORAGE, "cache");
+            cnf.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
+            // TODO: Host Bundle
+        }
+        return cnf;
+    }
+
+    /**
+     * Locates and instantiates an implementation of {@link FrameworkFactory} using the
+     * {@link ServiceLoader} system.
+     *
+     * @throws ClassNotFoundException when no implementation is available within the Class-Path.
+     * @throws IllegalStateException  when more than one implementation is available within the
+     *                                Class-Path.
+     */
+    @Nonnull
+    private static FrameworkFactory buildFrameworkFactory() throws ClassNotFoundException, IllegalStateException {
+        try {
+            return Iterators.getOnlyElement(ServiceLoader.load(FrameworkFactory.class).iterator());
+        } catch (NoSuchElementException ex) {
+            throw new ClassNotFoundException("No valid implementation of org.osgi.framework.launch.FrameworkFactory located within Class-Path");
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalStateException("More than one implementation of org.osgi.framework.launch.FrameworkFactory located within Class-Path");
+        }
+    }
+
+    /**
+     * Builds a new framework instance using a specialized configuration for Basin.
+     *
+     * @throws ClassNotFoundException when no implementation is available within the Class-Path.
+     * @throws IllegalStateException  when more than one implementation is available within the
+     *                                Class-Path.
+     */
+    @Nonnull
+    private static Framework buildFrameworkInstance() throws ClassNotFoundException, IllegalStateException {
+        FrameworkFactory factory = buildFrameworkFactory();
+        return factory.newFramework(buildFrameworkConfiguration());
+    }
+
 
     /**
      * {@inheritDoc}
@@ -70,7 +129,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         // TODO Fire shutdown event here, once I add it. :)
         server.logInfo("Server Shutdown: " + reason);
         server.getPlayerList().getPlayerList().stream()
-            .forEach(player -> player.connection.kickPlayerFromServer(reason));
+                .forEach(player -> player.connection.kickPlayerFromServer(reason));
         server.stopServer();
     }
 
@@ -98,6 +157,15 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     @Override
     public int getLifeTime() {
         return this.server.getTickCounter();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public Framework getPluginFramework() {
+        return this.framework;
     }
 
     /**
