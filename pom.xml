@@ -44,10 +44,9 @@
         </dependency>
 
         <!-- Minecraft -->
-        <!-- TODO: Create bundle for dependency -->
         <dependency>
-            <groupId>com.mojang</groupId>
-            <artifactId>authlib</artifactId>
+            <groupId>org.basinmc.bundle</groupId>
+            <artifactId>com.mojang.authlib</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -66,8 +65,8 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>it.unimi.dsi</groupId>
-            <artifactId>fastutil</artifactId>
+            <groupId>org.basinmc.bundle</groupId>
+            <artifactId>it.unimi.dsi.fastutil</artifactId>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
