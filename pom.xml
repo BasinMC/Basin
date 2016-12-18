@@ -69,8 +69,8 @@
             <artifactId>it.unimi.dsi.fastutil</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
+            <groupId>org.basinmc.bundles</groupId>
+            <artifactId>io.netty.netty-all</artifactId>
         </dependency>
 
         <!-- Utility -->
