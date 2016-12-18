@@ -45,7 +45,7 @@
 
         <!-- Minecraft -->
         <dependency>
-            <groupId>org.basinmc.bundle</groupId>
+            <groupId>org.basinmc.bundles</groupId>
             <artifactId>com.mojang.authlib</artifactId>
         </dependency>
         <dependency>
@@ -65,7 +65,7 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.basinmc.bundle</groupId>
+            <groupId>org.basinmc.bundles</groupId>
             <artifactId>it.unimi.dsi.fastutil</artifactId>
         </dependency>
         <dependency>
