@@ -16,6 +16,7 @@
  */
 package org.basinmc.faucet;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.launch.Framework;
 
 import java.nio.file.Path;
@@ -70,12 +71,6 @@ public interface Server {
     int getLifeTime();
 
     /**
-     * Retrieves the backing plugin framework instance as provided by the OSGi specification.
-     */
-    @Nonnull
-    Framework getPluginFramework();
-
-    /**
      * Retrieves the currently active server version (as in game version such as 1.9.4 or 1.10).
      */
     @Nonnull
@@ -94,6 +89,7 @@ public interface Server {
      * optionally broadcast to players (as part of the kick message). Why is this method deprecated
      * from the beginning, you ask? Because it should theoretically use a chat component API that I
      * haven't designed yet. TODO.
+     *
      * @param reason The reason the server is shutting down (if null, "Server Shutdown" is used).
      */
     @Deprecated
