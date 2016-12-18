@@ -73,6 +73,12 @@
             <artifactId>io.netty.netty-all</artifactId>
         </dependency>
 
+        <!-- Plugin Framework -->
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.core</artifactId>
+        </dependency>
+
         <!-- Utility -->
         <dependency>
             <groupId>commons-cli</groupId>
