@@ -55,18 +55,14 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
+            <groupId>org.basinmc.bundles</groupId>
+            <artifactId>io.netty.netty-all</artifactId>
         </dependency>
 
         <!-- Plugin Framework -->
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
         </dependency>
 
         <!-- Utility -->
