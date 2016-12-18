@@ -163,10 +163,9 @@
                 <artifactId>it.unimi.dsi.fastutil</artifactId>
                 <version>7.0.12_mojang</version>
             </dependency>
-            <!-- TODO: Switch to respective netty modules to retain OSGi metadata -->
             <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
+                <groupId>org.basinmc.bundles</groupId>
+                <artifactId>io.netty.netty-all</artifactId>
                 <version>${netty.version}</version>
             </dependency>
 
