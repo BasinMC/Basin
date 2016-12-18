@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.basinmc.faucet.FaucetVersion;
 import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
@@ -68,29 +69,15 @@ import javax.annotation.Nullable;
  */
 public class SinkServer implements Server, Handled<DedicatedServer> {
     private static final Logger logger = LogManager.getFormatterLogger(SinkServer.class);
-    private static final Options OPTIONS = new Options()
-            .addOption(Option.builder().longOpt("help").desc("Prints this help message before gracefully shutting the application down.").build())
-            .addOption(Option.builder("b").longOpt("bundle-directory").hasArg().desc("Declares the directory to store plugin and library bundles in.").build())
-            .addOption(Option.builder("c").longOpt("cache-directory").hasArg().desc("Declares the directory to store framework cache files in.").build())
-            .addOption(Option.builder().longOpt("debug").desc("Increases the log level to include debug messages (this generates a lot of messages and should not be used in production environments).").build())
-            .addOption(Option.builder().longOpt("enable-development-features").desc("Enables features which are designed to assist developers with creating plugins.").build())
-            .addOption(Option.builder().longOpt("disable-easter-eggs").desc("Disables all easter eggs which have been introduced by the Basin team.").build())
-            .addOption(Option.builder().longOpt("disable-gui").desc("Prevents the server GUI to be displayed (this setting is automatically activated in headless environments).").build())
-            .addOption(Option.builder().longOpt("disable-performance-optimizations").desc("Disables all Sink performance optimizations.").build())
-            .addOption(Option.builder().longOpt("server-port").hasArg().desc("Declares the port this server should listen on (defaults to 25565, may be overridden in server.properties)").build())
-            .addOption(Option.builder().longOpt("version").desc("Prints the application and API version before gracefully shutting the application down.").build())
-            .addOption(Option.builder("w").longOpt("world-directory").hasArg().desc("Declares the directory to store the worlds of this server in (default: worlds).").build());
 
-    // this is pretty ugly but it'll contribute to keeping our patches a little smaller
-    private static SinkServer instance;
-
+    private final BundleContext ctx;
     private final DedicatedServer server;
     private final Server.Configuration configuration = new Configuration();
-    private final Framework framework;
 
-    private SinkServer(@Nonnull DedicatedServer server) throws ClassNotFoundException, IllegalStateException {
+    // TODO: Switch out against a service
+    SinkServer(@Nonnull BundleContext ctx, @Nonnull DedicatedServer server) {
+        this.ctx = ctx;
         this.server = server;
-        this.framework = buildFrameworkInstance();
 
         Runtime.getRuntime().addShutdownHook(new Thread("Sink Shutdown Thread") {
             @Override
@@ -98,124 +85,6 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
                 SinkServer.this.shutdown("Server Shutdown");
             }
         });
-    }
-
-    /**
-     * Extends a passed list of exposed packages with all packages within a top-level package.
-     *
-     * @param builder             a string builder which may contain previous declarations.
-     * @param topLevelPackageName a top level package name to limit the search to.
-     * @param v                   a version number.
-     * @param filter              a filter predicate.
-     * @throws IOException when accessing one or more Class-Path resources fails.
-     */
-    private static void buildExposedPackages(@Nonnull StringBuilder builder, @Nonnull String topLevelPackageName, @Nonnull String v, @Nonnull Predicate<String> filter) throws IOException {
-        // while OSGi does specify Semantic Version as its versioning scheme of choice, it does not
-        // seem to understand dashes as part of these versions and thus we will replace any
-        // occurrences of dashes with dots in order to comply with its specification
-        // this is more of a hack but should not actually have any effects on the behavior of the
-        // framework
-        final String version;
-
-        if (v.contains("-")) {
-            version = v.replace('-', '.');
-        } else {
-            version = v;
-        }
-
-        ClassPath.from(SinkServer.class.getClassLoader()).getTopLevelClassesRecursive(topLevelPackageName).stream()
-                .map(ClassPath.ClassInfo::getPackageName)
-                .distinct()
-                .filter(filter)
-                .forEach((p) -> {
-                    if (builder.length() != 0) {
-                        builder.append(',');
-                    }
-
-                    builder.append(p).append(";").append(version);
-                    logger.debug("Exposing package: %s", p + "; version=" + version);
-                });
-    }
-
-    /**
-     * @see #buildExposedPackages(StringBuilder, String, String, Predicate) for a full description
-     * of parameters and their use.
-     */
-    private static void buildExposedPackages(@Nonnull StringBuilder builder, @Nonnull String topLevelPackageName, @Nonnull String v) throws IOException {
-        buildExposedPackages(builder, topLevelPackageName, v, (p) -> !p.contains("internal"));
-    }
-
-    /**
-     * Builds a specialized framework configuration.
-     */
-    @Nonnull
-    private static Map<String, String> buildFrameworkConfiguration() {
-        Map<String, String> cnf = new HashMap<>();
-        {
-            cnf.put(Constants.FRAMEWORK_STORAGE, "cache");
-            cnf.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
-
-            final StringBuilder exposedPackages = new StringBuilder();
-            try {
-                buildExposedPackages(exposedPackages, "org.basinmc.faucet", FaucetVersion.API_VERSION);
-                buildExposedPackages(exposedPackages, "org.basinmc.sink", SinkVersion.IMPLEMENTATION_VERSION);
-                buildExposedPackages(exposedPackages, "net.minecraft", FaucetVersion.MINECRAFT_VERSION);
-
-                // FIXME: This part is more than messy and does not actually respect internal
-                // packages as declared by the respective libraries
-                // as such it should be considered to move the plugin framework to a bootstrap
-                // library (e.g. flange) which will provide an appropriate runtime and proper
-                // integration with the Basin specific OSGi extensions in the future
-                // this would also allow us to restart the entire server on demand without requiring
-                // an external script to do so
-                // in addition such an interface would open up an entire new ecosystem to authors
-                // of third party integrations since they could easily provide their own console
-                // implementations and the like without having to fork Basin itself
-                buildExposedPackages(exposedPackages, "com.google.common", SinkVersion.GUAVA_VERSION);
-                buildExposedPackages(exposedPackages, "org.apache.logging.log4j", SinkVersion.LOG4J_VERSION, (p) -> !p.contains("core"));
-                buildExposedPackages(exposedPackages, "org.apache.commons.lang3", SinkVersion.COMMONS_LANG_VERSION);
-                buildExposedPackages(exposedPackages, "com.google.gson", SinkVersion.GSON_VERSION);
-                buildExposedPackages(exposedPackages, "io.netty", SinkVersion.NETTY_VERSION);
-                buildExposedPackages(exposedPackages, "javax.annotation", SinkVersion.FINDBUGS_VERSION);
-                buildExposedPackages(exposedPackages, "org.osgi", SinkVersion.OSGI_VERSION);
-            } catch (IOException ex) {
-                throw new RuntimeException("Could not discover application packages: " + ex.getMessage(), ex);
-            }
-            cnf.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, exposedPackages.toString());
-        }
-        return cnf;
-    }
-
-    /**
-     * Locates and instantiates an implementation of {@link FrameworkFactory} using the
-     * {@link ServiceLoader} system.
-     *
-     * @throws ClassNotFoundException when no implementation is available within the Class-Path.
-     * @throws IllegalStateException  when more than one implementation is available within the
-     *                                Class-Path.
-     */
-    @Nonnull
-    private static FrameworkFactory buildFrameworkFactory() throws ClassNotFoundException, IllegalStateException {
-        try {
-            return Iterators.getOnlyElement(ServiceLoader.load(FrameworkFactory.class).iterator());
-        } catch (NoSuchElementException ex) {
-            throw new ClassNotFoundException("No valid implementation of org.osgi.framework.launch.FrameworkFactory located within Class-Path");
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalStateException("More than one implementation of org.osgi.framework.launch.FrameworkFactory located within Class-Path");
-        }
-    }
-
-    /**
-     * Builds a new framework instance using a specialized configuration for Basin.
-     *
-     * @throws ClassNotFoundException when no implementation is available within the Class-Path.
-     * @throws IllegalStateException  when more than one implementation is available within the
-     *                                Class-Path.
-     */
-    @Nonnull
-    private static Framework buildFrameworkInstance() throws ClassNotFoundException, IllegalStateException {
-        FrameworkFactory factory = buildFrameworkFactory();
-        return factory.newFramework(buildFrameworkConfiguration());
     }
 
     /**
@@ -236,114 +105,6 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     }
 
     /**
-     * Provides a replacement entry point for the server in order to gain complete control over the
-     * command line arguments passed to Sink.
-     *
-     * This method is to be kept in sync with
-     * {@link net.minecraft.server.MinecraftServer#main(String[])} to maintain compatibility.
-     *
-     * @param arguments an array of command line arguments.
-     * @deprecated This method is temporarily retained to aid in development.
-     */
-    @Deprecated
-    public static void main(@Nonnull String[] arguments) {
-        try {
-            main(new DefaultParser().parse(OPTIONS, arguments));
-        } catch (ParseException ex) {
-            System.err.println("Invalid Input: " + ex.getMessage());
-            System.err.println();
-            printHelp();
-            System.exit(-1);
-        }
-    }
-
-    /**
-     * Provides a simplified internal entry point to decouple command line parsing from the actual
-     * main method implementation.
-     *
-     * @deprecated This method is temporarily retained to aid in development.
-     */
-    @Deprecated
-    private static void main(@Nonnull CommandLine cmd) {
-        // since this output is intended to be used by bash scripts or other third party software
-        // in order to detect compatibility, we'll give this argument the highest possible priority
-        if (cmd.hasOption("version")) {
-            System.out.println(FaucetVersion.MINECRAFT_VERSION);
-            System.out.println(FaucetVersion.API_VERSION);
-            return;
-        }
-
-        System.out.println("Basin Sink for Minecraft " + FaucetVersion.MINECRAFT_VERSION + " (implementing Faucet " + FaucetVersion.API_VERSION + "+" + FaucetVersion.API_VERSION_EXTRA + ")");
-        System.out.println("Provided under the terms of the Apache License, Version 2.0");
-
-        // print the help message before starting the server since we won't need its capabilities
-        // in order to notify users of our very own functionality
-        if (cmd.hasOption("help")) {
-            printHelp();
-            System.exit(0);
-        }
-
-        if (cmd.hasOption("debug")) {
-            logger.info("Enabled debug logging");
-
-            // Note this is a hack since it makes use of log4j internals - May need updating when
-            // the core version is updated
-            LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-            org.apache.logging.log4j.core.config.Configuration cnf = ctx.getConfiguration();
-
-            LoggerConfig config = cnf.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-            config.setLevel(Level.DEBUG);
-            ctx.updateLoggers();
-        }
-
-        logger.info("Initializing Minecraft %s", FaucetVersion.MINECRAFT_VERSION);
-        Bootstrap.register(); // apparently this is how the registries work ... don't question it
-
-        // log some environment information
-        logger.info("Running on Java v%s supplied by %s", System.getProperty("java.version", "Unknown"), System.getProperty("java.vendor"));
-
-        if (cmd.hasOption("disable-gui") || GraphicsEnvironment.isHeadless()) {
-            logger.info("Server GUI has been disabled or is unavailable in this environment");
-        }
-
-        // TODO: We probably want to replace some of these implementations in order to allow plugins
-        // to properly replace or alter their behavior
-        YggdrasilAuthenticationService var15 = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
-        MinecraftSessionService var16 = var15.createMinecraftSessionService();
-        GameProfileRepository var17 = var15.createProfileRepository();
-        PlayerProfileCache var18 = new PlayerProfileCache(var17, new File(".", "usercache.json"));
-
-        DedicatedServer server = new DedicatedServer(new File("."), DataFixesManager.createFixer(), var15, var16, var17, var18);
-        server.setFolderName(cmd.hasOption("world-directory") ? "world-directory" : "world");
-
-        if (cmd.hasOption("server-port")) {
-            server.setServerPort(Integer.parseUnsignedInt(cmd.getOptionValue("server-port")));
-        }
-
-        // TODO: Bonus chests?
-
-        if (!cmd.hasOption("disable-gui") && !GraphicsEnvironment.isHeadless()) {
-            server.setGuiEnabled();
-        } else {
-            logger.info("Server GUI has been disabled or is not available within the current environment");
-        }
-
-        try {
-            instance = new SinkServer(server);
-            instance.start();
-        } catch (ClassNotFoundException ex) {
-            throw new RuntimeException("Invalid Class-Path: " + ex.getMessage(), ex);
-        }
-    }
-
-    /**
-     * Prints the command line argument help to the standard program output.
-     */
-    private static void printHelp() {
-        new HelpFormatter().printHelp("java -jar Sink.jar", OPTIONS, true);
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -357,17 +118,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     /**
      * Handles the startup phase of the server.
      */
-    private void start() {
-        try {
-            logger.info("Starting plugin framework");
-            this.framework.start();
-            logger.debug("Plugin framework has been initialized");
-        } catch (BundleException ex) {
-            logger.error("Failed to initialize plugin framework: " + ex.getMessage(), ex);
-            logger.error("Cannot continue - Server is shutting down");
-            System.exit(-1);
-        }
-
+    void start() {
         logger.info("Starting Minecraft Server");
         this.server.startServerThread();
         logger.debug("Server thread has been started");
@@ -398,15 +149,6 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     @Override
     public int getLifeTime() {
         return this.server.getTickCounter();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Nonnull
-    @Override
-    public Framework getPluginFramework() {
-        return this.framework;
     }
 
     /**
