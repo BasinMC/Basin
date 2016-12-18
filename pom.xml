@@ -137,7 +137,7 @@
 
                 <configuration>
                     <instructions>
-                        <Export-Package>org.basinmc.sink.*;</Export-Package>
+                        <Export-Package>org.basinmc.sink.*; net.minecraft.*, version=${game.version}</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
