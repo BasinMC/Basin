@@ -38,7 +38,7 @@ developers. Make sure to include a detailed description of your problem when ask
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for information on working on Beacon and submitting patches. You can also join
+See [CONTRIBUTING.md](CONTRIBUTING.md) for information on working on Basin and submitting patches. You can also join
 the [project's chat room](#contact) to discuss future improvements or to get your custom implementation listed.
 
 ## Contact
