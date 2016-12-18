@@ -89,20 +89,25 @@
 
     <distributionManagement>
         <repository>
-            <id>basinmc</id>
-            <name>BasinMC Stable</name>
+            <id>basin</id>
+            <name>Basin Releases</name>
             <url>https://www.basinmc.org/nexus/repository/maven-releases/</url>
         </repository>
 
         <snapshotRepository>
-            <id>basinmc</id>
-            <name>BasinMC Snapshot</name>
+            <id>basin</id>
+            <name>Basin Snapshots</name>
             <url>https://www.basinmc.org/nexus/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
     <!-- Dependencies -->
     <repositories>
+        <repository>
+            <id>basin</id>
+            <name>Basin</name>
+            <url>https://www.basinmc.org/nexus/repository/maven-public/</url>
+        </repository>
         <repository>
             <id>minecraft</id>
             <name>Minecraft</name>
@@ -114,7 +119,7 @@
         <pluginRepository>
             <id>basinmc</id>
             <name>BasinMC Public</name>
-            <url>https://www.basinmc.org/nexus/repository/public/</url>
+            <url>https://www.basinmc.org/nexus/repository/maven-public/</url>
 
             <snapshots>
                 <enabled>true</enabled>
