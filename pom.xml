@@ -143,7 +143,6 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.basinmc.sink.SinkActivator</Bundle-Activator>
-                        <Export-Package>org.basinmc.sink.*; net.minecraft.*, version=${game.version}</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
