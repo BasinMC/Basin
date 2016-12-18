@@ -133,10 +133,9 @@
 
             <!-- Minecraft -->
             <!-- Note: Some newer dependency versions might be included later -->
-            <!-- TODO: Create bundle for dependency -->
             <dependency>
-                <groupId>com.mojang</groupId>
-                <artifactId>authlib</artifactId>
+                <groupId>org.basinmc.bundle</groupId>
+                <artifactId>com.mojang.authlib</artifactId>
                 <version>1.5.22</version>
             </dependency>
             <dependency>
@@ -159,10 +158,9 @@
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
             </dependency>
-            <!-- TODO: Create bundle for dependency -->
             <dependency>
-                <groupId>it.unimi.dsi</groupId>
-                <artifactId>fastutil</artifactId>
+                <groupId>org.basinmc.bundle</groupId>
+                <artifactId>it.unimi.dsi.fastutil</artifactId>
                 <version>7.0.12_mojang</version>
             </dependency>
             <!-- TODO: Switch to respective netty modules to retain OSGi metadata -->
