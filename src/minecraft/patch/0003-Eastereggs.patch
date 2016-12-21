@@ -1,11 +1,11 @@
-From 918b9d58c40d5bf18d3e880b1c7b4c99bd6ab144 Mon Sep 17 00:00:00 2001
+From 3e52abb10baba6dee6114be77de575b46327da15 Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Fri, 3 Jun 2016 11:33:41 +0200
 Subject: [PATCH] Eastereggs!
 
 
 diff --git a/net/minecraft/entity/player/EntityPlayerMP.java b/net/minecraft/entity/player/EntityPlayerMP.java
-index db7a554..7ad60b3 100644
+index db7a554..5649878 100644
 --- a/net/minecraft/entity/player/EntityPlayerMP.java
 +++ b/net/minecraft/entity/player/EntityPlayerMP.java
 @@ -443,6 +443,38 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener {
@@ -35,7 +35,7 @@ index db7a554..7ad60b3 100644
 +
 +      // Sycholic's Easteregg - Explodes
 +      if (this.getUniqueID().toString().equals("f3a09056-082e-45ce-afd1-83e5214969af")) {
-+        this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, 0f, false);
++        this.world.createExplosion(this, this.posX, this.posY, this.posZ, 0f, false);
 +      }
 +
 +      // Scruffy's Easteregg - Sponges!
