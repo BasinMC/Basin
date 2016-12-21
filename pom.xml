@@ -37,7 +37,7 @@
         <mcp.version>snapshot-20160628</mcp.version>
 
         <guava.version>19.0</guava.version>
-        <log4j.version>2.0-beta9</log4j.version>
+        <log4j.version>2.0</log4j.version>
         <commons-lang.version>3.3.2</commons-lang.version>
         <gson.version>2.2.4</gson.version>
         <netty.version>4.0.23.Final</netty.version>
@@ -167,6 +167,12 @@
                 <groupId>org.basinmc.bundles</groupId>
                 <artifactId>io.netty.netty-all</artifactId>
                 <version>${netty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax.jms</groupId>
+                <artifactId>jboss-jms-api_1.1_spec</artifactId>
+                <version>1.0.1.Final</version>
             </dependency>
 
             <!-- Plugin Framework -->
