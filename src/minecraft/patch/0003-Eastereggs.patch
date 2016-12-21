@@ -1,16 +1,16 @@
-From 3e52abb10baba6dee6114be77de575b46327da15 Mon Sep 17 00:00:00 2001
+From 335c4610ac3ac3a7ae13467edd14c7a8dd2a77fb Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Fri, 3 Jun 2016 11:33:41 +0200
 Subject: [PATCH] Eastereggs!
 
 
 diff --git a/net/minecraft/entity/player/EntityPlayerMP.java b/net/minecraft/entity/player/EntityPlayerMP.java
-index db7a554..5649878 100644
+index ec9e545..c346070 100644
 --- a/net/minecraft/entity/player/EntityPlayerMP.java
 +++ b/net/minecraft/entity/player/EntityPlayerMP.java
-@@ -443,6 +443,38 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener {
-     this.addStat(StatList.DEATHS);
-     this.takeStat(StatList.TIME_SINCE_DEATH);
+@@ -447,6 +447,38 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener {
+     this.extinguish();
+     this.setFlag(0, false);
      this.getCombatTracker().reset();
 +
 +    // BEE Start
