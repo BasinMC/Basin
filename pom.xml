@@ -34,7 +34,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <game.version>1.10.2</game.version>
-        <mcp.version>snapshot-20160628</mcp.version>
+        <mcp.version>stable-29</mcp.version>
 
         <guava.version>19.0</guava.version>
         <log4j.version>2.0</log4j.version>
@@ -112,8 +112,8 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>basinmc</id>
-            <name>BasinMC Public</name>
+            <id>basin</id>
+            <name>Basin</name>
             <url>https://www.basinmc.org/nexus/repository/maven-public/</url>
 
             <snapshots>
@@ -245,42 +245,81 @@
                 <plugin>
                     <groupId>org.basinmc.maven.plugins</groupId>
                     <artifactId>minecraft-maven-plugin</artifactId>
-                    <version>1.1</version>
+                    <version>2.0.1</version>
 
                     <configuration>
                         <gameVersion>${game.version}</gameVersion>
-                        <mcpVersion>${mcp.version}</mcpVersion>
+                        <mappingVersion>${mcp.version}</mappingVersion>
                         <module>server</module>
-                        <useLiveMCP>true</useLiveMCP>
+                        <!-- <accessTransformation>${project.basedir}/src/minecraft/at.json</accessTransformation> -->
                     </configuration>
 
                     <executions>
+                        <!--
+                         - Note: These executions are required to appear in this
+                         - exact order - Otherwise the plugin WILL fail.
+                         -
+                         - This is a limitation of the maven build system and cannot
+                         - be solved at this time without merging all code into
+                         - a single mojo which would drastically reduce its
+                         - readability (and customizability for the few tasks which
+                         - may be omitted by projects or invoked on their own from
+                         - the command line).
+                         -->
                         <execution>
                             <id>minecraft-safeguard</id>
 
                             <goals>
-                                <goal>git-safeguard</goal>
+                                <goal>safeguard</goal>
                             </goals>
                         </execution>
                         <execution>
-                            <id>minecraft-download</id>
+                            <id>minecraft-fetch-module</id>
 
                             <goals>
-                                <goal>download</goal>
+                                <goal>fetch-module</goal>
                             </goals>
                         </execution>
                         <execution>
-                            <id>minecraft-decompile</id>
+                            <id>minecraft-fetch-mappings</id>
 
                             <goals>
-                                <goal>decompile</goal>
+                                <goal>fetch-mappings</goal>
                             </goals>
                         </execution>
                         <execution>
-                            <id>minecraft-patch</id>
+                            <id>minecraft-apply-mappings</id>
 
                             <goals>
-                                <goal>git-patch</goal>
+                                <goal>apply-mappings</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>minecraft-decompile-module</id>
+
+                            <goals>
+                                <goal>decompile-module</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>minecraft-initialize-repository</id>
+
+                            <goals>
+                                <goal>initialize-repository</goal>
+                            </goals>
+                        </execution>
+                        <execution> <!-- Optional -->
+                            <id>minecraft-extract-resources</id>
+
+                            <goals>
+                                <goal>extract-resources</goal>
+                            </goals>
+                        </execution>
+                        <execution> <!-- Optional -->
+                            <id>minecraft-apply-patches</id>
+
+                            <goals>
+                                <goal>apply-patches</goal>
                             </goals>
                         </execution>
                     </executions>
