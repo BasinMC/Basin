@@ -133,6 +133,10 @@
             <plugin>
                 <groupId>org.basinmc.maven.plugins</groupId>
                 <artifactId>minecraft-maven-plugin</artifactId>
+
+                <configuration>
+                    <accessTransformation>${project.basedir}/src/minecraft/at.json</accessTransformation>
+                </configuration>
             </plugin>
 
             <!-- Bundle Creation -->

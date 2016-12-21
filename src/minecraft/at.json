@@ -1,0 +1,13 @@
+{
+  "net.minecraft.server.MinecraftServer": {
+    "methods": {
+      "stopServer": "public"
+    }
+  },
+
+  "net.minecraft.server.dedicated.DedicatedServer": {
+    "fields": {
+      "settings": "public"
+    }
+  }
+}
