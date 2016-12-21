@@ -33,8 +33,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <game.version>1.10.2</game.version>
-        <mcp.version>stable-29</mcp.version>
+        <game.version>1.11</game.version>
+        <mcp.version>snapshot-20161221</mcp.version>
 
         <guava.version>19.0</guava.version>
         <log4j.version>2.0</log4j.version>
