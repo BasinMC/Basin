@@ -135,6 +135,9 @@
                 <artifactId>minecraft-maven-plugin</artifactId>
 
                 <configuration>
+                    <gameVersion>${game.version}</gameVersion>
+                    <mappingVersion>${mcp.version}</mappingVersion>
+                    <module>server</module>
                     <accessTransformation>${project.basedir}/src/minecraft/at.json</accessTransformation>
                 </configuration>
             </plugin>
