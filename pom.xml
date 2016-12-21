@@ -73,6 +73,12 @@
             <artifactId>io.netty.netty-all</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.spec.javax.jms</groupId>
+            <artifactId>jboss-jms-api_1.1_spec</artifactId>
+            <version>1.0.1.Final</version>
+        </dependency>
+
         <!-- Plugin Framework -->
         <dependency>
             <groupId>org.osgi</groupId>
@@ -91,12 +97,6 @@
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-all</artifactId>
-        </dependency>
-
-        <!-- Code Quality -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
         </dependency>
 
         <!-- Unit Test -->
@@ -143,6 +143,8 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.basinmc.sink.SinkActivator</Bundle-Activator>
+                        <Import-Package>javax.annotation; version="${findbugs.version}", *</Import-Package>
+                        <Bundle-ClassPath>.</Bundle-ClassPath>
                     </instructions>
                 </configuration>
             </plugin>
