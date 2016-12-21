@@ -1,0 +1,31 @@
+From 5bcbf9f46911c57e5c20cbe893c2bec4157dd644 Mon Sep 17 00:00:00 2001
+From: Johannes Donath <johannesd@torchmind.com>
+Date: Wed, 21 Dec 2016 21:41:30 +0100
+Subject: [PATCH] Removed the stock shutdown hook.
+
+
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index 6f43358..eb46121 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -710,13 +710,15 @@ public abstract class MinecraftServer
+       }
+ 
+       var12.startServerThread();
+-      Runtime.getRuntime()
++      // Basin Start
++      /* Runtime.getRuntime()
+           .addShutdownHook(
+               new Thread("Server Shutdown Thread") {
+                 public void run() {
+                   var12.stopServer();
+                 }
+-              });
++              }); */
++      // Basin End
+     } catch (Exception var14) {
+       LOG.fatal("Failed to start the minecraft server", var14);
+     }
+-- 
+2.11.0.windows.1
+
