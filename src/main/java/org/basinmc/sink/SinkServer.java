@@ -16,50 +16,16 @@
  */
 package org.basinmc.sink;
 
-import com.google.common.collect.Iterators;
-import com.google.common.reflect.ClassPath;
-
-import com.mojang.authlib.GameProfileRepository;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-
-import net.minecraft.init.Bootstrap;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.server.management.PlayerProfileCache;
-import net.minecraft.util.datafix.DataFixesManager;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.basinmc.faucet.FaucetVersion;
 import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
-import org.osgi.framework.launch.Framework;
-import org.osgi.framework.launch.FrameworkFactory;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.Proxy;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.ServiceLoader;
-import java.util.UUID;
-import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -232,12 +198,12 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public int getPlayerIdleTimeout() {
-            throw new UnsupportedOperationException();
+            return SinkServer.this.server.settings.getIntProperty("player-idle-timeout", 0);
         }
 
         @Override
         public int getQueryPort() {
-            throw new UnsupportedOperationException();
+            return SinkServer.this.server.settings.getIntProperty("query.port", 25565);
         }
 
         /**
@@ -246,7 +212,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         @Nonnull
         @Override
         public String getRemoteConsolePassword() {
-            throw new UnsupportedOperationException();
+            return SinkServer.this.server.settings.getStringProperty("rcon.password", "");
         }
 
         /**
@@ -254,7 +220,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public int getRemoteConsolePort() {
-            throw new UnsupportedOperationException();
+            return SinkServer.this.server.settings.getIntProperty("rcon.port", 25575);
         }
 
         /**
@@ -270,7 +236,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public int getViewDistance() {
-            throw new UnsupportedOperationException();
+            return SinkServer.this.server.settings.getIntProperty("view-distance", 10);
         }
 
         /**
@@ -326,7 +292,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public boolean isRemoteConsoleEnabled() {
-            throw new UnsupportedOperationException();
+            return SinkServer.this.server.settings.getBooleanProperty("enable-rcon", false);
         }
 
         /**
@@ -334,7 +300,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
          */
         @Override
         public boolean isQueryEnabled() {
-            throw new UnsupportedOperationException();
+            return SinkServer.this.server.settings.getBooleanProperty("enable-query", false);
         }
 
         /**
