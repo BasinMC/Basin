@@ -1,14 +1,14 @@
-From 14f5d8e262fcaa3c666c5ac6adc907770161b37a Mon Sep 17 00:00:00 2001
+From 5cbe3cdc67f2742f48f8e29c73dcd029c301eebf Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Fri, 16 Dec 2016 07:11:54 +0100
 Subject: [PATCH] Changed Server Brand
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 87209d9..b6ebe74 100644
+index d47fde5..6f43358 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -783,7 +783,7 @@ public abstract class MinecraftServer
+@@ -778,7 +778,7 @@ public abstract class MinecraftServer
    }
  
    public String getServerModName() {
