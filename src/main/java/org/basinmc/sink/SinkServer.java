@@ -16,6 +16,7 @@
  */
 package org.basinmc.sink;
 
+import net.minecraft.server.dedicated.DedicatedPlayerList;
 import net.minecraft.server.dedicated.DedicatedServer;
 
 import org.apache.logging.log4j.LogManager;
@@ -76,9 +77,15 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     @Override
     public void shutdown(@Nullable String reason) {
         // TODO Fire shutdown event here, once I add it. :)
-        server.logInfo("Server Shutdown: " + reason);
-        server.getPlayerList().getPlayers().forEach(player -> player.connection.disconnect(reason));
-        server.stopServer();
+        this.server.logInfo("Server Shutdown: " + reason);
+
+        DedicatedPlayerList playerList = this.server.getPlayerList();
+
+        if (playerList != null) {
+            playerList.getPlayers().forEach((p) -> p.connection.disconnect(reason));
+        }
+
+        this.server.stopServer();
     }
 
     /**
