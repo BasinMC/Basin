@@ -177,12 +177,6 @@
                 <artifactId>osgi.core</artifactId>
                 <version>${osgi.version}</version>
             </dependency>
-            <!-- FIXME: This dependency is no longer needed and should be removed -->
-            <dependency>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>org.apache.felix.framework</artifactId>
-                <version>5.6.1</version>
-            </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.compendium</artifactId>
