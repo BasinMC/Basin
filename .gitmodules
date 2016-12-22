@@ -1,8 +1,8 @@
 [submodule "faucet"]
 	path = faucet
 	url = git@github.com:BasinMC/Faucet.git
-	branch = master
+	branch = phoenix
 [submodule "sink"]
 	path = sink
 	url = git@github.com:BasinMC/Sink.git
-	branch = master
+	branch = phoenix
