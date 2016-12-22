@@ -1,0 +1,349 @@
+From 7955e34063b5475a060c2694cec455c860911c73 Mon Sep 17 00:00:00 2001
+From: Johannes Donath <johannesd@torchmind.com>
+Date: Thu, 22 Dec 2016 13:04:11 +0100
+Subject: [PATCH] Removed the built-in GUI implementation.
+
+
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index a3588cb..957db52 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -714,10 +714,6 @@ public abstract class MinecraftServer
+         var12.canCreateBonusChest(true);
+       }
+ 
+-      if (var1 && !GraphicsEnvironment.isHeadless()) {
+-        var12.setGuiEnabled();
+-      }
+-
+       var12.startServerThread();
+       // Basin Start
+       /* Runtime.getRuntime()
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index 6366ae9..314f930 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -26,11 +26,6 @@ import net.minecraft.network.rcon.RConThreadQuery;
+ import net.minecraft.profiler.Snooper;
+ import net.minecraft.server.MinecraftServer;
+ import net.minecraft.server.ServerEula;
+-import net.minecraft.server.dedicated.DedicatedPlayerList;
+-import net.minecraft.server.dedicated.PendingCommand;
+-import net.minecraft.server.dedicated.PropertyManager;
+-import net.minecraft.server.dedicated.ServerHangWatchdog;
+-import net.minecraft.server.gui.MinecraftServerGui;
+ import net.minecraft.server.management.PlayerProfileCache;
+ import net.minecraft.server.management.PreYggdrasilConverter;
+ import net.minecraft.tileentity.TileEntitySkull;
+@@ -423,11 +418,6 @@ public class DedicatedServer extends MinecraftServer implements IServer {
+     return this.getMOTD();
+   }
+ 
+-  public void setGuiEnabled() {
+-    MinecraftServerGui.createServerGui(this);
+-    this.guiIsEnabled = true;
+-  }
+-
+   public boolean getGuiEnabled() {
+     return this.guiIsEnabled;
+   }
+diff --git a/net/minecraft/server/gui/MinecraftServerGui.java b/net/minecraft/server/gui/MinecraftServerGui.java
+deleted file mode 100644
+index 82486b8..0000000
+--- a/net/minecraft/server/gui/MinecraftServerGui.java
++++ /dev/null
+@@ -1,170 +0,0 @@
+-package net.minecraft.server.gui;
+-
+-import com.mojang.util.QueueLogAppender;
+-import java.awt.BorderLayout;
+-import java.awt.Component;
+-import java.awt.Dimension;
+-import java.awt.Font;
+-import java.awt.event.ActionEvent;
+-import java.awt.event.ActionListener;
+-import java.awt.event.FocusAdapter;
+-import java.awt.event.FocusEvent;
+-import java.awt.event.WindowAdapter;
+-import java.awt.event.WindowEvent;
+-import javax.swing.JComponent;
+-import javax.swing.JFrame;
+-import javax.swing.JPanel;
+-import javax.swing.JScrollBar;
+-import javax.swing.JScrollPane;
+-import javax.swing.JTextArea;
+-import javax.swing.JTextField;
+-import javax.swing.SwingUtilities;
+-import javax.swing.UIManager;
+-import javax.swing.border.EtchedBorder;
+-import javax.swing.border.TitledBorder;
+-import javax.swing.text.AttributeSet;
+-import javax.swing.text.BadLocationException;
+-import javax.swing.text.Document;
+-import net.minecraft.server.dedicated.DedicatedServer;
+-import net.minecraft.server.gui.PlayerListComponent;
+-import net.minecraft.server.gui.StatsComponent;
+-import org.apache.logging.log4j.LogManager;
+-import org.apache.logging.log4j.Logger;
+-
+-public class MinecraftServerGui extends JComponent {
+-  private static final Font SERVER_GUI_FONT = new Font("Monospaced", 0, 12);
+-  private static final Logger LOGGER = LogManager.getLogger();
+-  private final DedicatedServer server;
+-
+-  public static void createServerGui(final DedicatedServer var0) {
+-    try {
+-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+-    } catch (Exception var3) {
+-      ;
+-    }
+-
+-    MinecraftServerGui var1 = new MinecraftServerGui(var0);
+-    JFrame var2 = new JFrame("Minecraft server");
+-    var2.add(var1);
+-    var2.pack();
+-    var2.setLocationRelativeTo((Component) null);
+-    var2.setVisible(true);
+-    var2.addWindowListener(
+-        new WindowAdapter() {
+-          public void windowClosing(WindowEvent var1) {
+-            var0.initiateShutdown();
+-
+-            while (!var0.isServerStopped()) {
+-              try {
+-                Thread.sleep(100L);
+-              } catch (InterruptedException var3) {
+-                var3.printStackTrace();
+-              }
+-            }
+-
+-            System.exit(0);
+-          }
+-        });
+-  }
+-
+-  public MinecraftServerGui(DedicatedServer var1) {
+-    this.server = var1;
+-    this.setPreferredSize(new Dimension(854, 480));
+-    this.setLayout(new BorderLayout());
+-
+-    try {
+-      this.add(this.getLogComponent(), "Center");
+-      this.add(this.getStatsComponent(), "West");
+-    } catch (Exception var3) {
+-      LOGGER.error("Couldn\'t build server GUI", var3);
+-    }
+-  }
+-
+-  private JComponent getStatsComponent() throws Exception {
+-    JPanel var1 = new JPanel(new BorderLayout());
+-    var1.add(new StatsComponent(this.server), "North");
+-    var1.add(this.getPlayerListComponent(), "Center");
+-    var1.setBorder(new TitledBorder(new EtchedBorder(), "Stats"));
+-    return var1;
+-  }
+-
+-  private JComponent getPlayerListComponent() throws Exception {
+-    PlayerListComponent var1 = new PlayerListComponent(this.server);
+-    JScrollPane var2 = new JScrollPane(var1, 22, 30);
+-    var2.setBorder(new TitledBorder(new EtchedBorder(), "Players"));
+-    return var2;
+-  }
+-
+-  private JComponent getLogComponent() throws Exception {
+-    JPanel var1 = new JPanel(new BorderLayout());
+-    final JTextArea var2 = new JTextArea();
+-    final JScrollPane var3 = new JScrollPane(var2, 22, 30);
+-    var2.setEditable(false);
+-    var2.setFont(SERVER_GUI_FONT);
+-    final JTextField var4 = new JTextField();
+-    var4.addActionListener(
+-        new ActionListener() {
+-          public void actionPerformed(ActionEvent var1) {
+-            String var2 = var4.getText().trim();
+-            if (!var2.isEmpty()) {
+-              MinecraftServerGui.this.server.addPendingCommand(
+-                  var2, MinecraftServerGui.this.server);
+-            }
+-
+-            var4.setText("");
+-          }
+-        });
+-    var2.addFocusListener(
+-        new FocusAdapter() {
+-          public void focusGained(FocusEvent var1) {}
+-        });
+-    var1.add(var3, "Center");
+-    var1.add(var4, "South");
+-    var1.setBorder(new TitledBorder(new EtchedBorder(), "Log and chat"));
+-    Thread var5 =
+-        new Thread(
+-            new Runnable() {
+-              public void run() {
+-                String var1;
+-                while ((var1 = QueueLogAppender.getNextLogEvent("ServerGuiConsole")) != null) {
+-                  MinecraftServerGui.this.appendLine(var2, var3, var1);
+-                }
+-              }
+-            });
+-    var5.setDaemon(true);
+-    var5.start();
+-    return var1;
+-  }
+-
+-  public void appendLine(final JTextArea var1, final JScrollPane var2, final String var3) {
+-    if (!SwingUtilities.isEventDispatchThread()) {
+-      SwingUtilities.invokeLater(
+-          new Runnable() {
+-            public void run() {
+-              MinecraftServerGui.this.appendLine(var1, var2, var3);
+-            }
+-          });
+-    } else {
+-      Document var4 = var1.getDocument();
+-      JScrollBar var5 = var2.getVerticalScrollBar();
+-      boolean var6 = false;
+-      if (var2.getViewport().getView() == var1) {
+-        var6 =
+-            (double) var5.getValue()
+-                    + var5.getSize().getHeight()
+-                    + (double) (SERVER_GUI_FONT.getSize() * 4)
+-                > (double) var5.getMaximum();
+-      }
+-
+-      try {
+-        var4.insertString(var4.getLength(), var3, (AttributeSet) null);
+-      } catch (BadLocationException var8) {
+-        ;
+-      }
+-
+-      if (var6) {
+-        var5.setValue(Integer.MAX_VALUE);
+-      }
+-    }
+-  }
+-}
+diff --git a/net/minecraft/server/gui/PlayerListComponent.java b/net/minecraft/server/gui/PlayerListComponent.java
+deleted file mode 100644
+index f7834d3..0000000
+--- a/net/minecraft/server/gui/PlayerListComponent.java
++++ /dev/null
+@@ -1,29 +0,0 @@
+-package net.minecraft.server.gui;
+-
+-import java.util.Vector;
+-import javax.swing.JList;
+-import net.minecraft.entity.player.EntityPlayerMP;
+-import net.minecraft.server.MinecraftServer;
+-import net.minecraft.util.ITickable;
+-
+-public class PlayerListComponent extends JList implements ITickable {
+-  private final MinecraftServer server;
+-  private int ticks;
+-
+-  public PlayerListComponent(MinecraftServer var1) {
+-    this.server = var1;
+-    var1.registerTickable(this);
+-  }
+-
+-  public void update() {
+-    if (this.ticks++ % 20 == 0) {
+-      Vector var1 = new Vector();
+-
+-      for (int var2 = 0; var2 < this.server.getPlayerList().getPlayers().size(); ++var2) {
+-        var1.add(((EntityPlayerMP) this.server.getPlayerList().getPlayers().get(var2)).getName());
+-      }
+-
+-      this.setListData(var1);
+-    }
+-  }
+-}
+diff --git a/net/minecraft/server/gui/StatsComponent.java b/net/minecraft/server/gui/StatsComponent.java
+deleted file mode 100644
+index a29b20c..0000000
+--- a/net/minecraft/server/gui/StatsComponent.java
++++ /dev/null
+@@ -1,80 +0,0 @@
+-package net.minecraft.server.gui;
+-
+-import java.awt.Color;
+-import java.awt.Dimension;
+-import java.awt.Graphics;
+-import java.awt.event.ActionEvent;
+-import java.awt.event.ActionListener;
+-import java.text.DecimalFormat;
+-import javax.swing.JComponent;
+-import javax.swing.Timer;
+-import net.minecraft.server.MinecraftServer;
+-
+-public class StatsComponent extends JComponent {
+-  private static final DecimalFormat FORMATTER = new DecimalFormat("########0.000");
+-  private final int[] values = new int[256];
+-  private int vp;
+-  private final String[] msgs = new String[11];
+-  private final MinecraftServer server;
+-
+-  public StatsComponent(MinecraftServer var1) {
+-    this.server = var1;
+-    this.setPreferredSize(new Dimension(456, 246));
+-    this.setMinimumSize(new Dimension(456, 246));
+-    this.setMaximumSize(new Dimension(456, 246));
+-    (new Timer(
+-            500,
+-            new ActionListener() {
+-              public void actionPerformed(ActionEvent var1) {
+-                StatsComponent.this.tick();
+-              }
+-            }))
+-        .start();
+-    this.setBackground(Color.BLACK);
+-  }
+-
+-  private void tick() {
+-    long var1 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+-    System.gc();
+-    this.msgs[0] =
+-        "Memory use: "
+-            + var1 / 1024L / 1024L
+-            + " mb ("
+-            + Runtime.getRuntime().freeMemory() * 100L / Runtime.getRuntime().maxMemory()
+-            + "% free)";
+-    this.msgs[1] =
+-        "Avg tick: " + FORMATTER.format(this.mean(this.server.tickTimeArray) * 1.0E-6D) + " ms";
+-    this.values[this.vp++ & 255] = (int) (var1 * 100L / Runtime.getRuntime().maxMemory());
+-    this.repaint();
+-  }
+-
+-  private double mean(long[] var1) {
+-    long var2 = 0L;
+-
+-    for (long var7 : var1) {
+-      var2 += var7;
+-    }
+-
+-    return (double) var2 / (double) var1.length;
+-  }
+-
+-  public void paint(Graphics var1) {
+-    var1.setColor(new Color(16777215));
+-    var1.fillRect(0, 0, 456, 246);
+-
+-    for (int var2 = 0; var2 < 256; ++var2) {
+-      int var3 = this.values[var2 + this.vp & 255];
+-      var1.setColor(new Color(var3 + 28 << 16));
+-      var1.fillRect(var2, 100 - var3, 1, var3);
+-    }
+-
+-    var1.setColor(Color.BLACK);
+-
+-    for (int var4 = 0; var4 < this.msgs.length; ++var4) {
+-      String var5 = this.msgs[var4];
+-      if (var5 != null) {
+-        var1.drawString(var5, 32, 116 + var4 * 16);
+-      }
+-    }
+-  }
+-}
+-- 
+2.11.0.windows.1
+

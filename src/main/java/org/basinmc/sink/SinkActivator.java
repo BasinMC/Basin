@@ -67,7 +67,7 @@ public class SinkActivator implements BundleActivator {
 
         if (!GraphicsEnvironment.isHeadless()) {
             logger.info("Server GUI has been disabled or is unavailable in this environment");
-            server.setGuiEnabled();
+            // TODO: Custom GUI
         } else {
             logger.info("Server GUI has been disabled or is not available within the current environment");
         }
