@@ -113,6 +113,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>org.basinmc.faucet.*</Export-Package>
+                        <Import-Package>javax.annotation; version="${findbugs.version}", *</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
