@@ -1,4 +1,4 @@
-From 9fd199b9ba9c08f6e6246158730fdad4ed677f0e Mon Sep 17 00:00:00 2001
+From 74e1cecaaabb88b7d62c3d00668ade2b79222d67 Mon Sep 17 00:00:00 2001
 From: 0x277F <0x277F@gmail.com>
 Date: Thu, 2 Jun 2016 19:57:10 -0600
 Subject: [PATCH] Fixed compilation errors.
@@ -1204,6 +1204,19 @@ index 813d7de..7fa8b40 100644
  
      for (EntityPlayerMP var4 : this.scoreboardMCServer.getPlayerList().getPlayers()) {
        for (Packet var6 : var2) {
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index ca31118..4833e71 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -840,7 +840,7 @@ public abstract class MinecraftServer
+       return var5;
+     } else {
+       boolean var7 = !var2.contains(" ");
+-      List var8 = this.commandManager.getTabCompletions(var1, var2, var3);
++      List<String> var8 = this.commandManager.getTabCompletions(var1, var2, var3); // BCMP
+       if (!var8.isEmpty()) {
+         for (String var10 : var8) {
+           if (var7) {
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
 index ba0d9c8..6366ae9 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
