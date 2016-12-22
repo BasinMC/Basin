@@ -24,9 +24,11 @@ import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Hashtable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,10 +43,14 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     private final DedicatedServer server;
     private final Server.Configuration configuration = new Configuration();
 
+    private final ServiceRegistration<Server> serverServiceRegistration;
+
     // TODO: Switch out against a service
     SinkServer(@Nonnull BundleContext ctx, @Nonnull DedicatedServer server) {
         this.ctx = ctx;
         this.server = server;
+
+        this.serverServiceRegistration = ctx.registerService(Server.class, this, null);
 
         Runtime.getRuntime().addShutdownHook(new Thread("Sink Shutdown Thread") {
             @Override
@@ -85,6 +91,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
             playerList.getPlayers().forEach((p) -> p.connection.disconnect(reason));
         }
 
+        this.serverServiceRegistration.unregister();
         this.server.stopServer();
     }
 
