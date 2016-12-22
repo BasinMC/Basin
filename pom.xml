@@ -151,7 +151,6 @@
                     <instructions>
                         <Bundle-Activator>org.basinmc.sink.SinkActivator</Bundle-Activator>
                         <Import-Package>javax.annotation; version="${findbugs.version}", *</Import-Package>
-                        <Bundle-ClassPath>.</Bundle-ClassPath>
                     </instructions>
                 </configuration>
             </plugin>
