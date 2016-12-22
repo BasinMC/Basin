@@ -60,6 +60,14 @@
             <groupId>org.osgi</groupId>
             <artifactId>osgi.core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.logging</groupId>
+            <artifactId>pax-logging-service</artifactId>
+        </dependency>
 
         <!-- Utility -->
         <dependency>
