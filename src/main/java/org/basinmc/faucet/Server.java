@@ -16,8 +16,7 @@
  */
 package org.basinmc.faucet;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.launch.Framework;
+import org.osgi.framework.Bundle;
 
 import java.nio.file.Path;
 
@@ -60,6 +59,13 @@ public interface Server {
      */
     @Nonnull
     Configuration getConfiguration();
+
+    /**
+     * Retrieves the bundle which is providing the implementation for this and other Faucet
+     * implementations.
+     */
+    @Nonnull
+    Bundle getImplementationBundle();
 
     /**
      * Retrieves the overall time the server has been running for in game ticks.
