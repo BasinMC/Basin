@@ -17,7 +17,9 @@
  */
 package org.basinmc.faucet.event.handler;
 
+import org.basinmc.faucet.event.MutableEvent;
 import org.basinmc.faucet.util.Priority;
+import org.basinmc.faucet.util.State;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -32,17 +34,8 @@ import javax.annotation.Nonnull;
  * This is also used to annotate synthetic {@link EventHandler} implementations internally.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
+@Target({ElementType.METHOD})
 public @interface Subscribe {
-
-    /**
-     * Indicates whether the annotated member will be notified over events which have previously
-     * been cancelled by the Faucet implementation or handlers with higher priority.
-     *
-     * Note: Altering the event state while this parameter is enabled is strongly discouraged due to
-     * its implications on the priority queue.
-     */
-    boolean receiveCancelled() default false;
 
     /**
      * Declares the priority at which this handler is being called.
@@ -52,4 +45,23 @@ public @interface Subscribe {
      */
     @Nonnull
     Priority priority() default Priority.NORMAL;
+
+    /**
+     * Indicates whether the annotated member will be notified of events which have been finalized.
+     *
+     * @see MutableEvent#isFinalized() for a detailed documentation on finalization.
+     */
+    boolean receiveFinalized() default false;
+
+    /**
+     * Indicates which state an event (of instance {@link org.basinmc.faucet.event.StatefulEvent})
+     * has to be in at the time of posting in order to cause the framework to notify the annotated
+     * member.
+     *
+     * Note: In addition to {@link State#ALLOW} and {@link State#DENY}, you may also use
+     * {@link State#DEFAULT} in order to reduce the set of events to events which are currently in
+     * their default state as well as {@link State#WILDCARD} to retrieve events from both sides.
+     */
+    @Nonnull
+    State receiveState() default State.ALLOW;
 }
