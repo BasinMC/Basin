@@ -24,29 +24,32 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.annotation.Nonnull;
+
 /**
  * Annotates a method that is to be subscribed to events. Can annotate a class for this operation
  * to be applied to all methods within it annotated with this annotation upon construction.
  * This is also used to annotate synthetic {@link EventHandler} implementations internally.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.METHOD })
 public @interface EventSubscribe {
-    /**
-     * Provides a filter of events. If the event type specified in the method
-     * parameter is abstract in some way, this filter can be used to limit the types
-     * of events that will be passed to this.
-     * @return An array of event types
-     */
-    Class<? extends Event>[] value() default Event.class;
 
     /**
-     * The priority at which this event is called. Don't abuse this.
-     * Seriously. If you abuse this, I will come after you. I will find you, and
-     * I will kill you in the most brutal and agonizing way imaginable. I will literally
-     * tear you limb from limb. So please, respect your software freedoms and use this
-     * responsibly.
-     * @return A priority that legitimately corresponds to the actions taken in the event handler.
+     * Indicates whether the annotated member will be notified over events which have previously
+     * been cancelled by the Faucet implementation or handlers with higher priority.
+     *
+     * Note: Altering the event state while this parameter is enabled is strongly discouraged due to
+     * its implications on the priority queue.
      */
+    boolean receiveCancelled() default false;
+
+    /**
+     * Declares the priority at which this handler is being called.
+     *
+     * Higher priority handlers will be called first within the queue and as such get the highest
+     * authority over the event state.
+     */
+    @Nonnull
     Priority priority() default Priority.NORMAL;
 }

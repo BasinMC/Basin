@@ -17,5 +17,9 @@
  */
 package org.basinmc.faucet.event;
 
+/**
+ * Provides a base interface to event which may be posted to and possibly altered by plugin event
+ * handlers.
+ */
 public interface Event {
 }
