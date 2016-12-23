@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -113,6 +114,15 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     @Override
     public Server.Configuration getConfiguration() {
         return this.configuration;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public Bundle getImplementationBundle() {
+        return this.ctx.getBundle();
     }
 
     /**
