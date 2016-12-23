@@ -91,7 +91,6 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
             playerList.getPlayers().forEach((p) -> p.connection.disconnect(reason));
         }
 
-        this.serverServiceRegistration.unregister();
         this.server.stopServer();
     }
 
