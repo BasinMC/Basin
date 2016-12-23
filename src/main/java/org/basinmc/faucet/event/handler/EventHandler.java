@@ -16,7 +16,7 @@
  *  limitations under the License.
  * /
  */
-package org.basinmc.faucet.event;
+package org.basinmc.faucet.event.handler;
 
 /**
  * Provides a marker interface for implementations who wish to be notified of events posted by the

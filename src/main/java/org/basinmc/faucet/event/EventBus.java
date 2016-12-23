@@ -17,11 +17,9 @@
  */
 package org.basinmc.faucet.event;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
+import org.basinmc.faucet.event.handler.EventHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**

@@ -15,7 +15,7 @@
  *  limitations under the License.
  *
  */
-package org.basinmc.faucet.event;
+package org.basinmc.faucet.event.handler;
 
 import org.basinmc.faucet.util.Priority;
 
