@@ -1,4 +1,4 @@
-From 7955e34063b5475a060c2694cec455c860911c73 Mon Sep 17 00:00:00 2001
+From 85577534be4e52864521431ade51d254311c6619 Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Thu, 22 Dec 2016 13:04:11 +0100
 Subject: [PATCH] Removed the built-in GUI implementation.

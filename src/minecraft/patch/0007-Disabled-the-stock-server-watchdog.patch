@@ -1,0 +1,22 @@
+From ad278e00d28070974bf52ad174eb4eea77b26d62 Mon Sep 17 00:00:00 2001
+From: Johannes Donath <johannesd@torchmind.com>
+Date: Fri, 23 Dec 2016 13:18:54 +0100
+Subject: [PATCH] Disabled the stock server watchdog.
+
+
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index 314f930..cd10a3b 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -248,7 +248,7 @@ public class DedicatedServer extends MinecraftServer implements IServer {
+           Thread var15 = new Thread(new ServerHangWatchdog(this));
+           var15.setName("Server Watchdog");
+           var15.setDaemon(true);
+-          var15.start();
++          // Basin
+         }
+ 
+         return true;
+-- 
+2.11.0.windows.1
+

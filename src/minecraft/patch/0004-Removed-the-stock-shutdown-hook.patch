@@ -1,4 +1,4 @@
-From 54a0967dd810a924db8921c700738357e8f8940f Mon Sep 17 00:00:00 2001
+From 4a5931814c1dc41f6cbcba15764f1ee5a37ff174 Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Wed, 21 Dec 2016 21:41:30 +0100
 Subject: [PATCH] Removed the stock shutdown hook.

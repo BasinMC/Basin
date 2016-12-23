@@ -1,4 +1,4 @@
-From 7708824bfe69b8843dd9b4c4211f61246997bffd Mon Sep 17 00:00:00 2001
+From 9a81825b0433d2079f6f264200884361bb5a1e2b Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Thu, 22 Dec 2016 18:50:48 +0100
 Subject: [PATCH] Disabled logging via System.out.
