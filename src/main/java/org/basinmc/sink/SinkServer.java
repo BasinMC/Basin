@@ -51,13 +51,6 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
         this.server = server;
 
         this.serverServiceRegistration = ctx.registerService(Server.class, this, null);
-
-        Runtime.getRuntime().addShutdownHook(new Thread("Sink Shutdown Thread") {
-            @Override
-            public void run() {
-                SinkServer.this.shutdown("Server Shutdown");
-            }
-        });
     }
 
     /**
