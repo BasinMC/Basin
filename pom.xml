@@ -83,7 +83,11 @@
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.logging</groupId>
-            <artifactId>pax-logging-service</artifactId>
+            <artifactId>pax-logging-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.logging</groupId>
+            <artifactId>pax-logging-log4j2</artifactId>
         </dependency>
 
         <!-- Utility -->
@@ -114,11 +118,17 @@
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resource</directory>
-                <targetPath>.</targetPath>
                 <filtering>true</filtering>
 
                 <includes>
                     <include>sink-version.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resource</directory>
+
+                <includes>
+                    <include>log4j2.xml</include>
                 </includes>
             </resource>
         </resources>
@@ -140,6 +150,10 @@
                     <mappingVersion>${mcp.version}</mappingVersion>
                     <module>server</module>
                     <accessTransformation>${project.basedir}/src/minecraft/at.json</accessTransformation>
+
+                    <excludedResources>
+                        <excludedResource>log4j2.xml</excludedResource>
+                    </excludedResources>
                 </configuration>
             </plugin>
 
@@ -151,7 +165,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.basinmc.sink.SinkActivator</Bundle-Activator>
-                        <Import-Package>javax.annotation; version="${findbugs.version}", *</Import-Package>
+                        <Import-Package>javax.annotation; version="${findbugs.version}", org.apache.logging.log4j; version="[2,3)"; provider=paxlogging, *</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
