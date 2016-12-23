@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
-public @interface EventSubscribe {
+public @interface Subscribe {
 
     /**
      * Indicates whether the annotated member will be notified over events which have previously
