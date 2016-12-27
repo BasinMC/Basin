@@ -19,6 +19,7 @@ package org.basinmc.faucet.trace;
 
 import org.basinmc.faucet.network.NetDirection;
 import org.basinmc.faucet.network.NetHandler;
+import org.basinmc.faucet.network.Packet;
 
 import javax.annotation.Nonnull;
 
@@ -48,4 +49,13 @@ public interface TracePacket extends TraceNode {
      */
     @Nonnull
     NetHandler getSource();
+
+    /**
+     * Get a snapshot of the packet at the time of processing by the given NetHandler. Any
+     * changes made to the packet since processing will not be reflected.
+     *
+     * @return the packet whose processing triggered this trace node
+     */
+    @Nonnull
+    Packet getPacket();
 }
