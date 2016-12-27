@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet;
+package org.basinmc.faucet.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

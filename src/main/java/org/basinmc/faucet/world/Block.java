@@ -17,7 +17,7 @@
  */
 package org.basinmc.faucet.world;
 
-import org.basinmc.faucet.CapabilityHolder;
+import org.basinmc.faucet.capability.CapabilityHolder;
 
 import javax.annotation.Nonnull;
 
