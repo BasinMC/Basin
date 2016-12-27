@@ -15,61 +15,39 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet;
+package org.basinmc.faucet.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-/**
- * Super-interface for anything stored in a {@link Capabilities} object.
- */
-public interface Capability {
-    /**
-     * Checks if this capability is registered in the server capability registry.
-     */
-    boolean isRegistered();
+public interface CapabilityInstance {
 
     /**
-     * Get the types this capability uses as parameters
-     *
-     * @return an ordered array, or an empty array if no parameters are present
+     * Get the type of capability this instance corresponds with
      */
     @Nonnull
-    Class<? extends Parameter>[] getParameterTypes();
+    Capability getType();
+
+    /**
+     * Get the object holding this specific instance.
+     */
+    @Nonnull
+    CapabilityHolder getHolder();
 
     /**
      * Get a list of parameters for this capability
      */
     @Nonnull
-    Parameter[] getParameters();
-
+    Capability.Parameter[] getParameters();
 
     /**
-     * Attempts to get a parameter with a string key
+     * Attempt to get a parameter with a string key
      *
      * @param key the key to look up with
      * @return a parameter matching the key, or null if none match
      * @throws UnsupportedOperationException if the capability doesn't support indexing parameters by string key
      */
     @Nullable
-    Parameter getParameter(String key) throws UnsupportedOperationException;
+    Capability.Parameter getParameter(String key) throws UnsupportedOperationException;
 
-    /**
-     * Represents a parameter type for a specific {@link Capability}
-     * @param <T> The type of data it holds
-     */
-    interface Parameter<T> {
-        /**
-         * Set the specified value to a nullable value.
-         *
-         * @param value the value to set to
-         */
-        void set(@Nullable T value);
-
-        /**
-         * Retrieve the parameter's value
-         */
-        @Nullable
-        T get();
-    }
 }

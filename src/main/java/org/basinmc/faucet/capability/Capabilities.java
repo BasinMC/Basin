@@ -15,19 +15,26 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet;
+package org.basinmc.faucet.capability;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
- * Base interface for things that can have capabilities
+ * An object that stores various capabilities something might have.
  */
-public interface CapabilityHolder {
+public interface Capabilities {
     /**
-     * Gets the capability registry for this object.
-     *
-     * @return the object's unique capability registry
+     * Checks if this object possesses a capability.
+     * @param capability The capability to check
+     * @return true if the capability is present
      */
-    @Nonnull
-    Capabilities getCapabilities();
+    boolean hasCapability(Capability capability);
+
+    /**
+     * Gets a capability present in this object. Changes to it must be reflected in this object.
+     * @param type the capability type
+     * @return a capability
+     */
+    @Nullable
+    CapabilityInstance getCapability(Capability type);
 }
