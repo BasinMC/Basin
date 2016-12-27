@@ -36,5 +36,5 @@ public interface Capabilities {
      * @return a capability
      */
     @Nullable
-    Capability getCapability(Class<? extends Capability> type);
+    CapabilityInstance getCapability(Capability type);
 }

@@ -25,14 +25,15 @@ import javax.annotation.Nonnull;
 public interface CapabilityRegistry {
     /**
      * Register a new capability type. If a capability type with the same name and parameter types
-     * already is registered, it will be returned instead.
+     * already is registered, it will be returned instead. If a capability with the same name
+     * but different parameter types is registered, a warning will be issued for developer sanity.
      *
      * @param name a descriptive name for the capability
      * @param parameterTypes types the capability stores as parameters
-     * @return a class descriptor
+     * @return a capability instance for universal usage
      */
     @Nonnull
-    Class<? extends Capability> registerCapability(String name, Class<?>[] parameterTypes);
+    Capability registerCapability(String name, Class<?>[] parameterTypes);
 
     /**
      * Checks if the given capability is registered.
