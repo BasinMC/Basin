@@ -72,6 +72,23 @@
 
             <organization>Torchmind</organization>
             <organizationUrl>https://www.torchmind.com</organizationUrl>
+
+            <roles>
+                <role>Project Founder</role>
+                <role>Project Maintainer</role>
+                <role>Senior Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Hex</name>
+            <timezone>America/Denver</timezone>
+            <email>hex@hex.lc</email>
+
+            <roles>
+                <role>Project Founder</role>
+                <role>Senior Developer</role>
+            </roles>
         </developer>
     </developers>
 
