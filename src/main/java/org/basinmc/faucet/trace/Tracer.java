@@ -51,6 +51,15 @@ public interface Tracer extends Iterable<TraceNode> {
     int getLength();
 
     /**
+     * Determine if this trace chain is complete. If {@code true} is returned, then that means
+     * that the tracer will be finalized and no new nodes will be added. It also means that it
+     * becomes eligible to release any bound resources, such as {@link TraceEvent}'s stored event.
+     *
+     * @return true if complete, false if the trace chain is incomplete.
+     */
+    boolean isComplete();
+
+    /**
      * Attempt to synchronize the tracer up with its attached object. This should not be called
      * unless the tracer is executing asynchronously.
      */
