@@ -17,8 +17,35 @@
  */
 package org.basinmc.faucet.network;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 /**
  * Base interface for objects that can send and receive packets.
  */
 public interface NetHandler {
+
+    /**
+     * Get the network handler's active protocol version. Versions can be found at
+     * <a href="http://wiki.vg/Protocol_History#1.11">wiki.vg</a>.
+     *
+     * @return the protocol version as a positive integer
+     */
+    @Nonnegative
+    int getProtocolVersion();
+
+    /**
+     * Determine which protocol versions this is capable of communicating with. Versions can
+     * be found at <a href="http://wiki.vg/Protocol_History#1.11">wiki.vg</a>.
+     *
+     * @return an array of protocol versions
+     */
+    int[] getProtocolCompatibility();
+
+    /**
+     * Send a packet to this network handler.
+     *
+     * @param packet the packet to send
+     */
+    void sendPacket(@Nonnull Packet packet);
 }
