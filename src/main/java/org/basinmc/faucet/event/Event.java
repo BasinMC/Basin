@@ -17,5 +17,7 @@
  */
 package org.basinmc.faucet.event;
 
-public interface Event {
+import org.basinmc.faucet.trace.Traceable;
+
+public interface Event extends Traceable {
 }
