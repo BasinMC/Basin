@@ -51,9 +51,9 @@ public interface PacketSerializer<T extends Packet> {
     /**
      * Write the given value to the field at the given index
      *
-     * @param fieldIndex
-     * @param value
-     * @param <F>
+     * @param fieldIndex the index to write at
+     * @param value the value to set the field to
+     * @param <F> the type of the field at the given index
      */
     <F> void write(@Nonnegative int fieldIndex, @Nullable F value);
 }
