@@ -108,6 +108,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
 
+            <!-- Checkstyle -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+
             <!-- Bundle Creation -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
