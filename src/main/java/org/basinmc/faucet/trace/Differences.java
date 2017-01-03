@@ -15,20 +15,15 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.world;
+package org.basinmc.faucet.trace;
 
-import org.basinmc.faucet.capability.CapabilityHolder;
-
-import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 /**
- * Represents a block in the world
+ * Holds standard differentiations.
  */
-public interface Block extends CapabilityHolder, WorldObject<Block> {
-    /**
-     * Get the material type associated with this block
-     */
-    @Nonnull
-    BlockType getBlockType();
+public final class Differences {
+    private Differences() { }
 
+    public static final Function<Integer, Integer> INT_ADD = null;
 }

@@ -15,26 +15,10 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet;
-
-import javax.annotation.Nullable;
+package org.basinmc.faucet.trace;
 
 /**
- * An object that stores various capabilities something might have.
+ * Represents a single step in a {@link Tracer}.
  */
-public interface Capabilities {
-    /**
-     * Checks if this object possesses a capability.
-     * @param capability The capability to check
-     * @return true if the capability is present
-     */
-    boolean hasCapability(Capability capability);
-
-    /**
-     * Gets a capability present in this object. Changes to it must be reflected in this object.
-     * @param type the capability type
-     * @return a capability
-     */
-    @Nullable
-    Capability getCapability(Class<? extends Capability> type);
+public interface TraceNode {
 }

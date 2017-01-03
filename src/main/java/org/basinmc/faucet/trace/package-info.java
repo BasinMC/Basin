@@ -15,20 +15,9 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.world;
-
-import org.basinmc.faucet.capability.CapabilityHolder;
-
-import javax.annotation.Nonnull;
 
 /**
- * Represents a block in the world
+ * The Trace API will provide a means for tracking the significant steps taken in execution
+ * of something with a clear, linear, <strong>non-branching</strong> path.
  */
-public interface Block extends CapabilityHolder, WorldObject<Block> {
-    /**
-     * Get the material type associated with this block
-     */
-    @Nonnull
-    BlockType getBlockType();
-
-}
+package org.basinmc.faucet.trace;

@@ -15,20 +15,19 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.world;
-
-import org.basinmc.faucet.capability.CapabilityHolder;
+package org.basinmc.faucet.capability;
 
 import javax.annotation.Nonnull;
 
 /**
- * Represents a block in the world
+ * Base interface for things that can have capabilities
  */
-public interface Block extends CapabilityHolder, WorldObject<Block> {
+public interface CapabilityHolder {
     /**
-     * Get the material type associated with this block
+     * Gets the capability registry for this object.
+     *
+     * @return the object's unique capability registry
      */
     @Nonnull
-    BlockType getBlockType();
-
+    Capabilities getCapabilities();
 }

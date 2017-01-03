@@ -15,20 +15,19 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.world;
-
-import org.basinmc.faucet.capability.CapabilityHolder;
-
-import javax.annotation.Nonnull;
+package org.basinmc.faucet.network;
 
 /**
- * Represents a block in the world
+ * Holds the two directions in which packets can be sent.
  */
-public interface Block extends CapabilityHolder, WorldObject<Block> {
+public enum NetDirection {
     /**
-     * Get the material type associated with this block
+     * Client-to-server packet
      */
-    @Nonnull
-    BlockType getBlockType();
+    SERVERBOUND,
 
+    /**
+     * Server-to-client packet
+     */
+    CLIENTBOUND
 }

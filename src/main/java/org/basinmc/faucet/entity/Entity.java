@@ -17,7 +17,7 @@
  */
 package org.basinmc.faucet.entity;
 
-import org.basinmc.faucet.CapabilityHolder;
+import org.basinmc.faucet.capability.CapabilityHolder;
 import org.basinmc.faucet.math.Vector3;
 import org.basinmc.faucet.world.WorldObject;
 

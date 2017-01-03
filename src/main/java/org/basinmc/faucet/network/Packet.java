@@ -15,20 +15,10 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.world;
-
-import org.basinmc.faucet.capability.CapabilityHolder;
-
-import javax.annotation.Nonnull;
+package org.basinmc.faucet.network;
 
 /**
- * Represents a block in the world
+ * Represents an abstract packet of data sent over the network.
  */
-public interface Block extends CapabilityHolder, WorldObject<Block> {
-    /**
-     * Get the material type associated with this block
-     */
-    @Nonnull
-    BlockType getBlockType();
-
+public interface Packet {
 }
