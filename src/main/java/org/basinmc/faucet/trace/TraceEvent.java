@@ -19,6 +19,8 @@ package org.basinmc.faucet.trace;
 
 import org.basinmc.faucet.event.Event;
 
+import java.util.function.Consumer;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -62,4 +64,12 @@ public interface TraceEvent<T extends Event> extends TraceMethod {
      */
     @Nullable
     T getEvent();
+
+    /**
+     * Look up a {@link Consumer} object corresponding to the given event handler. If the consumer
+     * is not cached, this will cause a method handle lookup by way of {@link java.lang.invoke.LambdaMetafactory},
+     * which should be taken into account for performance reasons.
+     */
+    @Nonnull
+    Consumer<T> lookup();
 }
