@@ -18,7 +18,7 @@ A modular Minecraft API.
 
 ## Writing Patches
 
-1. Execute the steps described in [Building](#Building)
+1. Execute the steps described in [Building](#building)
 1. Check out master in both sink and faucet using `git checkout master`
 1. Apply your changes to the NMS classes in `src/minecraft/java`
 1. Commit your changes in `src/minecraft/java` (**Note:** Commit by purpose - No single files!)
