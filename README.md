@@ -43,5 +43,5 @@ the [project's chat room](#contact) to discuss future improvements or to get you
 
 ## Contact
 
-**IRC:** irc.basinmc.org (port 6667 or port +6697) in [#Basin](irc://irc.basinmc.org/Basin)<br />
+**IRC:** irc.basinmc.org (port 6667 or port +6697) in [#Basin](irc://irc.basinmc.org/Basin), [Webchat](https://www.basinmc.org/irc/webchat)<br />
 **Website:** https://www.basinmc.org
