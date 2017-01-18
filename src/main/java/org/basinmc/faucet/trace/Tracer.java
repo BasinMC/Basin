@@ -17,6 +17,8 @@
  */
 package org.basinmc.faucet.trace;
 
+import org.basinmc.faucet.internal.warn.Volatile;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 
@@ -73,5 +75,6 @@ public interface Tracer extends Iterable<TraceNode> {
      * TODO think of a better name to avoid confusion with above
      */
     @Nullable
+    @Volatile("Poor naming")
     Tracer resynchronize();
 }

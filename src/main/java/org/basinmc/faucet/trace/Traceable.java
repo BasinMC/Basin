@@ -17,6 +17,8 @@
  */
 package org.basinmc.faucet.trace;
 
+import org.basinmc.faucet.internal.warn.Volatile;
+
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -49,5 +51,6 @@ public interface Traceable {
      *
      * @param callback the callback to call upon initialization
      */
+    @Volatile("Implementation is low-priority.")
     void parallelTrace(@Nonnull Consumer<Tracer> callback);
 }

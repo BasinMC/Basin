@@ -22,14 +22,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Denotes an API method, class, or constructor whose use is not recommended. This should be
- * used to produce warnings at compile-time or at loading time.
+ * Denotes an API method, class, or constructor subject to extreme breaking changes in the
+ * near future.
  */
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
-public @interface Unrecommended {
-    /**
-     * An explanation for why this API is not recommended.
-     */
+public @interface Volatile {
     String value() default "";
 }
