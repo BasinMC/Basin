@@ -16,22 +16,26 @@
  */
 package org.basinmc.faucet.command.annotation;
 
+import org.basinmc.faucet.util.Priority;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates a method that handles subcommand executions for its enclosing {@link Command} type.
- * The subcommand's name will be chosen for a particular execution based on the first argument to
- * the command. Spaces can be used in the subcommand's name field to denote a nested subcommand
- * (e.g. a subcommand of a subcommand). Multiple executors can be mapped to one subcommand. If this
- * annotation is applied to an inner class, it is presumed to be a subcommand handler for an outer class.
- * In this case, subcommand handlers within the inner class would be mapped to subcommands of the subcommand
- * of the main command superhandler.
+ * Allows one to specify the order in which command handlers mapped to the same command (or between
+ * a parent and a child subcommand handler) are executed. By default, all handlers mapped the same
+ * command or command family are executed in a non-deterministic order. By this, command handlers
+ * for each command are ordered based on priority and executed sequentially.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
-public @interface Subcommand {
-    String value();
+public @interface DelegatePriority {
+    Priority value();
+
+    /**
+     * Set to false to halt execution of the command after this executor exits.
+     */
+    boolean serial() default true;
 }
