@@ -53,6 +53,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
 
   @Inject
   private Export<Server> serverExport;
+  @Inject
   private Export<SinkServer> serverImplExport;
 
   @SuppressWarnings("ThisEscapedInObjectConstruction")
