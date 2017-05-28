@@ -16,6 +16,12 @@
  */
 package org.basinmc.sink;
 
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Singleton;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.annotation.Nonnull;
@@ -26,6 +32,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
+import org.ops4j.peaberry.Export;
+import org.ops4j.peaberry.Peaberry;
+import org.ops4j.peaberry.util.TypeLiterals;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -33,22 +42,41 @@ import org.osgi.framework.ServiceRegistration;
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public class SinkServer implements Server, Handled<DedicatedServer> {
+public class SinkServer implements Server, Handled<DedicatedServer>, Module {
 
   private static final Logger logger = LogManager.getFormatterLogger(SinkServer.class);
 
   private final BundleContext ctx;
   private final DedicatedServer server;
+  private final Injector injector;
   private final Server.Configuration configuration = new Configuration();
 
-  private final ServiceRegistration<Server> serverServiceRegistration;
+  @Inject
+  private Export<Server> serverExport;
+  private Export<SinkServer> serverImplExport;
 
-  // TODO: Switch out against a service
+  @SuppressWarnings("ThisEscapedInObjectConstruction")
   SinkServer(@Nonnull BundleContext ctx, @Nonnull DedicatedServer server) {
     this.ctx = ctx;
     this.server = server;
 
-    this.serverServiceRegistration = ctx.registerService(Server.class, this, null);
+    this.injector = Guice.createInjector(Peaberry.osgiModule(ctx), this);
+
+    this.injector.injectMembers(this);
+    logger.debug("Faucet services are ready for consumption");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void configure(@Nonnull Binder binder) {
+    // Local Instances
+    binder.bind(SinkServer.class).toInstance(this);
+
+    // Service Registration
+    binder.bind(TypeLiterals.export(Server.class)).toProvider(Peaberry.service(this).export());
+    binder.bind(TypeLiterals.export(SinkServer.class)).toProvider(Peaberry.service(this).export());
   }
 
   /**
@@ -81,6 +109,11 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     if (playerList != null) {
       playerList.getPlayers().forEach((p) -> p.connection.disconnect(reason));
     }
+
+    // de-register all services (this isn't required as our framework should clean up when the
+    // bundle shuts down but we'll do it anyways)
+    // TODO: Move into bundle shutdown callback of sorts
+    this.serverExport.unput();
 
     this.server.stopServer();
   }
