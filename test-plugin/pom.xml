@@ -50,8 +50,7 @@
 
         <configuration>
           <instructions>
-            <Bundle-Activator>org.basinmc.faucet.Server</Bundle-Activator>
-            <Require-Bundle>org.basinmc.sink</Require-Bundle>
+            <Bundle-Activator>org.basinmc.faucet.test.TestPluginActivator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
