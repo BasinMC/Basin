@@ -18,11 +18,11 @@
 <Configuration status="WARN">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n"/>
+      <PatternLayout pattern="%style{[%d{HH:mm:ss}]}{dim,blue} %style{[%15.15t]}{dim,cyan} %highlight{[%level]}: %highlight{%msg}%n"/>
     </Console>
     <RollingRandomAccessFile name="File" fileName="logs/latest.log"
       filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
-      <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n"/>
+      <PatternLayout pattern="[%d{HH:mm:ss}] [%15.15t] [%level] %-40.40c{1.}: %msg%n"/>
       <Policies>
         <TimeBasedTriggeringPolicy/>
         <OnStartupTriggeringPolicy/>
