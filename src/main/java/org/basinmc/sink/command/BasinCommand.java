@@ -16,6 +16,7 @@
  */
 package org.basinmc.sink.command;
 
+import java.util.Optional;
 import org.basinmc.faucet.command.Color;
 import org.basinmc.faucet.command.Communicable;
 import org.basinmc.faucet.command.annotation.Alias;
@@ -26,36 +27,35 @@ import org.basinmc.faucet.command.annotation.Option;
 import org.basinmc.faucet.command.annotation.Subcommand;
 import org.basinmc.faucet.command.annotation.Supercommand;
 
-import java.util.Optional;
-
 // TODO - this class does nothing currently but serve as an example command implementation.
 @Command("basinctl") // all hail our systemd overlords
 @Alias("b")
 @Description("Provides userspace access and control to server-specific functions.")
 public class BasinCommand {
-    @Supercommand
-    public void printServerState(Communicable sender) {
-        sender.sendMessage(Color.GOLD + "Basin Server Software");
-    }
 
-    @Subcommand("plugins")
-    @Alias("pl")
-    @Alias("bundles")
-    @Description("List plugins.")
-    public void plugins(Communicable sender,
-                        @Option(desc = "Nicely format output in a table", shortOpt = 't', longOpt = "table") boolean table,
-                        @Option(desc = "Hide initialization states", shortOpt = 'H', longOpt = "hide-init") boolean hideinit,
-                        @Option(desc = "Show internal bundles", shortOpt = 'a', longOpt = "show-all") boolean all) {
+  @Supercommand
+  public void printServerState(Communicable sender) {
+    sender.sendMessage(Color.GOLD + "Basin Server Software");
+  }
 
-    }
+  @Subcommand("plugins")
+  @Alias("pl")
+  @Alias("bundles")
+  @Description("List plugins.")
+  public void plugins(Communicable sender,
+      @Option(desc = "Nicely format output in a table", shortOpt = 't', longOpt = "table") boolean table,
+      @Option(desc = "Hide initialization states", shortOpt = 'H', longOpt = "hide-init") boolean hideinit,
+      @Option(desc = "Show internal bundles", shortOpt = 'a', longOpt = "show-all") boolean all) {
 
-    @Subcommand("restart")
-    @Alias("reload")
-    @Description("Restart a bundle.")
-    public void restart(Communicable sender,
-                        @Option(desc = "Bundle to restart, defaults to the server") Optional<String> bundleName,
-                        @Option(desc = "Delay before the restart occurs", shortOpt = 'd', longOpt = "delay") @DateFormat long delay,
-                        @Option(desc = "Notify online players", shortOpt = 'n', longOpt = "notify") boolean notify) {
+  }
 
-    }
+  @Subcommand("restart")
+  @Alias("reload")
+  @Description("Restart a bundle.")
+  public void restart(Communicable sender,
+      @Option(desc = "Bundle to restart, defaults to the server") Optional<String> bundleName,
+      @Option(desc = "Delay before the restart occurs", shortOpt = 'd', longOpt = "delay") @DateFormat long delay,
+      @Option(desc = "Notify online players", shortOpt = 'n', longOpt = "notify") boolean notify) {
+
+  }
 }
