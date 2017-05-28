@@ -25,32 +25,32 @@ package org.basinmc.faucet.util;
  */
 public enum State {
 
-    /**
-     * Refers to an allowed action (e.g. an action that will be or already has been carried out by
-     * the respective implementation).
-     */
-    ALLOW,
+  /**
+   * Refers to an allowed action (e.g. an action that will be or already has been carried out by
+   * the respective implementation).
+   */
+  ALLOW,
 
-    /**
-     * Refers to a denied action (e.g. an action that won't be or hasn't been carried out by the
-     * respective implementation).
-     */
-    DENY,
+  /**
+   * Refers to a denied action (e.g. an action that won't be or hasn't been carried out by the
+   * respective implementation).
+   */
+  DENY,
 
-    /**
-     * Refers to the implementation default state.
-     *
-     * This special value may be used to refer to or reset to a default value within the respective
-     * implementation in a forwards compatible manner.
-     */
-    DEFAULT,
+  /**
+   * Refers to the implementation default state.
+   *
+   * This special value may be used to refer to or reset to a default value within the respective
+   * implementation in a forwards compatible manner.
+   */
+  DEFAULT,
 
-    /**
-     * Refers to any state (including the default state if such state is considered part of the
-     * possible values within the respective implementation).
-     *
-     * This state shall only be used for filters in order to refer to all possible values within the
-     * context of the implementation.
-     */
-    WILDCARD
+  /**
+   * Refers to any state (including the default state if such state is considered part of the
+   * possible values within the respective implementation).
+   *
+   * This state shall only be used for filters in order to refer to all possible values within the
+   * context of the implementation.
+   */
+  WILDCARD
 }

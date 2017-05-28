@@ -30,5 +30,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Repeatable(Aliases.class)
 public @interface Alias {
-    String value();
+
+  String value();
 }

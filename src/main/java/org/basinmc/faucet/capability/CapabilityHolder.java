@@ -23,11 +23,12 @@ import javax.annotation.Nonnull;
  * Base interface for things that can have capabilities
  */
 public interface CapabilityHolder {
-    /**
-     * Gets the capability registry for this object.
-     *
-     * @return the object's unique capability registry
-     */
-    @Nonnull
-    Capabilities getCapabilities();
+
+  /**
+   * Gets the capability registry for this object.
+   *
+   * @return the object's unique capability registry
+   */
+  @Nonnull
+  Capabilities getCapabilities();
 }

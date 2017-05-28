@@ -21,19 +21,19 @@ import javax.annotation.Nonnull;
 /**
  * Provides a base interface for observing value changes.
  *
- * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  * @param <T> the property type.
+ * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 @FunctionalInterface
 public interface Observer<T> {
 
-    /**
-     * Handles the change to an observed property.
-     *
-     * @param observable the observed property.
-     * @param oldValue   the old value.
-     * @param newValue   a new value.
-     * @return if true allows altering of the property value, if false retains the old value.
-     */
-    boolean change(@Nonnull ObservableProperty<? extends T> observable, T oldValue, T newValue);
+  /**
+   * Handles the change to an observed property.
+   *
+   * @param observable the observed property.
+   * @param oldValue the old value.
+   * @param newValue a new value.
+   * @return if true allows altering of the property value, if false retains the old value.
+   */
+  boolean change(@Nonnull ObservableProperty<? extends T> observable, T oldValue, T newValue);
 }

@@ -19,5 +19,6 @@ package org.basinmc.faucet.internal.trace;
 import org.basinmc.faucet.trace.TraceNode;
 
 public interface Metatracer {
-    void post(TraceNode traceNode);
+
+  void post(TraceNode traceNode);
 }

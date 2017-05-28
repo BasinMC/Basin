@@ -23,4 +23,5 @@ package org.basinmc.faucet.event.handler;
  * Faucet implementation or plugins.
  */
 public interface EventHandler {
+
 }

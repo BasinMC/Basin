@@ -23,24 +23,25 @@ import javax.annotation.Nonnull;
  * Interface for interaction with capabilities
  */
 public interface CapabilityRegistry {
-    /**
-     * Register a new capability type. If a capability type with the same name and parameter types
-     * already is registered, it will be returned instead. If a capability with the same name
-     * but different parameter types is registered, a warning will be issued for developer sanity.
-     *
-     * @param name a descriptive name for the capability
-     * @param parameterTypes types the capability stores as parameters
-     * @return a capability instance for universal usage
-     */
-    @Nonnull
-    Capability registerCapability(String name, Class<?>[] parameterTypes);
 
-    /**
-     * Checks if the given capability is registered.
-     *
-     * @param name a descriptive name for the capability
-     * @param parameterTypes types the capability stores as parameters
-     * @return true if the capability has been previously registered
-     */
-    boolean isRegistered(String name, Class<?>[] parameterTypes);
+  /**
+   * Register a new capability type. If a capability type with the same name and parameter types
+   * already is registered, it will be returned instead. If a capability with the same name
+   * but different parameter types is registered, a warning will be issued for developer sanity.
+   *
+   * @param name a descriptive name for the capability
+   * @param parameterTypes types the capability stores as parameters
+   * @return a capability instance for universal usage
+   */
+  @Nonnull
+  Capability registerCapability(String name, Class<?>[] parameterTypes);
+
+  /**
+   * Checks if the given capability is registered.
+   *
+   * @param name a descriptive name for the capability
+   * @param parameterTypes types the capability stores as parameters
+   * @return true if the capability has been previously registered
+   */
+  boolean isRegistered(String name, Class<?>[] parameterTypes);
 }

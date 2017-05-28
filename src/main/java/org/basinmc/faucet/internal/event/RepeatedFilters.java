@@ -16,47 +16,53 @@
  */
 package org.basinmc.faucet.internal.event;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.basinmc.faucet.event.filter.BooleanFilter;
 import org.basinmc.faucet.event.filter.ClassFilter;
 import org.basinmc.faucet.event.filter.DoubleFilter;
 import org.basinmc.faucet.event.filter.IntFilter;
 import org.basinmc.faucet.event.filter.StringFilter;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 public final class RepeatedFilters {
-    private RepeatedFilters() { }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    public @interface RepeatedIntFilter {
-        IntFilter[] value();
-    }
+  private RepeatedFilters() {
+  }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    public @interface RepeatedStringFilter {
-        StringFilter[] value();
-    }
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.METHOD)
+  public @interface RepeatedIntFilter {
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    public @interface RepeatedDoubleFilter {
-        DoubleFilter[] value();
-    }
+    IntFilter[] value();
+  }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    public @interface RepeatedBooleanFilter {
-        BooleanFilter[] value();
-    }
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.METHOD)
+  public @interface RepeatedStringFilter {
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    public @interface RepeatedClassFilter {
-        ClassFilter[] value();
-    }
+    StringFilter[] value();
+  }
+
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.METHOD)
+  public @interface RepeatedDoubleFilter {
+
+    DoubleFilter[] value();
+  }
+
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.METHOD)
+  public @interface RepeatedBooleanFilter {
+
+    BooleanFilter[] value();
+  }
+
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.METHOD)
+  public @interface RepeatedClassFilter {
+
+    ClassFilter[] value();
+  }
 }

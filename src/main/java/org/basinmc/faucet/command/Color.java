@@ -17,44 +17,44 @@
 package org.basinmc.faucet.command;
 
 public enum Color {
-    BLACK('0'),
-    DARK_BLUE('1'),
-    DARK_GREEN('2'),
-    DARK_CYAN('3'),
-    DARK_RED('4'),
-    DARK_PURPLE('5'),
-    GOLD('6'),
-    GREY('7'),
-    DARK_GREY('8'),
-    BLUE('9'),
-    GREEN('a'),
-    CYAN('b'),
-    RED('c'),
-    PURPLE('d'),
-    YELLOW('e'),
-    WHITE('f'),
+  BLACK('0'),
+  DARK_BLUE('1'),
+  DARK_GREEN('2'),
+  DARK_CYAN('3'),
+  DARK_RED('4'),
+  DARK_PURPLE('5'),
+  GOLD('6'),
+  GREY('7'),
+  DARK_GREY('8'),
+  BLUE('9'),
+  GREEN('a'),
+  CYAN('b'),
+  RED('c'),
+  PURPLE('d'),
+  YELLOW('e'),
+  WHITE('f'),
 
-    OBSCURE('k'),
-    BOLD('l'),
-    STRIKETHROUGH('m'),
-    UNDERLINE('n'),
-    ITALICS('o'),
-    RESET('r');
+  OBSCURE('k'),
+  BOLD('l'),
+  STRIKETHROUGH('m'),
+  UNDERLINE('n'),
+  ITALICS('o'),
+  RESET('r');
 
-    private char controlCode;
+  private char controlCode;
 
-    public static final char PREFIX = '§';
+  public static final char PREFIX = '§';
 
-    Color(char controlCode) {
-        this.controlCode = controlCode;
-    }
+  Color(char controlCode) {
+    this.controlCode = controlCode;
+  }
 
-    public char getControlCode() {
-        return controlCode;
-    }
+  public char getControlCode() {
+    return controlCode;
+  }
 
-    @Override
-    public String toString() {
-        return String.valueOf(PREFIX) + String.valueOf(controlCode);
-    }
+  @Override
+  public String toString() {
+    return String.valueOf(PREFIX) + String.valueOf(controlCode);
+  }
 }

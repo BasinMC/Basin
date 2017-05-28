@@ -22,7 +22,7 @@ package org.basinmc.faucet.math;
  */
 public final class BlockAlignedVector3 extends Vector3 {
 
-    public BlockAlignedVector3(int x, int y, int z) {
-        super(x, y, z);
-    }
+  public BlockAlignedVector3(int x, int y, int z) {
+    super(x, y, z);
+  }
 }

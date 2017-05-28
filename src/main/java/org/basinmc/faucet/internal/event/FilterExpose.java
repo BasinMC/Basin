@@ -16,13 +16,12 @@
  */
 package org.basinmc.faucet.internal.event;
 
-import org.basinmc.faucet.internal.util.StringParsable;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.basinmc.faucet.internal.util.StringParsable;
 
 /**
  * Annotates a field in an event class to expose it and map it to a specific filter annotation.
@@ -30,23 +29,24 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface FilterExpose {
-    /**
-     * The filter annotation being mapped.
-     */
-    Class<? extends Annotation> value();
 
-    /**
-     * A mapper for the filter annotation to use. May be omitted in most cases.
-     */
-    Class<? extends StringParsable> mapper() default StringParsable.class;
+  /**
+   * The filter annotation being mapped.
+   */
+  Class<? extends Annotation> value();
 
-    /**
-     * A value to override the field name.
-     */
-    String name() default "";
+  /**
+   * A mapper for the filter annotation to use. May be omitted in most cases.
+   */
+  Class<? extends StringParsable> mapper() default StringParsable.class;
 
-    /**
-     * Use to extract a specific value from an object field. Specifies the field name.
-     */
-    String extract() default "";
+  /**
+   * A value to override the field name.
+   */
+  String name() default "";
+
+  /**
+   * Use to extract a specific value from an object field. Specifies the field name.
+   */
+  String extract() default "";
 }

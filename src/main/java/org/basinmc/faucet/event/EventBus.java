@@ -17,10 +17,9 @@
  */
 package org.basinmc.faucet.event;
 
-import org.basinmc.faucet.event.handler.EventHandler;
-
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
+import org.basinmc.faucet.event.handler.EventHandler;
 
 /**
  * Provides an event management system which will automatically post events to all registered
@@ -29,12 +28,13 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public interface EventBus {
 
-    /**
-     * Posts an event to the event bus. Each handler configured to
-     * accept a supertype or equivalent type of event will receive
-     * the event.
-     * @param event The even to post
-     * @param <T> The type of event
-     */
-    <T extends Event> void post(@Nonnull T event);
+  /**
+   * Posts an event to the event bus. Each handler configured to
+   * accept a supertype or equivalent type of event will receive
+   * the event.
+   *
+   * @param event The even to post
+   * @param <T> The type of event
+   */
+  <T extends Event> void post(@Nonnull T event);
 }

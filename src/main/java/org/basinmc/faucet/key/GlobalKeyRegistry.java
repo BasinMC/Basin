@@ -23,31 +23,32 @@ import javax.annotation.Nullable;
  * Represents an application-wide registration of {@link Key} namespaces.
  */
 public interface GlobalKeyRegistry {
-    /**
-     * Attempts to create a registry with the given namespace.
-     *
-     * @param namespace the namespace to create
-     * @return a new registry
-     * @throws IllegalArgumentException if the given namespace is already in use
-     */
-    @Nonnull
-    KeyRegistry create(String namespace) throws IllegalArgumentException;
 
-    /**
-     * Safely create a registry for the calling bundle, using its name as a namespace.
-     *
-     * @return a new registry
-     */
-    @Nonnull
-    KeyRegistry create();
+  /**
+   * Attempts to create a registry with the given namespace.
+   *
+   * @param namespace the namespace to create
+   * @return a new registry
+   * @throws IllegalArgumentException if the given namespace is already in use
+   */
+  @Nonnull
+  KeyRegistry create(String namespace) throws IllegalArgumentException;
 
-    /**
-     * Attempts to look up a key in a given namespace.
-     *
-     * @param namespace the namespace to search
-     * @param name the key name
-     * @return a key, or null if none is present
-     */
-    @Nullable
-    Key lookup(String namespace, String name);
+  /**
+   * Safely create a registry for the calling bundle, using its name as a namespace.
+   *
+   * @return a new registry
+   */
+  @Nonnull
+  KeyRegistry create();
+
+  /**
+   * Attempts to look up a key in a given namespace.
+   *
+   * @param namespace the namespace to search
+   * @param name the key name
+   * @return a key, or null if none is present
+   */
+  @Nullable
+  Key lookup(String namespace, String name);
 }

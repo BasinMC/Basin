@@ -17,13 +17,11 @@
  */
 package org.basinmc.faucet.trace;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
-
 import java.lang.invoke.MethodHandle;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Represents a generic method that is used in a trace chain. If a more specific {@link TraceNode}
@@ -31,53 +29,53 @@ import javax.annotation.Nullable;
  */
 public interface TraceMethod extends TraceNode {
 
-    /**
-     * Get the class that triggered this action.
-     *
-     * @return a class descriptor
-     */
-    @Nonnull
-    Class<?> getStartingClass();
+  /**
+   * Get the class that triggered this action.
+   *
+   * @return a class descriptor
+   */
+  @Nonnull
+  Class<?> getStartingClass();
 
-    /**
-     * Get the OSGi bundle that holds the class that triggered this action.
-     *
-     * @return an OSGi bundle
-     */
-    @Nonnull
-    default Bundle getStartingBundle() {
-        return FrameworkUtil.getBundle(this.getStartingClass());
-    }
+  /**
+   * Get the OSGi bundle that holds the class that triggered this action.
+   *
+   * @return an OSGi bundle
+   */
+  @Nonnull
+  default Bundle getStartingBundle() {
+    return FrameworkUtil.getBundle(this.getStartingClass());
+  }
 
-    /**
-     * Get the name of the method. Constructors and static initialization blocks will return
-     * <p>{@literal <init>}</p> and <p>{@literal <clinit>}</p> respectively.
-     *
-     * @return a method name
-     */
-    @Nonnull
-    String getMethodName();
+  /**
+   * Get the name of the method. Constructors and static initialization blocks will return
+   * <p>{@literal <init>}</p> and <p>{@literal <clinit>}</p> respectively.
+   *
+   * @return a method name
+   */
+  @Nonnull
+  String getMethodName();
 
-    /**
-     * Get this method's signature as defined by the Java specification. For example,
-     * {@code public boolean test(int x, String y);} would be represented as
-     * {@code test(ILjava/lang/String;)Z}. For more information,
-     * <a href=http://www.rgagnon.com/javadetails/java-0286.html>this tutorial</a> provides
-     * a useful introduction to Java method signatures.
-     *
-     * @return a signature string
-     */
-    @Nonnull
-    String getSignature();
+  /**
+   * Get this method's signature as defined by the Java specification. For example,
+   * {@code public boolean test(int x, String y);} would be represented as
+   * {@code test(ILjava/lang/String;)Z}. For more information,
+   * <a href=http://www.rgagnon.com/javadetails/java-0286.html>this tutorial</a> provides
+   * a useful introduction to Java method signatures.
+   *
+   * @return a signature string
+   */
+  @Nonnull
+  String getSignature();
 
-    /**
-     * Attempt to resolve the given method into a {@link MethodHandle}. Please note that this
-     * result is not pre-computed, so the first call to this method will result in a blocking
-     * operation which may take some time. However, the result will be cached and can be
-     * retrieved later inexpensively.
-     *
-     * @return a cached or newly-looked-up method handle
-     */
-    @Nullable
-    MethodHandle resolve();
+  /**
+   * Attempt to resolve the given method into a {@link MethodHandle}. Please note that this
+   * result is not pre-computed, so the first call to this method will result in a blocking
+   * operation which may take some time. However, the result will be cached and can be
+   * retrieved later inexpensively.
+   *
+   * @return a cached or newly-looked-up method handle
+   */
+  @Nullable
+  MethodHandle resolve();
 }

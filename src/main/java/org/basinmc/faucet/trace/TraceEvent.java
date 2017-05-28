@@ -17,12 +17,10 @@
  */
 package org.basinmc.faucet.trace;
 
-import org.basinmc.faucet.event.Event;
-
 import java.util.function.Consumer;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.basinmc.faucet.event.Event;
 
 /**
  * Represents a node in a trace chain backed by either an event handler or an event trigger.
@@ -31,45 +29,46 @@ import javax.annotation.Nullable;
  */
 public interface TraceEvent<T extends Event> extends TraceMethod {
 
-    /**
-     * Checks if this node is the result of an event being posted or being handled.
-     *
-     * @return true if posted, false if handled
-     */
-    boolean isTrigger();
+  /**
+   * Checks if this node is the result of an event being posted or being handled.
+   *
+   * @return true if posted, false if handled
+   */
+  boolean isTrigger();
 
-    /**
-     * Gets the most specific possible type of event which is being handled or triggered.
-     *
-     * @return a class extending {@link Event}
-     */
-    @Nonnull
-    Class<? extends T> getEventType();
+  /**
+   * Gets the most specific possible type of event which is being handled or triggered.
+   *
+   * @return a class extending {@link Event}
+   */
+  @Nonnull
+  Class<? extends T> getEventType();
 
-    /**
-     * Get a snapshot of the event at the time this node was constructed. The snapshot returned
-     * will not have changes reflected in this node's stored snapshot.
-     *
-     * @return an event
-     */
-    @Nonnull
-    T getSnapshot();
+  /**
+   * Get a snapshot of the event at the time this node was constructed. The snapshot returned
+   * will not have changes reflected in this node's stored snapshot.
+   *
+   * @return an event
+   */
+  @Nonnull
+  T getSnapshot();
 
-    /**
-     * Retrieve the event in its current state. Note that this event is stored in a weakly
-     * referenced manner, so by the time this method is called the event may have already
-     * been garbage-collected.
-     *
-     * @return the current event, or null if it is no longer valid
-     */
-    @Nullable
-    T getEvent();
+  /**
+   * Retrieve the event in its current state. Note that this event is stored in a weakly
+   * referenced manner, so by the time this method is called the event may have already
+   * been garbage-collected.
+   *
+   * @return the current event, or null if it is no longer valid
+   */
+  @Nullable
+  T getEvent();
 
-    /**
-     * Look up a {@link Consumer} object corresponding to the given event handler. If the consumer
-     * is not cached, this will cause a method handle lookup by way of {@link java.lang.invoke.LambdaMetafactory},
-     * which should be taken into account for performance reasons.
-     */
-    @Nonnull
-    Consumer<T> lookup();
+  /**
+   * Look up a {@link Consumer} object corresponding to the given event handler. If the consumer is
+   * not cached, this will cause a method handle lookup by way of {@link
+   * java.lang.invoke.LambdaMetafactory}, which should be taken into account for performance
+   * reasons.
+   */
+  @Nonnull
+  Consumer<T> lookup();
 }

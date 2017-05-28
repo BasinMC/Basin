@@ -26,4 +26,5 @@ import org.basinmc.faucet.trace.Traceable;
  * for modification to listening plugins.
  */
 public interface Event extends Traceable {
+
 }

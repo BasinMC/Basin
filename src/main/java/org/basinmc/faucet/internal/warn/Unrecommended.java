@@ -28,8 +28,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
 public @interface Unrecommended {
-    /**
-     * An explanation for why this API is not recommended.
-     */
-    String value() default "";
+
+  /**
+   * An explanation for why this API is not recommended.
+   */
+  String value() default "";
 }

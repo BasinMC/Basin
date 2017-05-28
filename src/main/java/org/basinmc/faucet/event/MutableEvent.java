@@ -25,25 +25,25 @@ package org.basinmc.faucet.event;
  */
 public interface MutableEvent extends Event {
 
-    /**
-     * Checks whether the event has been finalized by a previous handler.
-     *
-     * Finalized events can no longer be altered by subsequent handlers and as such will only be
-     * passed to handlers which explicitly express the will to retrieve such finalized event
-     * instances.
-     *
-     * Note: Plugins should only finalize event states when they actually require full authority
-     * over an event state while accepting change from another handler is not acceptable to the
-     * plugin logic.
-     *
-     * @return true if finalized, false otherwise.
-     */
-    boolean isFinalized();
+  /**
+   * Checks whether the event has been finalized by a previous handler.
+   *
+   * Finalized events can no longer be altered by subsequent handlers and as such will only be
+   * passed to handlers which explicitly express the will to retrieve such finalized event
+   * instances.
+   *
+   * Note: Plugins should only finalize event states when they actually require full authority
+   * over an event state while accepting change from another handler is not acceptable to the
+   * plugin logic.
+   *
+   * @return true if finalized, false otherwise.
+   */
+  boolean isFinalized();
 
-    /**
-     * Finalizes the state effectively preventing any further modification.
-     *
-     * @see #isFinalized() for a more detailed explanation on the topic of finalization.
-     */
-    void finalizeState();
+  /**
+   * Finalizes the state effectively preventing any further modification.
+   *
+   * @see #isFinalized() for a more detailed explanation on the topic of finalization.
+   */
+  void finalizeState();
 }

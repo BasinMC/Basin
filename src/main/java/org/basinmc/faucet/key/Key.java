@@ -17,19 +17,20 @@
 package org.basinmc.faucet.key;
 
 import java.util.UUID;
-
 import javax.annotation.Nonnull;
 
 /**
- * A minecraft key. Has a namespace and a name and is represented in the form {@code namespace:name}.
+ * A minecraft key. Has a namespace and a name and is represented in the form {@code
+ * namespace:name}.
  */
 public interface Key {
-    @Nonnull
-    String getNamespace();
 
-    @Nonnull
-    String getName();
+  @Nonnull
+  String getNamespace();
 
-    @Nonnull
-    UUID getUUID();
+  @Nonnull
+  String getName();
+
+  @Nonnull
+  UUID getUUID();
 }

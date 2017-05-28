@@ -22,9 +22,9 @@ package org.basinmc.faucet.util;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public enum Priority {
-    HIGHEST,
-    HIGH,
-    NORMAL,
-    LOW,
-    LOWEST
+  HIGHEST,
+  HIGH,
+  NORMAL,
+  LOW,
+  LOWEST
 }

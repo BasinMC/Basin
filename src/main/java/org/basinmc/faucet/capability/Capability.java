@@ -24,35 +24,38 @@ import javax.annotation.Nullable;
  * Super-interface for anything stored in a {@link Capabilities} object.
  */
 public interface Capability {
-    /**
-     * Checks if this capability is registered in the server capability registry.
-     */
-    boolean isRegistered();
+
+  /**
+   * Checks if this capability is registered in the server capability registry.
+   */
+  boolean isRegistered();
+
+  /**
+   * Get the types this capability uses as parameters
+   *
+   * @return an ordered array, or an empty array if no parameters are present
+   */
+  @Nonnull
+  Class<?>[] getParameterTypes();
+
+  /**
+   * Represents a parameter type for a specific {@link Capability}
+   *
+   * @param <T> The type of data it holds
+   */
+  interface Parameter<T> {
 
     /**
-     * Get the types this capability uses as parameters
+     * Set the specified value to a nullable value.
      *
-     * @return an ordered array, or an empty array if no parameters are present
+     * @param value the value to set to
      */
-    @Nonnull
-    Class<?>[] getParameterTypes();
+    void set(@Nullable T value);
 
     /**
-     * Represents a parameter type for a specific {@link Capability}
-     * @param <T> The type of data it holds
+     * Retrieve the parameter's value
      */
-    interface Parameter<T> {
-        /**
-         * Set the specified value to a nullable value.
-         *
-         * @param value the value to set to
-         */
-        void set(@Nullable T value);
-
-        /**
-         * Retrieve the parameter's value
-         */
-        @Nullable
-        T get();
-    }
+    @Nullable
+    T get();
+  }
 }

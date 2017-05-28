@@ -23,18 +23,21 @@ import javax.annotation.Nullable;
  * An object that stores various capabilities something might have.
  */
 public interface Capabilities {
-    /**
-     * Checks if this object possesses a capability.
-     * @param capability The capability to check
-     * @return true if the capability is present
-     */
-    boolean hasCapability(Capability capability);
 
-    /**
-     * Gets a capability present in this object. Changes to it must be reflected in this object.
-     * @param type the capability type
-     * @return a capability
-     */
-    @Nullable
-    CapabilityInstance getCapability(Capability type);
+  /**
+   * Checks if this object possesses a capability.
+   *
+   * @param capability The capability to check
+   * @return true if the capability is present
+   */
+  boolean hasCapability(Capability capability);
+
+  /**
+   * Gets a capability present in this object. Changes to it must be reflected in this object.
+   *
+   * @param type the capability type
+   * @return a capability
+   */
+  @Nullable
+  CapabilityInstance getCapability(Capability type);
 }

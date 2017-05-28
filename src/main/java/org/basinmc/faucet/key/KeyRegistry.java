@@ -17,7 +17,6 @@
 package org.basinmc.faucet.key;
 
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -26,41 +25,45 @@ import javax.annotation.Nullable;
  */
 public interface KeyRegistry {
 
-    /**
-     * Get the namespace for which this registry holds keys.
-     */
-    @Nonnull
-    String getNamespace();
+  /**
+   * Get the namespace for which this registry holds keys.
+   */
+  @Nonnull
+  String getNamespace();
 
-    /**
-     * Attempt to create a key.
-     *
-     * @param name the name which the key will have
-     * @return a new {@link Key} object
-     * @throws IllegalStateException if a key with the given namespace and name is already registered.
-     */
-    @Nonnull Key create(@Nonnull String name) throws IllegalStateException;
+  /**
+   * Attempt to create a key.
+   *
+   * @param name the name which the key will have
+   * @return a new {@link Key} object
+   * @throws IllegalStateException if a key with the given namespace and name is already
+   * registered.
+   */
+  @Nonnull
+  Key create(@Nonnull String name) throws IllegalStateException;
 
-    /**
-     * Attempt to retrieve an already-created key.
-     *
-     * @param name the name to search for
-     * @return an existing key, or null if none has been registered
-     */
-    @Nullable Key get(@Nonnull String name);
+  /**
+   * Attempt to retrieve an already-created key.
+   *
+   * @param name the name to search for
+   * @return an existing key, or null if none has been registered
+   */
+  @Nullable
+  Key get(@Nonnull String name);
 
-    /**
-     * Attempts to retrieve an already-created key, or creates one if none exists.
-     *
-     * @param name the name of the key
-     * @return an existing key, or a new one if it didn't previously exist
-     */
-    @Nonnull Key getOrCreate(@Nonnull String name);
+  /**
+   * Attempts to retrieve an already-created key, or creates one if none exists.
+   *
+   * @param name the name of the key
+   * @return an existing key, or a new one if it didn't previously exist
+   */
+  @Nonnull
+  Key getOrCreate(@Nonnull String name);
 
-    /**
-     * Get a set of keys present in this registry
-     */
-    @Nonnull
-    Set<Key> getKeys();
+  /**
+   * Get a set of keys present in this registry
+   */
+  @Nonnull
+  Set<Key> getKeys();
 
 }

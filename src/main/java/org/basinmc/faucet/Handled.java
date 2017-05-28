@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
  * @param <T> The type being wrapped
  */
 public interface Handled<T> {
-    @Nonnull
-    T getHandle();
+
+  @Nonnull
+  T getHandle();
 }

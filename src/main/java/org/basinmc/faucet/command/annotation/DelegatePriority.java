@@ -16,12 +16,11 @@
  */
 package org.basinmc.faucet.command.annotation;
 
-import org.basinmc.faucet.util.Priority;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.basinmc.faucet.util.Priority;
 
 /**
  * Allows one to specify the order in which command handlers mapped to the same command (or between
@@ -32,10 +31,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface DelegatePriority {
-    Priority value();
 
-    /**
-     * Set to false to halt execution of the command after this executor exits.
-     */
-    boolean serial() default true;
+  Priority value();
+
+  /**
+   * Set to false to halt execution of the command after this executor exits.
+   */
+  boolean serial() default true;
 }

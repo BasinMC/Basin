@@ -17,10 +17,9 @@
  */
 package org.basinmc.faucet.trace;
 
-import org.basinmc.faucet.internal.warn.Volatile;
-
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
+import org.basinmc.faucet.internal.warn.Volatile;
 
 /**
  * Represents a chain of actions. Implementations should ideally not expose logic for
@@ -28,53 +27,53 @@ import javax.annotation.Nullable;
  */
 public interface Tracer extends Iterable<TraceNode> {
 
-    /**
-     * Retrieve the first element in this action chain, or null if the first action has
-     * not been completed yet.
-     *
-     * @return the first node, or null if none exists
-     */
-    @Nullable
-    TraceNode getRoot();
+  /**
+   * Retrieve the first element in this action chain, or null if the first action has
+   * not been completed yet.
+   *
+   * @return the first node, or null if none exists
+   */
+  @Nullable
+  TraceNode getRoot();
 
-    /**
-     * Retrieve the last element in this action chain, or null if no action has been
-     * completed.
-     *
-     * @return the last node, or null if none exists
-     */
-    @Nullable
-    TraceNode getHead();
+  /**
+   * Retrieve the last element in this action chain, or null if no action has been
+   * completed.
+   *
+   * @return the last node, or null if none exists
+   */
+  @Nullable
+  TraceNode getHead();
 
-    /**
-     * Get the (1-indexed) length of this event chain.
-     */
-    @Nonnegative
-    int getLength();
+  /**
+   * Get the (1-indexed) length of this event chain.
+   */
+  @Nonnegative
+  int getLength();
 
-    /**
-     * Determine if this trace chain is complete. If {@code true} is returned, then that means
-     * that the tracer will be finalized and no new nodes will be added. It also means that it
-     * becomes eligible to release any bound resources, such as {@link TraceEvent}'s stored event.
-     *
-     * @return true if complete, false if the trace chain is incomplete.
-     */
-    boolean isComplete();
+  /**
+   * Determine if this trace chain is complete. If {@code true} is returned, then that means
+   * that the tracer will be finalized and no new nodes will be added. It also means that it
+   * becomes eligible to release any bound resources, such as {@link TraceEvent}'s stored event.
+   *
+   * @return true if complete, false if the trace chain is incomplete.
+   */
+  boolean isComplete();
 
-    /**
-     * Attempt to synchronize the tracer up with its attached object. This should not be called
-     * unless the tracer is executing asynchronously.
-     */
-    void synchronize();
+  /**
+   * Attempt to synchronize the tracer up with its attached object. This should not be called
+   * unless the tracer is executing asynchronously.
+   */
+  void synchronize();
 
-    /**
-     * If called within a method being tracked by this tracer, will attempt to resynchronize
-     * this tracer with that step. A copy will be returned containing only the trace nodes
-     * executed to that point, and the original will be unmodified.
-     *
-     * TODO think of a better name to avoid confusion with above
-     */
-    @Nullable
-    @Volatile("Poor naming")
-    Tracer resynchronize();
+  /**
+   * If called within a method being tracked by this tracer, will attempt to resynchronize
+   * this tracer with that step. A copy will be returned containing only the trace nodes
+   * executed to that point, and the original will be unmodified.
+   *
+   * TODO think of a better name to avoid confusion with above
+   */
+  @Nullable
+  @Volatile("Poor naming")
+  Tracer resynchronize();
 }

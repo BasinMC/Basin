@@ -22,32 +22,33 @@ import javax.annotation.Nullable;
 
 public interface CapabilityInstance {
 
-    /**
-     * Get the type of capability this instance corresponds with
-     */
-    @Nonnull
-    Capability getType();
+  /**
+   * Get the type of capability this instance corresponds with
+   */
+  @Nonnull
+  Capability getType();
 
-    /**
-     * Get the object holding this specific instance.
-     */
-    @Nonnull
-    CapabilityHolder getHolder();
+  /**
+   * Get the object holding this specific instance.
+   */
+  @Nonnull
+  CapabilityHolder getHolder();
 
-    /**
-     * Get a list of parameters for this capability
-     */
-    @Nonnull
-    Capability.Parameter[] getParameters();
+  /**
+   * Get a list of parameters for this capability
+   */
+  @Nonnull
+  Capability.Parameter[] getParameters();
 
-    /**
-     * Attempt to get a parameter with a string key
-     *
-     * @param key the key to look up with
-     * @return a parameter matching the key, or null if none match
-     * @throws UnsupportedOperationException if the capability doesn't support indexing parameters by string key
-     */
-    @Nullable
-    Capability.Parameter getParameter(String key) throws UnsupportedOperationException;
+  /**
+   * Attempt to get a parameter with a string key
+   *
+   * @param key the key to look up with
+   * @return a parameter matching the key, or null if none match
+   * @throws UnsupportedOperationException if the capability doesn't support indexing parameters by
+   * string key
+   */
+  @Nullable
+  Capability.Parameter getParameter(String key) throws UnsupportedOperationException;
 
 }

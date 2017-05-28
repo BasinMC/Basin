@@ -18,17 +18,18 @@
 package org.basinmc.faucet.world;
 
 public enum Gamemode {
-    SURVIVAL(0),
-    CREATIVE(1),
-    ADVENTURE(2),
-    SPECTATOR(3);
+  SURVIVAL(0),
+  CREATIVE(1),
+  ADVENTURE(2),
+  SPECTATOR(3);
 
-    final int id;
-    Gamemode(int id) {
-        this.id = id;
-    }
+  final int id;
 
-    public int getId() {
-        return id;
-    }
+  Gamemode(int id) {
+    this.id = id;
+  }
+
+  public int getId() {
+    return id;
+  }
 }

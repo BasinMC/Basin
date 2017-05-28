@@ -17,16 +17,14 @@
  */
 package org.basinmc.faucet.event.handler;
 
-import org.basinmc.faucet.event.MutableEvent;
-import org.basinmc.faucet.util.Priority;
-import org.basinmc.faucet.util.State;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import javax.annotation.Nonnull;
+import org.basinmc.faucet.event.MutableEvent;
+import org.basinmc.faucet.util.Priority;
+import org.basinmc.faucet.util.State;
 
 /**
  * Annotates a method that is to be subscribed to events. Can annotate a class for this operation
@@ -37,31 +35,31 @@ import javax.annotation.Nonnull;
 @Target({ElementType.METHOD})
 public @interface Subscribe {
 
-    /**
-     * Declares the priority at which this handler is being called.
-     *
-     * Higher priority handlers will be called first within the queue and as such get the highest
-     * authority over the event state.
-     */
-    @Nonnull
-    Priority priority() default Priority.NORMAL;
+  /**
+   * Declares the priority at which this handler is being called.
+   *
+   * Higher priority handlers will be called first within the queue and as such get the highest
+   * authority over the event state.
+   */
+  @Nonnull
+  Priority priority() default Priority.NORMAL;
 
-    /**
-     * Indicates whether the annotated member will be notified of events which have been finalized.
-     *
-     * @see MutableEvent#isFinalized() for a detailed documentation on finalization.
-     */
-    boolean receiveFinalized() default false;
+  /**
+   * Indicates whether the annotated member will be notified of events which have been finalized.
+   *
+   * @see MutableEvent#isFinalized() for a detailed documentation on finalization.
+   */
+  boolean receiveFinalized() default false;
 
-    /**
-     * Indicates which state an event (of instance {@link org.basinmc.faucet.event.StatefulEvent})
-     * has to be in at the time of posting in order to cause the framework to notify the annotated
-     * member.
-     *
-     * Note: In addition to {@link State#ALLOW} and {@link State#DENY}, you may also use
-     * {@link State#DEFAULT} in order to reduce the set of events to events which are currently in
-     * their default state as well as {@link State#WILDCARD} to retrieve events from both sides.
-     */
-    @Nonnull
-    State receiveState() default State.ALLOW;
+  /**
+   * Indicates which state an event (of instance {@link org.basinmc.faucet.event.StatefulEvent})
+   * has to be in at the time of posting in order to cause the framework to notify the annotated
+   * member.
+   *
+   * Note: In addition to {@link State#ALLOW} and {@link State#DENY}, you may also use
+   * {@link State#DEFAULT} in order to reduce the set of events to events which are currently in
+   * their default state as well as {@link State#WILDCARD} to retrieve events from both sides.
+   */
+  @Nonnull
+  State receiveState() default State.ALLOW;
 }

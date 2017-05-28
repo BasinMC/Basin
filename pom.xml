@@ -16,142 +16,142 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <!-- Parent Artifact Information -->
-    <parent>
-        <artifactId>parent</artifactId>
-        <groupId>org.basinmc</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+  <!-- Parent Artifact Information -->
+  <parent>
+    <artifactId>parent</artifactId>
+    <groupId>org.basinmc</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
 
-    <!-- Artifact Information -->
-    <artifactId>faucet</artifactId>
-    <packaging>bundle</packaging>
+  <!-- Artifact Information -->
+  <artifactId>faucet</artifactId>
+  <packaging>bundle</packaging>
 
-    <properties>
-        <describe/>
-    </properties>
+  <properties>
+    <describe/>
+  </properties>
 
-    <!-- Artifact Metadata -->
-    <name>Faucet</name>
-    <description>A Minecraft plugin API.</description>
+  <!-- Artifact Metadata -->
+  <name>Faucet</name>
+  <description>A Minecraft plugin API.</description>
 
-    <!-- Dependencies -->
-    <dependencies>
-        <!-- Minecraft -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.basinmc.bundles</groupId>
-            <artifactId>io.netty.netty-all</artifactId>
-        </dependency>
+  <!-- Dependencies -->
+  <dependencies>
+    <!-- Minecraft -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.basinmc.bundles</groupId>
+      <artifactId>io.netty.netty-all</artifactId>
+    </dependency>
 
-        <!-- Plugin Framework -->
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.compendium</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.logging</groupId>
-            <artifactId>pax-logging-api</artifactId>
-        </dependency>
+    <!-- Plugin Framework -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-api</artifactId>
+    </dependency>
 
-        <!-- Utility -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
+    <!-- Utility -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
 
-        <!-- Code Quality -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-        </dependency>
+    <!-- Code Quality -->
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
 
-        <!-- Unit Test -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-    </dependencies>
+    <!-- Unit Test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
 
-    <!-- Build Settings -->
-    <build>
-        <resources>
-            <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
+  <!-- Build Settings -->
+  <build>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
 
-                <includes>
-                    <include>faucet-version.properties</include>
-                </includes>
-            </resource>
-        </resources>
+        <includes>
+          <include>faucet-version.properties</include>
+        </includes>
+      </resource>
+    </resources>
 
-        <plugins>
-            <!-- Java Compiler -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
+    <plugins>
+      <!-- Java Compiler -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
 
-            <!-- Checkstyle -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
+      <!-- Checkstyle -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
 
-            <!-- Bundle Creation -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
+      <!-- Bundle Creation -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
 
-                <configuration>
-                    <instructions>
-                        <Export-Package>org.basinmc.faucet.*</Export-Package>
-                        <Import-Package>javax.annotation; version="${findbugs.version}", *</Import-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
+        <configuration>
+          <instructions>
+            <Export-Package>org.basinmc.faucet.*</Export-Package>
+            <Import-Package>javax.annotation; version="${findbugs.version}", *</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
 
-            <!-- Attach Sources -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
+      <!-- Attach Sources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
 
-            <!-- Attach JavaDoc -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
+      <!-- Attach JavaDoc -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
 
-            <!-- Git Versioning-->
-            <!-- <plugin>
-                <groupId>net.md-5</groupId>
-                <artifactId>scriptus</artifactId>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>describe</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin> -->
-        </plugins>
-    </build>
+      <!-- Git Versioning-->
+      <!-- <plugin>
+          <groupId>net.md-5</groupId>
+          <artifactId>scriptus</artifactId>
+          <executions>
+              <execution>
+                  <phase>initialize</phase>
+                  <goals>
+                      <goal>describe</goal>
+                  </goals>
+              </execution>
+          </executions>
+      </plugin> -->
+    </plugins>
+  </build>
 </project>

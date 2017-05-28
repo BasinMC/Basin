@@ -21,57 +21,57 @@ package org.basinmc.faucet.world;
  * Represents a biome type.
  */
 public class Biome {
-    // TODO - auto-generate constants here from NMS code
+  // TODO - auto-generate constants here from NMS code
 
-    private final String name;
-    private float temperature = 0.5F;
-    private float rainfall = 0.5F;
+  private final String name;
+  private float temperature = 0.5F;
+  private float rainfall = 0.5F;
 
-    // TODO figure out what these two do
-    private float baseHeight = 0.1F;
-    private float heightVariation = 0.2F;
+  // TODO figure out what these two do
+  private float baseHeight = 0.1F;
+  private float heightVariation = 0.2F;
 
-    public Biome(String name) {
-        this.name = name;
-    }
+  public Biome(String name) {
+    this.name = name;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public float getTemperature() {
-        return temperature;
-    }
+  public float getTemperature() {
+    return temperature;
+  }
 
-    public float getRainfall() {
-        return rainfall;
-    }
+  public float getRainfall() {
+    return rainfall;
+  }
 
-    public Biome setTemperature(float temperature) {
-        this.temperature = temperature;
-        return this;
-    }
+  public Biome setTemperature(float temperature) {
+    this.temperature = temperature;
+    return this;
+  }
 
-    public Biome setRainfall(float rainfall) {
-        this.rainfall = rainfall;
-        return this;
-    }
+  public Biome setRainfall(float rainfall) {
+    this.rainfall = rainfall;
+    return this;
+  }
 
-    public float getBaseHeight() {
-        return baseHeight;
-    }
+  public float getBaseHeight() {
+    return baseHeight;
+  }
 
-    public Biome setBaseHeight(float baseHeight) {
-        this.baseHeight = baseHeight;
-        return this;
-    }
+  public Biome setBaseHeight(float baseHeight) {
+    this.baseHeight = baseHeight;
+    return this;
+  }
 
-    public float getHeightVariation() {
-        return heightVariation;
-    }
+  public float getHeightVariation() {
+    return heightVariation;
+  }
 
-    public Biome setHeightVariation(float heightVariation) {
-        this.heightVariation = heightVariation;
-        return this;
-    }
+  public Biome setHeightVariation(float heightVariation) {
+    this.heightVariation = heightVariation;
+    return this;
+  }
 }

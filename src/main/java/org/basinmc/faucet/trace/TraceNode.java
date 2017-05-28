@@ -21,4 +21,5 @@ package org.basinmc.faucet.trace;
  * Represents a single step in a {@link Tracer}.
  */
 public interface TraceNode {
+
 }

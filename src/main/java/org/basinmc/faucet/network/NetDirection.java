@@ -21,13 +21,13 @@ package org.basinmc.faucet.network;
  * Holds the two directions in which packets can be sent.
  */
 public enum NetDirection {
-    /**
-     * Client-to-server packet
-     */
-    SERVERBOUND,
+  /**
+   * Client-to-server packet
+   */
+  SERVERBOUND,
 
-    /**
-     * Server-to-client packet
-     */
-    CLIENTBOUND
+  /**
+   * Server-to-client packet
+   */
+  CLIENTBOUND
 }

@@ -16,33 +16,36 @@
  */
 package org.basinmc.faucet;
 
-import org.apache.logging.log4j.LogManager;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Stores compile-time information about the server.
  */
 public final class FaucetVersion {
-    public static final String MINECRAFT_VERSION;
-    public static final String API_VERSION;
-    public static final String API_VERSION_EXTRA;
 
-    static {
-        Properties properties = new Properties();
+  public static final String MINECRAFT_VERSION;
+  public static final String API_VERSION;
+  public static final String API_VERSION_EXTRA;
 
-        try (InputStream inputStream = FaucetVersion.class.getResourceAsStream("/faucet-version.properties")) {
-            properties.load(inputStream);
-        } catch (IOException ex) {
-            LogManager.getLogger(FaucetVersion.class).error("Could not load Faucet version information: " + ex.getMessage(), ex);
-        }
+  static {
+    Properties properties = new Properties();
 
-        API_VERSION = properties.getProperty("faucet.version", "0.0");
-        API_VERSION_EXTRA = properties.getProperty("faucet.version.extra", "");
-        MINECRAFT_VERSION = properties.getProperty("minecraft.version", "0.0");
+    try (InputStream inputStream = FaucetVersion.class
+        .getResourceAsStream("/faucet-version.properties")) {
+      properties.load(inputStream);
+    } catch (IOException ex) {
+      LogManager.getLogger(FaucetVersion.class)
+          .error("Could not load Faucet version information: " + ex.getMessage(), ex);
     }
 
-    private FaucetVersion() { }
+    API_VERSION = properties.getProperty("faucet.version", "0.0");
+    API_VERSION_EXTRA = properties.getProperty("faucet.version.extra", "");
+    MINECRAFT_VERSION = properties.getProperty("minecraft.version", "0.0");
+  }
+
+  private FaucetVersion() {
+  }
 }

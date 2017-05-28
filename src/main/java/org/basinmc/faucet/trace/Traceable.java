@@ -17,40 +17,38 @@
  */
 package org.basinmc.faucet.trace;
 
-import org.basinmc.faucet.internal.warn.Volatile;
-
 import java.util.function.Consumer;
-
 import javax.annotation.Nonnull;
+import org.basinmc.faucet.internal.warn.Volatile;
 
 /**
  * Represents an object that has a distinct, traceable lifecycle.
  */
 public interface Traceable {
 
-    /**
-     * Gets this object's tracing object if it is initialized, otherwise initialize it.
-     *
-     * @return a tracer
-     */
-    @Nonnull
-    Tracer trace();
+  /**
+   * Gets this object's tracing object if it is initialized, otherwise initialize it.
+   *
+   * @return a tracer
+   */
+  @Nonnull
+  Tracer trace();
 
-    /**
-     * Perform a trace on this object asynchronously. The tracer will be initialized in the same
-     * manner as if {@link #trace()} was called, but all existing nodes will be based on a
-     * snapshot of the attached object taken at the moment this method is called. The tracer
-     * will be initialized asynchronously, then the callback will be called. It will continue
-     * to be updated asynchronously as the attached object is updated, and, as such, should be
-     * synchronized before most use. Because of the asynchronous nature of this method, the
-     * initialized tracer will <strong>not</strong> be cached, and will therefore result in a
-     * new allocation for each call.
-     *
-     * <i>This should not be used as a catch-all performance solution. It has very specific
-     * use cases and should be used carefully.</i>
-     *
-     * @param callback the callback to call upon initialization
-     */
-    @Volatile("Implementation is low-priority.")
-    void parallelTrace(@Nonnull Consumer<Tracer> callback);
+  /**
+   * Perform a trace on this object asynchronously. The tracer will be initialized in the same
+   * manner as if {@link #trace()} was called, but all existing nodes will be based on a
+   * snapshot of the attached object taken at the moment this method is called. The tracer
+   * will be initialized asynchronously, then the callback will be called. It will continue
+   * to be updated asynchronously as the attached object is updated, and, as such, should be
+   * synchronized before most use. Because of the asynchronous nature of this method, the
+   * initialized tracer will <strong>not</strong> be cached, and will therefore result in a
+   * new allocation for each call.
+   *
+   * <i>This should not be used as a catch-all performance solution. It has very specific
+   * use cases and should be used carefully.</i>
+   *
+   * @param callback the callback to call upon initialization
+   */
+  @Volatile("Implementation is low-priority.")
+  void parallelTrace(@Nonnull Consumer<Tracer> callback);
 }

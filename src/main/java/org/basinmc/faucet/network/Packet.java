@@ -21,4 +21,5 @@ package org.basinmc.faucet.network;
  * Represents an abstract packet of data sent over the network.
  */
 public interface Packet {
+
 }

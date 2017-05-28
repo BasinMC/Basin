@@ -29,10 +29,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Observe {
-    /**
-     * Represents the type of the property that will be listened to.
-     * See the type parameter of {@link Observer}
-     * @return The type of the property
-     */
-    Class<? extends ObservableProperty> value();
+
+  /**
+   * Represents the type of the property that will be listened to.
+   * See the type parameter of {@link Observer}
+   *
+   * @return The type of the property
+   */
+  Class<? extends ObservableProperty> value();
 }

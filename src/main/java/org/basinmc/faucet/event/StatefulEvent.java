@@ -16,9 +16,8 @@
  */
 package org.basinmc.faucet.event;
 
-import org.basinmc.faucet.util.State;
-
 import javax.annotation.Nonnull;
+import org.basinmc.faucet.util.State;
 
 /**
  * Provides a base interface for "stateful" events (e.g. events which make use of the standard set
@@ -29,32 +28,32 @@ import javax.annotation.Nonnull;
  */
 public interface StatefulEvent extends MutableEvent {
 
-    /**
-     * Retrieves the events respective default state.
-     *
-     * Note: This method is guaranteed to return {@link State#ALLOW} or {@link State#DENY}.
-     */
-    @Nonnull
-    State getDefaultState();
+  /**
+   * Retrieves the events respective default state.
+   *
+   * Note: This method is guaranteed to return {@link State#ALLOW} or {@link State#DENY}.
+   */
+  @Nonnull
+  State getDefaultState();
 
-    /**
-     * Retrieves the current event state.
-     *
-     * Note: This method is guaranteed to return {@link State#ALLOW} or {@link State#DENY}.
-     *
-     * @see #getDefaultState() in order to retrieve the respective default value for this event.
-     */
-    @Nonnull
-    State getState();
+  /**
+   * Retrieves the current event state.
+   *
+   * Note: This method is guaranteed to return {@link State#ALLOW} or {@link State#DENY}.
+   *
+   * @see #getDefaultState() in order to retrieve the respective default value for this event.
+   */
+  @Nonnull
+  State getState();
 
-    /**
-     * Sets the current event state.
-     *
-     * Note: Setting the state of an event to {@link State#DEFAULT} will reset it to its respective
-     * default value (as indicated by {@link #getDefaultState()}).
-     *
-     * @throws IllegalArgumentException when {@link State#WILDCARD} is being passed.
-     * @throws IllegalStateException    when the event state has been finalized.
-     */
-    void setState(@Nonnull State state);
+  /**
+   * Sets the current event state.
+   *
+   * Note: Setting the state of an event to {@link State#DEFAULT} will reset it to its respective
+   * default value (as indicated by {@link #getDefaultState()}).
+   *
+   * @throws IllegalArgumentException when {@link State#WILDCARD} is being passed.
+   * @throws IllegalStateException when the event state has been finalized.
+   */
+  void setState(@Nonnull State state);
 }

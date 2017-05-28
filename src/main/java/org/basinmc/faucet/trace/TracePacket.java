@@ -17,11 +17,10 @@
  */
 package org.basinmc.faucet.trace;
 
+import javax.annotation.Nonnull;
 import org.basinmc.faucet.network.NetDirection;
 import org.basinmc.faucet.network.NetHandler;
 import org.basinmc.faucet.network.Packet;
-
-import javax.annotation.Nonnull;
 
 /**
  * Represents a step in a trace chain in which data is sent or received over the network
@@ -29,33 +28,33 @@ import javax.annotation.Nonnull;
  */
 public interface TracePacket extends TraceNode {
 
-    /**
-     * Gets the type of packet that created this trace node. For example, a
-     * {@link NetDirection#SERVERBOUND} value would represent a trace node created when
-     * the server receives a packet from the client (and would probably be the beginning of
-     * the trace).
-     *
-     * @return the packet's direction
-     */
-    @Nonnull
-    NetDirection getDirection();
+  /**
+   * Gets the type of packet that created this trace node. For example, a
+   * {@link NetDirection#SERVERBOUND} value would represent a trace node created when
+   * the server receives a packet from the client (and would probably be the beginning of
+   * the trace).
+   *
+   * @return the packet's direction
+   */
+  @Nonnull
+  NetDirection getDirection();
 
-    /**
-     * Gets the source of the packet that created this trace node. A {@link NetDirection#CLIENTBOUND}
-     * value for {@link #getDirection()} will invariably result in this returning an instance
-     * of the server's network handler.
-     *
-     * @return a network handler
-     */
-    @Nonnull
-    NetHandler getSource();
+  /**
+   * Gets the source of the packet that created this trace node. A {@link NetDirection#CLIENTBOUND}
+   * value for {@link #getDirection()} will invariably result in this returning an instance
+   * of the server's network handler.
+   *
+   * @return a network handler
+   */
+  @Nonnull
+  NetHandler getSource();
 
-    /**
-     * Get a snapshot of the packet at the time of processing by the given NetHandler. Any
-     * changes made to the packet since processing will not be reflected.
-     *
-     * @return the packet whose processing triggered this trace node
-     */
-    @Nonnull
-    Packet getPacket();
+  /**
+   * Get a snapshot of the packet at the time of processing by the given NetHandler. Any
+   * changes made to the packet since processing will not be reflected.
+   *
+   * @return the packet whose processing triggered this trace node
+   */
+  @Nonnull
+  Packet getPacket();
 }

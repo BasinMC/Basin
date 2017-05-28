@@ -24,9 +24,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Description {
-    /**
-     * Retrieve a command description. The string "$sender" will be replaced with the command's
-     * sender unless escaped with a backslash.
-     */
-    String value();
+
+  /**
+   * Retrieve a command description. The string "$sender" will be replaced with the command's
+   * sender unless escaped with a backslash.
+   */
+  String value();
 }

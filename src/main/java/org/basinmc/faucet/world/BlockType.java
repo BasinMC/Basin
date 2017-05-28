@@ -18,65 +18,68 @@
 package org.basinmc.faucet.world;
 
 /**
- * Represents a generic type of block.
- * TODO My suggestion for this would be to find a way to automatically extract this data from the NMS Block classes.
+ * Represents a generic type of block. TODO My suggestion for this would be to find a way to
+ * automatically extract this data from the NMS Block classes.
  */
 public final class BlockType {
-    private final boolean isFullBlock;
-    private final boolean translucent;
-    private final boolean isTileEntity;
-    private final boolean randomTick;
-    private final float hardness;
-    private final float explosionResistance;
-    private final float slide;
-    private final int luminosity;
-    private final String name;
 
-    public BlockType(boolean isFullBlock, boolean translucent, boolean isTileEntity, boolean randomTick, float hardness, float explosionResistance, float slide, int luminosity, String name) {
-        this.isFullBlock = isFullBlock;
-        this.translucent = translucent;
-        this.isTileEntity = isTileEntity;
-        this.randomTick = randomTick;
-        this.hardness = hardness;
-        this.explosionResistance = explosionResistance;
-        this.slide = slide;
-        this.luminosity = luminosity;
-        this.name = name;
-    }
+  private final boolean isFullBlock;
+  private final boolean translucent;
+  private final boolean isTileEntity;
+  private final boolean randomTick;
+  private final float hardness;
+  private final float explosionResistance;
+  private final float slide;
+  private final int luminosity;
+  private final String name;
 
-    public boolean isFullBlock() {
-        return isFullBlock;
-    }
+  public BlockType(boolean isFullBlock, boolean translucent, boolean isTileEntity,
+      boolean randomTick, float hardness, float explosionResistance, float slide, int luminosity,
+      String name) {
+    this.isFullBlock = isFullBlock;
+    this.translucent = translucent;
+    this.isTileEntity = isTileEntity;
+    this.randomTick = randomTick;
+    this.hardness = hardness;
+    this.explosionResistance = explosionResistance;
+    this.slide = slide;
+    this.luminosity = luminosity;
+    this.name = name;
+  }
 
-    public boolean isTranslucent() {
-        return translucent;
-    }
+  public boolean isFullBlock() {
+    return isFullBlock;
+  }
 
-    public boolean isTileEntity() {
-        return isTileEntity;
-    }
+  public boolean isTranslucent() {
+    return translucent;
+  }
 
-    public boolean doesRandomTick() {
-        return randomTick;
-    }
+  public boolean isTileEntity() {
+    return isTileEntity;
+  }
 
-    public float getHardness() {
-        return hardness;
-    }
+  public boolean doesRandomTick() {
+    return randomTick;
+  }
 
-    public float getExplosionResistance() {
-        return explosionResistance;
-    }
+  public float getHardness() {
+    return hardness;
+  }
 
-    public float getSlide() {
-        return slide;
-    }
+  public float getExplosionResistance() {
+    return explosionResistance;
+  }
 
-    public int getLuminosity() {
-        return luminosity;
-    }
+  public float getSlide() {
+    return slide;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public int getLuminosity() {
+    return luminosity;
+  }
+
+  public String getName() {
+    return name;
+  }
 }

@@ -31,27 +31,31 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.TYPE})
 public @interface Localize {
-    /**
-     * The key for which localization will be attempted. By default this will be
-     * filled by the string being targeted.
-     * @return A string representation of the key
-     */
-    String value() default "$PROVIDED$";
 
-    /**
-     * If no valid localization for the player is found, the locale to use. If this
-     * is unable to function for whatever reason, the player will receive the key
-     * instead.
-     * @return A locale string
-     */
-    String defaultLocale() default "en_US";
+  /**
+   * The key for which localization will be attempted. By default this will be
+   * filled by the string being targeted.
+   *
+   * @return A string representation of the key
+   */
+  String value() default "$PROVIDED$";
 
-    /**
-     * A directory path where locale files (which <i>must</i> follow the format of
-     * "en_US.lang" can be found. If the given path is checked and a locale file is
-     * not found, the {@link Localize#defaultLocale()} will be attempted instead,
-     * then the key will be sent instead.
-     * @return A locale string
-     */
-    String localePath() default "/lang/";
+  /**
+   * If no valid localization for the player is found, the locale to use. If this
+   * is unable to function for whatever reason, the player will receive the key
+   * instead.
+   *
+   * @return A locale string
+   */
+  String defaultLocale() default "en_US";
+
+  /**
+   * A directory path where locale files (which <i>must</i> follow the format of
+   * "en_US.lang" can be found. If the given path is checked and a locale file is
+   * not found, the {@link Localize#defaultLocale()} will be attempted instead,
+   * then the key will be sent instead.
+   *
+   * @return A locale string
+   */
+  String localePath() default "/lang/";
 }

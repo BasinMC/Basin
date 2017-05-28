@@ -22,8 +22,11 @@ import javax.annotation.Nonnull;
  * Represents an object able to receive and send messages or commands.
  */
 public interface Communicable {
-    void sendMessage(@Nonnull String message);
-    void sendCommand(@Nonnull String command);
-    @Nonnull
-    String getName();
+
+  void sendMessage(@Nonnull String message);
+
+  void sendCommand(@Nonnull String command);
+
+  @Nonnull
+  String getName();
 }

@@ -17,9 +17,8 @@
  */
 package org.basinmc.faucet.trace;
 
-import org.osgi.framework.Bundle;
-
 import javax.annotation.Nonnull;
+import org.osgi.framework.Bundle;
 
 /**
  * Represents a call to a specific Faucet API method that is used in a trace chain. This
@@ -28,12 +27,12 @@ import javax.annotation.Nonnull;
  */
 public interface TraceAPICall extends TraceMethod {
 
-    /**
-     * Get the bundle which performed the API call. In <strong>most</strong> cases this will
-     * be a plugin bundle, but some circumstances may occur where it is not.
-     *
-     * @return an OSGi bundle
-     */
-    @Nonnull
-    Bundle getBundle();
+  /**
+   * Get the bundle which performed the API call. In <strong>most</strong> cases this will
+   * be a plugin bundle, but some circumstances may occur where it is not.
+   *
+   * @return an OSGi bundle
+   */
+  @Nonnull
+  Bundle getBundle();
 }

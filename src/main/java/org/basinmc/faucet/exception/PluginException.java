@@ -16,10 +16,8 @@
  */
 package org.basinmc.faucet.exception;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-
 import javax.annotation.Nonnull;
+import org.osgi.framework.Bundle;
 
 /**
  * Provides a base exception for all issues which arise within a plugin (or other bundle) while
@@ -28,33 +26,34 @@ import javax.annotation.Nonnull;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public abstract class PluginException extends Exception {
-    private final Bundle bnd;
 
-    public PluginException(@Nonnull Bundle bnd) {
-        super();
-        this.bnd = bnd;
-    }
+  private final Bundle bnd;
 
-    public PluginException(@Nonnull Bundle bnd, String s) {
-        super(s);
-        this.bnd = bnd;
-    }
+  public PluginException(@Nonnull Bundle bnd) {
+    super();
+    this.bnd = bnd;
+  }
 
-    public PluginException(@Nonnull Bundle bnd, String s, Throwable throwable) {
-        super(s, throwable);
-        this.bnd = bnd;
-    }
+  public PluginException(@Nonnull Bundle bnd, String s) {
+    super(s);
+    this.bnd = bnd;
+  }
 
-    public PluginException(@Nonnull Bundle bnd, Throwable throwable) {
-        super(throwable);
-        this.bnd = bnd;
-    }
+  public PluginException(@Nonnull Bundle bnd, String s, Throwable throwable) {
+    super(s, throwable);
+    this.bnd = bnd;
+  }
 
-    /**
-     * Retrieves the offending bundle.
-     */
-    @Nonnull
-    public Bundle getBundle() {
-        return this.bnd;
-    }
+  public PluginException(@Nonnull Bundle bnd, Throwable throwable) {
+    super(throwable);
+    this.bnd = bnd;
+  }
+
+  /**
+   * Retrieves the offending bundle.
+   */
+  @Nonnull
+  public Bundle getBundle() {
+    return this.bnd;
+  }
 }

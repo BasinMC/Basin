@@ -17,18 +17,18 @@
  */
 package org.basinmc.faucet.world;
 
-import org.basinmc.faucet.capability.CapabilityHolder;
-
 import javax.annotation.Nonnull;
+import org.basinmc.faucet.capability.CapabilityHolder;
 
 /**
  * Represents a block in the world
  */
 public interface Block extends CapabilityHolder, WorldObject<Block> {
-    /**
-     * Get the material type associated with this block
-     */
-    @Nonnull
-    BlockType getBlockType();
+
+  /**
+   * Get the material type associated with this block
+   */
+  @Nonnull
+  BlockType getBlockType();
 
 }

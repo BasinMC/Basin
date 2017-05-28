@@ -16,29 +16,27 @@
  */
 package org.basinmc.faucet.command;
 
-import org.osgi.framework.Bundle;
-
 import java.util.Set;
-
 import javax.annotation.Nonnull;
+import org.osgi.framework.Bundle;
 
 public interface CommandSpec {
 
-    /**
-     * Get the name of this command.
-     */
-    @Nonnull
-    String getName();
+  /**
+   * Get the name of this command.
+   */
+  @Nonnull
+  String getName();
 
-    /**
-     * Get a set of aliases that can be used to refer to this command, or an empty set.
-     */
-    @Nonnull
-    Set<String> getAliases();
+  /**
+   * Get a set of aliases that can be used to refer to this command, or an empty set.
+   */
+  @Nonnull
+  Set<String> getAliases();
 
-    /**
-     * Get the bundle that provides this command. Will either be a plugin or the server.
-     */
-    @Nonnull
-    Bundle getOwner();
+  /**
+   * Get the bundle that provides this command. Will either be a plugin or the server.
+   */
+  @Nonnull
+  Bundle getOwner();
 }

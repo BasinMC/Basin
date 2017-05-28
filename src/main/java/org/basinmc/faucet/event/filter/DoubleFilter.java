@@ -16,18 +16,19 @@
  */
 package org.basinmc.faucet.event.filter;
 
-import org.basinmc.faucet.internal.event.RepeatedFilters;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.basinmc.faucet.internal.event.RepeatedFilters;
 
 @Repeatable(RepeatedFilters.RepeatedDoubleFilter.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface DoubleFilter {
-    double value();
-    String field() default "";
+
+  double value();
+
+  String field() default "";
 }

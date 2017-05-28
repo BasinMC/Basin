@@ -27,33 +27,33 @@ import javax.annotation.Nonnull;
  */
 public interface ObservableProperty<T> {
 
-    /**
-     * Attaches a new observer to the property.
-     *
-     * @param observer an observer which will receive notifications of this property's changes.
-     */
-    void attach(@Nonnull Observer<? super T> observer);
+  /**
+   * Attaches a new observer to the property.
+   *
+   * @param observer an observer which will receive notifications of this property's changes.
+   */
+  void attach(@Nonnull Observer<? super T> observer);
 
-    /**
-     * Removes an observer from the property.
-     *
-     * @param observer an observer which is currently receiving notifications of this property's
-     *                 changes.
-     */
-    void remove(@Nonnull Observer<? super T> observer);
+  /**
+   * Removes an observer from the property.
+   *
+   * @param observer an observer which is currently receiving notifications of this property's
+   * changes.
+   */
+  void remove(@Nonnull Observer<? super T> observer);
 
-    /**
-     * Retrieves the current observable value.
-     *
-     * @return a value.
-     */
-    T get();
+  /**
+   * Retrieves the current observable value.
+   *
+   * @return a value.
+   */
+  T get();
 
-    /**
-     * Sets the current observable value.
-     *
-     * @param value a value.
-     * @return true if the value was changed, false otherwise.
-     */
-    boolean set(T value);
+  /**
+   * Sets the current observable value.
+   *
+   * @param value a value.
+   * @return true if the value was changed, false otherwise.
+   */
+  boolean set(T value);
 }

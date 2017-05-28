@@ -23,16 +23,17 @@ import org.basinmc.faucet.world.World;
  * Represents a 3-dimensional position within a world.
  */
 public class WorldPosition extends Vector3 implements Cloneable {
-    private final World world;
 
-    public WorldPosition(World world, double x, double y, double z) {
-        super(x, y, z);
-        this.world = world;
-    }
+  private final World world;
 
-    public World getWorld() {
-        return world;
-    }
+  public WorldPosition(World world, double x, double y, double z) {
+    super(x, y, z);
+    this.world = world;
+  }
 
-    // TODO incomplete implementation, needs boilerplate
+  public World getWorld() {
+    return world;
+  }
+
+  // TODO incomplete implementation, needs boilerplate
 }

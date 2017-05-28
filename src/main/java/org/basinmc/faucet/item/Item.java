@@ -19,4 +19,5 @@ package org.basinmc.faucet.item;
 import org.basinmc.faucet.key.Keyed;
 
 public interface Item extends Keyed {
+
 }

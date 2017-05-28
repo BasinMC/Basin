@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
  * Represents any object that can be identified by a minecraft key, e.g. {@code minecraft:wood}.
  */
 public interface Keyed {
-    @Nonnull
-    Key getKey();
+
+  @Nonnull
+  Key getKey();
 }

@@ -22,10 +22,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates a method inside a {@link Command} class that serves as the handler for that command's root,
- * e.g. any execution without any arguments. Can be omitted for types with only one method.
+ * Annotates a method inside a {@link Command} class that serves as the handler for that command's
+ * root, e.g. any execution without any arguments. Can be omitted for types with only one method.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Supercommand {
+
 }

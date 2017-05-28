@@ -23,55 +23,55 @@ import javax.annotation.Nonnull;
  * Relative directions.
  */
 public enum Direction {
-    /**
-     * Down, towards negative-y
-     */
-    DOWN (0, -1, 0),
+  /**
+   * Down, towards negative-y
+   */
+  DOWN(0, -1, 0),
 
-    /**
-     * Up, towards positive-y
-     */
-    UP (0, 1, 0),
+  /**
+   * Up, towards positive-y
+   */
+  UP(0, 1, 0),
 
-    /**
-     * North, towards negative-z
-     */
-    NORTH (0, 0, -1),
+  /**
+   * North, towards negative-z
+   */
+  NORTH(0, 0, -1),
 
-    /**
-     * South, towards positive-z
-     */
-    SOUTH (0, 0, 1),
+  /**
+   * South, towards positive-z
+   */
+  SOUTH(0, 0, 1),
 
-    /**
-     * West, towards negative-x
-     */
-    WEST (-1, 0, 0),
+  /**
+   * West, towards negative-x
+   */
+  WEST(-1, 0, 0),
 
-    /**
-     * East, towards positive-x
-     */
-    EAST (1, 0, 0);
+  /**
+   * East, towards positive-x
+   */
+  EAST(1, 0, 0);
 
-    private final Vector3 vector;
+  private final Vector3 vector;
 
-    Direction(Vector3 vector) {
-        this.vector = vector;
-    }
+  Direction(Vector3 vector) {
+    this.vector = vector;
+  }
 
-    Direction(double x, double y, double z) {
-        this(new Vector3(x, y, z));
-    }
+  Direction(double x, double y, double z) {
+    this(new Vector3(x, y, z));
+  }
 
-    /**
-     * Get the transformation vector for moving one place in this direction. Remember
-     * that you can perform scalar multiplication on this vector to signify movement of a
-     * value different than 1 block.
-     *
-     * @return a 3-dimensional transformation vector
-     */
-    @Nonnull
-    Vector3 vector() {
-        return vector;
-    }
+  /**
+   * Get the transformation vector for moving one place in this direction. Remember
+   * that you can perform scalar multiplication on this vector to signify movement of a
+   * value different than 1 block.
+   *
+   * @return a 3-dimensional transformation vector
+   */
+  @Nonnull
+  Vector3 vector() {
+    return vector;
+  }
 }

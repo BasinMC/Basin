@@ -30,8 +30,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Autotrace {
-    /**
-     * The type of singleton metatracer which handles this trace chain.
-     */
-    Class<? extends Metatracer> value();
+
+  /**
+   * The type of singleton metatracer which handles this trace chain.
+   */
+  Class<? extends Metatracer> value();
 }

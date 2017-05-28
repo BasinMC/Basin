@@ -18,5 +18,6 @@ package org.basinmc.faucet.internal.util;
 
 @FunctionalInterface
 public interface StringParsable<T> {
-    T fromString(String s);
+
+  T fromString(String s);
 }

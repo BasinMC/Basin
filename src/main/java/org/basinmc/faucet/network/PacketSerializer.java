@@ -28,32 +28,32 @@ import javax.annotation.Nullable;
  */
 public interface PacketSerializer<T extends Packet> {
 
-    /**
-     * Parse the given packet's fields, storing its fields in order. If this serializer
-     * already contains changes to fields at the time of calling this method, then those
-     * changes will be applied to the packet. Afterwards, the packet with its mutated values
-     * will be read into the serializer.
-     *
-     * @param packet the packet to parse
-     */
-    void accept(@Nonnull T packet);
+  /**
+   * Parse the given packet's fields, storing its fields in order. If this serializer
+   * already contains changes to fields at the time of calling this method, then those
+   * changes will be applied to the packet. Afterwards, the packet with its mutated values
+   * will be read into the serializer.
+   *
+   * @param packet the packet to parse
+   */
+  void accept(@Nonnull T packet);
 
-    /**
-     * Retrieve the value of the field at the given index.
-     *
-     * @param fieldIndex the index to retrieve from
-     * @param <F> the type of the field at the given index
-     * @return the field's value, or null if none is found
-     */
-    @Nullable
-    <F> F read(@Nonnegative int fieldIndex);
+  /**
+   * Retrieve the value of the field at the given index.
+   *
+   * @param fieldIndex the index to retrieve from
+   * @param <F> the type of the field at the given index
+   * @return the field's value, or null if none is found
+   */
+  @Nullable
+  <F> F read(@Nonnegative int fieldIndex);
 
-    /**
-     * Write the given value to the field at the given index
-     *
-     * @param fieldIndex the index to write at
-     * @param value the value to set the field to
-     * @param <F> the type of the field at the given index
-     */
-    <F> void write(@Nonnegative int fieldIndex, @Nullable F value);
+  /**
+   * Write the given value to the field at the given index
+   *
+   * @param fieldIndex the index to write at
+   * @param value the value to set the field to
+   * @param <F> the type of the field at the given index
+   */
+  <F> void write(@Nonnegative int fieldIndex, @Nullable F value);
 }
