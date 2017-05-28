@@ -162,6 +162,7 @@
           <gameVersion>${game.version}</gameVersion>
           <srgVersion>${srg.version}</srgVersion>
           <mappingVersion>${mcp.version}</mappingVersion>
+          <mappingGameVersion>${mcp.game.version}</mappingGameVersion>
           <module>server</module>
           <accessTransformation>${project.basedir}/src/minecraft/at.json</accessTransformation>
 

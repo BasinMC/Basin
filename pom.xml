@@ -36,6 +36,7 @@
     <game.version>1.11.2</game.version>
     <srg.version>${game.version}</srg.version>
     <mcp.version>snapshot-20170527</mcp.version>
+    <mcp.game.version>1.11</mcp.game.version>
 
     <bundles.version>2</bundles.version>
     <guava.version>19.0</guava.version>
@@ -285,7 +286,7 @@
         <plugin>
           <groupId>org.basinmc.maven.plugins</groupId>
           <artifactId>minecraft-maven-plugin</artifactId>
-          <version>2.2.5</version>
+          <version>2.2.6</version>
 
           <executions>
             <!--
