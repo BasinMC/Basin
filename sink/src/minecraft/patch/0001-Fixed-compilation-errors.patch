@@ -1,6 +1,6 @@
-From 9ed6c9f1c24e8e61096a046820a8670e78974013 Mon Sep 17 00:00:00 2001
-From: 0x277F <0x277F@gmail.com>
-Date: Thu, 2 Jun 2016 19:57:10 -0600
+From aa5b17a6e9bd0ce38cbc1d11dc0bcbae11e462f8 Mon Sep 17 00:00:00 2001
+From: Johannes Donath <johannesd@torchmind.com>
+Date: Sun, 28 May 2017 10:59:42 +0200
 Subject: [PATCH] Fixed compilation errors.
 
 
@@ -31,7 +31,7 @@ index ca02540..30d0505 100644
        case EVERYTHING:
          var4 = var1.getEntitiesWithinAABBExcludingEntity((Entity) null, var3);
 diff --git a/net/minecraft/block/BlockRedstoneWire.java b/net/minecraft/block/BlockRedstoneWire.java
-index 284bed8..c6263b5 100644
+index 431eec1..92a8741 100644
 --- a/net/minecraft/block/BlockRedstoneWire.java
 +++ b/net/minecraft/block/BlockRedstoneWire.java
 @@ -161,7 +161,7 @@ public class BlockRedstoneWire extends Block {
@@ -57,10 +57,10 @@ index f3a0962..1764a1c 100644
      int var5 = 0;
  
 diff --git a/net/minecraft/block/BlockStairs.java b/net/minecraft/block/BlockStairs.java
-index ccb208c..9a1a7a5 100644
+index 309d788..ec99715 100644
 --- a/net/minecraft/block/BlockStairs.java
 +++ b/net/minecraft/block/BlockStairs.java
-@@ -276,7 +276,7 @@ public class BlockStairs extends Block {
+@@ -279,7 +279,7 @@ public class BlockStairs extends Block {
    @Nullable
    public RayTraceResult collisionRayTrace(
        IBlockState var1, World var2, BlockPos var3, Vec3d var4, Vec3d var5) {
@@ -83,18 +83,18 @@ index 7bd522b..8e89edb 100644
              (Entity) null, var3.getBoundingBox(var1, var2).offset(var2));
      if (!var6.isEmpty()) {
 diff --git a/net/minecraft/block/properties/PropertyEnum.java b/net/minecraft/block/properties/PropertyEnum.java
-index 26c47c7..11f950c 100644
+index 26c47c7..c898030 100644
 --- a/net/minecraft/block/properties/PropertyEnum.java
 +++ b/net/minecraft/block/properties/PropertyEnum.java
-@@ -20,7 +20,7 @@ public class PropertyEnum<T extends Enum<T> & IStringSerializable> extends Prope
-     super(var1, var2);
-     this.allowedValues = ImmutableSet.copyOf(var3);
- 
--    for (Enum var5 : var3) {
-+    for (T var5 : var3) { // BCMP
-       String var6 = ((IStringSerializable) var5).getName();
-       if (this.nameToValue.containsKey(var6)) {
+@@ -26,7 +26,7 @@ public class PropertyEnum<T extends Enum<T> & IStringSerializable> extends Prope
          throw new IllegalArgumentException("Multiple values have the same name \'" + var6 + "\'");
+       }
+ 
+-      this.nameToValue.put(var6, var5);
++      this.nameToValue.put(var6, (T) var5); // BCMP
+     }
+   }
+ 
 diff --git a/net/minecraft/block/state/BlockStateBase.java b/net/minecraft/block/state/BlockStateBase.java
 index 03ce4d8..3edc18b 100644
 --- a/net/minecraft/block/state/BlockStateBase.java
@@ -116,7 +116,7 @@ index 03ce4d8..3edc18b 100644
  
    protected static <T> T cyclePropertyValue(Collection<T> var0, T var1) {
 diff --git a/net/minecraft/block/state/BlockStateContainer.java b/net/minecraft/block/state/BlockStateContainer.java
-index dfc4dd3..656c6d5 100644
+index c30d722..2a58501 100644
 --- a/net/minecraft/block/state/BlockStateContainer.java
 +++ b/net/minecraft/block/state/BlockStateContainer.java
 @@ -68,7 +68,7 @@ public class BlockStateContainer {
@@ -142,7 +142,7 @@ index dfc4dd3..656c6d5 100644
          while (var3.hasNext()) {
            Entry var4 = (Entry) var3.next();
 -          IProperty var5 = (IProperty) var4.getKey();
-+          IProperty<? extends Comparable> var5 = (IProperty<? extends Comparable>) var4.getKey(); // BCMP
++          IProperty<?> var5 = (IProperty) var4.getKey(); // BCMP
  
            for (Comparable var7 : var5.getAllowedValues()) {
              if (var7 != var4.getValue()) {
@@ -173,7 +173,7 @@ index 17568c1..e7f24b3 100644
            }
          }
 diff --git a/net/minecraft/command/CommandBase.java b/net/minecraft/command/CommandBase.java
-index 53d7d23..0959a83 100644
+index 53d7d23..6165197 100644
 --- a/net/minecraft/command/CommandBase.java
 +++ b/net/minecraft/command/CommandBase.java
 @@ -486,7 +486,7 @@ public abstract class CommandBase implements ICommand {
@@ -181,30 +181,30 @@ index 53d7d23..0959a83 100644
      } catch (RuntimeException var7) {
        try {
 -        Map var2 = getBlockStatePropertyValueMap(var0, var1);
-+        Map<IProperty<?>, Comparable<?>> var2 = getBlockStatePropertyValueMap(var0, var1); // BCMP
++        Map<?, ?> var2 = getBlockStatePropertyValueMap(var0, var1); // BCMP
          IBlockState var3 = var0.getDefaultState();
  
          for (Entry var5 : var2.entrySet()) {
-@@ -503,7 +503,7 @@ public abstract class CommandBase implements ICommand {
-   }
+@@ -504,7 +504,7 @@ public abstract class CommandBase implements ICommand {
  
    private static <T extends Comparable<T>> IBlockState getBlockState(
--      IBlockState var0, IProperty<T> var1, Comparable<?> var2) {
-+      IBlockState var0, IProperty<T> var1, T var2) { // BCMP
-     return var0.withProperty(var1, var2);
+       IBlockState var0, IProperty<T> var1, Comparable<?> var2) {
+-    return var0.withProperty(var1, var2);
++    return var0.withProperty(var1, (T) var2); // BCMP
    }
  
+   public static Predicate<IBlockState> convertArgToBlockStatePredicate(
 @@ -518,7 +518,7 @@ public abstract class CommandBase implements ICommand {
            }
          };
        } catch (RuntimeException var3) {
 -        final Map var2 = getBlockStatePropertyValueMap(var0, var1);
-+        final Map<IProperty<?>, Comparable<?>> var2 = getBlockStatePropertyValueMap(var0, var1); // BCMP
++        final Map<?, ?> var2 = getBlockStatePropertyValueMap(var0, var1); // BCMP
          return new Predicate<IBlockState>() {
            public boolean apply(@Nullable IBlockState var1) {
              if (var1 != null && var0 == var1.getBlock()) {
 diff --git a/net/minecraft/command/CommandClone.java b/net/minecraft/command/CommandClone.java
-index f3e79ec..6989724 100644
+index f3e79ec..a21bfcb 100644
 --- a/net/minecraft/command/CommandClone.java
 +++ b/net/minecraft/command/CommandClone.java
 @@ -85,9 +85,9 @@ public class CommandClone extends CommandBase {
@@ -212,7 +212,7 @@ index f3e79ec..6989724 100644
  
                ArrayList var15 = Lists.newArrayList();
 -              ArrayList var16 = Lists.newArrayList();
-+              ArrayList<StaticCloneData> var16 = Lists.newArrayList(); //BCMP
++              ArrayList<CommandClone.StaticCloneData> var16 = Lists.newArrayList(); // BCMP
                ArrayList var17 = Lists.newArrayList();
 -              LinkedList var18 = Lists.newLinkedList();
 +              LinkedList<BlockPos> var18 = Lists.newLinkedList(); // BCMP
@@ -224,12 +224,12 @@ index f3e79ec..6989724 100644
                }
  
 -              ArrayList var31 = Lists.newArrayList();
-+              ArrayList<StaticCloneData> var31 = Lists.newArrayList(); // BCMP
++              ArrayList<CommandClone.StaticCloneData> var31 = Lists.newArrayList();
                var31.addAll(var15);
                var31.addAll(var16);
                var31.addAll(var17);
 -              List var34 = Lists.reverse(var31);
-+              List<StaticCloneData> var34 = Lists.reverse(var31); // BCMP
++              List<CommandClone.StaticCloneData> var34 = Lists.reverse(var31); // BCMP
  
                for (CommandClone.StaticCloneData var41 : var34) {
                  TileEntity var46 = var13.getTileEntity(var41.pos);
@@ -269,20 +269,22 @@ index 1bd92ac..300a3d5 100644
            var1.setCommandStat(CommandResultStats.Type.AFFECTED_ENTITIES, var16.size());
            if (var16.isEmpty()) {
 diff --git a/net/minecraft/command/CommandStats.java b/net/minecraft/command/CommandStats.java
-index b61741c..7902e38 100644
+index b61741c..38a9050 100644
 --- a/net/minecraft/command/CommandStats.java
 +++ b/net/minecraft/command/CommandStats.java
-@@ -176,7 +176,7 @@ public class CommandStats extends CommandBase {
+@@ -176,8 +176,8 @@ public class CommandStats extends CommandBase {
    }
  
    protected List<String> getObjectiveNames(MinecraftServer var1) {
 -    Collection var2 = var1.worldServerForDimension(0).getScoreboard().getScoreObjectives();
+-    ArrayList var3 = Lists.newArrayList();
 +    Collection<ScoreObjective> var2 = var1.worldServerForDimension(0).getScoreboard().getScoreObjectives(); // BCMP
-     ArrayList var3 = Lists.newArrayList();
++    ArrayList<String> var3 = Lists.newArrayList(); // BCMP
  
      for (ScoreObjective var5 : var2) {
+       if (!var5.getCriteria().isReadOnly()) {
 diff --git a/net/minecraft/command/EntitySelector.java b/net/minecraft/command/EntitySelector.java
-index 5fadf87..7a32ae1 100644
+index 82cf562..70b9940 100644
 --- a/net/minecraft/command/EntitySelector.java
 +++ b/net/minecraft/command/EntitySelector.java
 @@ -110,7 +110,7 @@ public class EntitySelector {
@@ -303,92 +305,111 @@ index 5fadf87..7a32ae1 100644
          ArrayList var9 = Lists.newArrayList();
  
          for (World var11 : var8) {
-@@ -249,13 +249,19 @@ public class EntitySelector {
+@@ -248,13 +248,14 @@ public class EntitySelector {
+         var2 = var2.substring(1);
        }
  
-       final GameType var4;
-+      // BCMP Start
-+      GameType tmp;
-+
+-      final GameType var4;
++      GameType var4; // BCMP
        try {
          int var5 = Integer.parseInt(var2);
--        var4 = GameType.parseGameTypeWithDefault(var5, GameType.NOT_SET);
-+        tmp = GameType.parseGameTypeWithDefault(var5, GameType.NOT_SET);
+         var4 = GameType.parseGameTypeWithDefault(var5, GameType.NOT_SET);
        } catch (Throwable var6) {
--        var4 = GameType.parseGameTypeWithDefault(var2, GameType.NOT_SET);
-+        tmp = GameType.parseGameTypeWithDefault(var2, GameType.NOT_SET);
+         var4 = GameType.parseGameTypeWithDefault(var2, GameType.NOT_SET);
        }
++      final GameType tmp = var4; // BCMP
  
-+      var4 = tmp;
-+      // BCMP End
-+
        var1.add(
            new Predicate<Entity>() {
-             public boolean apply(@Nullable Entity var1) {
-@@ -274,11 +280,14 @@ public class EntitySelector {
+@@ -264,7 +265,7 @@ public class EntitySelector {
+               } else {
+                 EntityPlayerMP var2 = (EntityPlayerMP) var1;
+                 GameType var3x = var2.interactionManager.getGameType();
+-                return var3 ? var3x != var4 : var3x == var4;
++                return var3 ? var3x != tmp : var3x == tmp; // BCMP
+               }
+             }
+           });
+@@ -274,11 +275,12 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getTeamPredicates(Map<String, String> var0) {
      ArrayList var1 = Lists.newArrayList();
 -    final String var2 = getArgument(var0, ARGUMENT_TEAM_NAME);
--    final boolean var3 = var2 != null && var2.startsWith("!");
-+    // BCMP Start
-+    String _var2 = getArgument(var0, ARGUMENT_TEAM_NAME);
-+    final boolean var3 = _var2 != null && _var2.startsWith("!");
++    String var2 = getArgument(var0, ARGUMENT_TEAM_NAME); // BCMP
+     final boolean var3 = var2 != null && var2.startsWith("!");
      if (var3) {
--      var2 = var2.substring(1);
-+      _var2 = _var2.substring(1);
+       var2 = var2.substring(1);
      }
-+    final String var2 = _var2;
-+    // BCMP End
++    final String tmp = var2; // BCMP
  
      if (var2 != null) {
        var1.add(
-@@ -301,7 +310,7 @@ public class EntitySelector {
+@@ -290,7 +292,7 @@ public class EntitySelector {
+                 EntityLivingBase var2x = (EntityLivingBase) var1;
+                 Team var3x = var2x.getTeam();
+                 String var4 = var3x == null ? "" : var3x.getName();
+-                return var4.equals(var2) != var3;
++                return var4.equals(tmp) != var3; // BCMP
+               }
+             }
+           });
+@@ -301,7 +303,7 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getScorePredicates(
        final ICommandSender var0, Map<String, String> var1) {
 -    final Map var2 = getScoreMap(var1);
-+    final Map<?, ?> var2 = getScoreMap(var1); // BCMP - I can't believe this worked.
++    final Map<String, Integer> var2 = getScoreMap(var1); // BCMP
      return (List<Predicate<Entity>>)
          (var2.isEmpty()
              ? Collections.emptyList()
-@@ -356,11 +365,14 @@ public class EntitySelector {
+@@ -356,17 +358,18 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getNamePredicates(Map<String, String> var0) {
      ArrayList var1 = Lists.newArrayList();
 -    final String var2 = getArgument(var0, ARGUMENT_PLAYER_NAME);
--    final boolean var3 = var2 != null && var2.startsWith("!");
-+    // BCMP Start
-+    String _var2 = getArgument(var0, ARGUMENT_PLAYER_NAME);
-+    final boolean var3 = _var2 != null && _var2.startsWith("!");
++    String var2 = getArgument(var0, ARGUMENT_PLAYER_NAME); // BCMP
+     final boolean var3 = var2 != null && var2.startsWith("!");
      if (var3) {
--      var2 = var2.substring(1);
-+      _var2 = _var2.substring(1);
+       var2 = var2.substring(1);
      }
-+    final String var2 = _var2;
-+    // BCMP End
++    final String tmp = var2; // BCMP
  
      if (var2 != null) {
        var1.add(
-@@ -376,11 +388,14 @@ public class EntitySelector {
+           new Predicate<Entity>() {
+             public boolean apply(@Nullable Entity var1) {
+-              return var1 != null && var1.getName().equals(var2) != var3;
++              return var1 != null && var1.getName().equals(tmp) != var3; // BCMP
+             }
+           });
+     }
+@@ -376,11 +379,12 @@ public class EntitySelector {
  
    private static List<Predicate<Entity>> getTagPredicates(Map<String, String> var0) {
      ArrayList var1 = Lists.newArrayList();
 -    final String var2 = getArgument(var0, ARGUMENT_ENTITY_TAG);
--    final boolean var3 = var2 != null && var2.startsWith("!");
-+    // BCMP Start
-+    String _var2 = getArgument(var0, ARGUMENT_ENTITY_TAG);
-+    final boolean var3 = _var2 != null && _var2.startsWith("!");
++    String var2 = getArgument(var0, ARGUMENT_ENTITY_TAG); // BCMP
+     final boolean var3 = var2 != null && var2.startsWith("!");
      if (var3) {
--      var2 = var2.substring(1);
-+      _var2 = _var2.substring(1);
+       var2 = var2.substring(1);
      }
-+    final String var2 = _var2;
-+    // BCMP End
++    final String tmp = var2; // BCMP
  
      if (var2 != null) {
        var1.add(
-@@ -558,7 +573,7 @@ public class EntitySelector {
+@@ -388,9 +392,9 @@ public class EntitySelector {
+             public boolean apply(@Nullable Entity var1) {
+               return var1 == null
+                   ? false
+-                  : ("".equals(var2)
++                  : ("".equals(tmp) // BCMP
+                       ? var1.getTags().isEmpty() != var3
+-                      : var1.getTags().contains(var2) != var3);
++                      : var1.getTags().contains(tmp) != var3); // BCMP
+             }
+           });
+     }
+@@ -558,7 +562,7 @@ public class EntitySelector {
          && var6 == 1
          && ((List) var0).contains(var7)
          && !"r".equals(var4)) {
@@ -442,7 +463,7 @@ index 422c9c1..49e80d3 100644
      int var8 = 0;
  
 diff --git a/net/minecraft/command/server/CommandScoreboard.java b/net/minecraft/command/server/CommandScoreboard.java
-index 9490db4..9b3b9d0 100644
+index 72e40df..62ba403 100644
 --- a/net/minecraft/command/server/CommandScoreboard.java
 +++ b/net/minecraft/command/server/CommandScoreboard.java
 @@ -239,7 +239,7 @@ public class CommandScoreboard extends CommandBase {
@@ -454,7 +475,7 @@ index 9490db4..9b3b9d0 100644
        String var6 = var3[var4];
        ArrayList var7 = Lists.newArrayList();
  
-@@ -524,7 +524,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -521,7 +521,7 @@ public class CommandScoreboard extends CommandBase {
        var1.sendMessage(var8);
        var1.sendMessage(new TextComponentString(joinNiceString(var7.toArray())));
      } else {
@@ -463,7 +484,7 @@ index 9490db4..9b3b9d0 100644
        var1.setCommandStat(CommandResultStats.Type.QUERY_RESULT, var10.size());
        if (var10.isEmpty()) {
          throw new CommandException("commands.scoreboard.teams.list.empty", new Object[0]);
-@@ -669,7 +669,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -666,7 +666,7 @@ public class CommandScoreboard extends CommandBase {
      Scoreboard var5 = this.getScoreboard(var4);
      ScorePlayerTeam var6 = this.convertToTeam(var2[var3], var4);
      if (var6 != null) {
@@ -472,7 +493,7 @@ index 9490db4..9b3b9d0 100644
        var1.setCommandStat(CommandResultStats.Type.AFFECTED_ENTITIES, var7.size());
        if (var7.isEmpty()) {
          throw new CommandException(
-@@ -700,7 +700,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -696,7 +696,7 @@ public class CommandScoreboard extends CommandBase {
  
    protected void listObjectives(ICommandSender var1, MinecraftServer var2) throws CommandException {
      Scoreboard var3 = this.getScoreboard(var2);
@@ -481,16 +502,16 @@ index 9490db4..9b3b9d0 100644
      if (var4.isEmpty()) {
        throw new CommandException("commands.scoreboard.objectives.list.empty", new Object[0]);
      } else {
-@@ -758,7 +758,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -754,7 +754,7 @@ public class CommandScoreboard extends CommandBase {
      Scoreboard var5 = this.getScoreboard(var4);
      if (var2.length > var3) {
        String var6 = getEntityName(var4, var1, var2[var3]);
 -      Map var7 = var5.getObjectivesForEntity(var6);
-+      Map<?, Score> var7 = var5.getObjectivesForEntity(var6); // BCMP
++      Map<ScoreObjective, Score> var7 = var5.getObjectivesForEntity(var6); // BCMP
        var1.setCommandStat(CommandResultStats.Type.QUERY_RESULT, var7.size());
        if (var7.isEmpty()) {
          throw new CommandException(
-@@ -1224,7 +1224,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -1220,7 +1220,7 @@ public class CommandScoreboard extends CommandBase {
    }
  
    protected List<String> getObjectiveNames(boolean var1, MinecraftServer var2) {
@@ -499,7 +520,7 @@ index 9490db4..9b3b9d0 100644
      ArrayList var4 = Lists.newArrayList();
  
      for (ScoreObjective var6 : var3) {
-@@ -1237,7 +1237,7 @@ public class CommandScoreboard extends CommandBase {
+@@ -1233,7 +1233,7 @@ public class CommandScoreboard extends CommandBase {
    }
  
    protected List<String> getTriggerNames(MinecraftServer var1) {
@@ -509,7 +530,7 @@ index 9490db4..9b3b9d0 100644
  
      for (ScoreObjective var5 : var2) {
 diff --git a/net/minecraft/crash/CrashReport.java b/net/minecraft/crash/CrashReport.java
-index 5cae8cb..04d7de4 100644
+index 37331f4..52c20bb 100644
 --- a/net/minecraft/crash/CrashReport.java
 +++ b/net/minecraft/crash/CrashReport.java
 @@ -103,7 +103,7 @@ public class CrashReport {
@@ -522,10 +543,10 @@ index 5cae8cb..04d7de4 100644
              StringBuilder var4 = new StringBuilder();
  
 diff --git a/net/minecraft/enchantment/EnchantmentHelper.java b/net/minecraft/enchantment/EnchantmentHelper.java
-index 72d84ee..9c636e3 100644
+index 21fe8c6..a0eff87 100644
 --- a/net/minecraft/enchantment/EnchantmentHelper.java
 +++ b/net/minecraft/enchantment/EnchantmentHelper.java
-@@ -164,7 +164,7 @@ public class EnchantmentHelper {
+@@ -170,7 +170,7 @@ public class EnchantmentHelper {
    }
  
    public static int getMaxEnchantmentLevel(Enchantment var0, EntityLivingBase var1) {
@@ -534,7 +555,7 @@ index 72d84ee..9c636e3 100644
      if (var2 == null) {
        return 0;
      } else {
-@@ -230,7 +230,7 @@ public class EnchantmentHelper {
+@@ -236,7 +236,7 @@ public class EnchantmentHelper {
    }
  
    public static ItemStack getEnchantedItem(Enchantment var0, EntityLivingBase var1) {
@@ -543,7 +564,7 @@ index 72d84ee..9c636e3 100644
      if (var2.isEmpty()) {
        return ItemStack.EMPTY;
      } else {
-@@ -267,7 +267,7 @@ public class EnchantmentHelper {
+@@ -273,7 +273,7 @@ public class EnchantmentHelper {
  
    public static ItemStack addRandomEnchantment(
        Random var0, ItemStack var1, int var2, boolean var3) {
@@ -553,10 +574,10 @@ index 72d84ee..9c636e3 100644
      if (var5) {
        var1 = new ItemStack(Items.ENCHANTED_BOOK);
 diff --git a/net/minecraft/entity/Entity.java b/net/minecraft/entity/Entity.java
-index 88244d0..6045384 100644
+index 7fe5385..fe2f1d3 100644
 --- a/net/minecraft/entity/Entity.java
 +++ b/net/minecraft/entity/Entity.java
-@@ -2370,7 +2370,7 @@ public abstract class Entity implements ICommandSender {
+@@ -2426,7 +2426,7 @@ public abstract class Entity implements ICommandSender {
    private <T extends Entity> void getRecursivePassengersByType(Class<T> var1, Set<T> var2) {
      for (Entity var4 : this.getPassengers()) {
        if (var1.isAssignableFrom(var4.getClass())) {
@@ -614,7 +635,7 @@ index 56203d9..22b79b9 100644
  
        OLD_NAMES.set(var0, var3);
 diff --git a/net/minecraft/entity/EntityTracker.java b/net/minecraft/entity/EntityTracker.java
-index ab4de99..da52150 100644
+index c1b8c01..8daaa32 100644
 --- a/net/minecraft/entity/EntityTracker.java
 +++ b/net/minecraft/entity/EntityTracker.java
 @@ -257,8 +257,8 @@ public class EntityTracker {
@@ -642,7 +663,7 @@ index 914aebe..bf51d5a 100644
        NBTTagList var4 = new NBTTagList();
  
 diff --git a/net/minecraft/entity/ai/EntityAIAvoidEntity.java b/net/minecraft/entity/ai/EntityAIAvoidEntity.java
-index 0aa0072..5298977 100644
+index c98baeb..f3c5740 100644
 --- a/net/minecraft/entity/ai/EntityAIAvoidEntity.java
 +++ b/net/minecraft/entity/ai/EntityAIAvoidEntity.java
 @@ -69,7 +69,7 @@ public class EntityAIAvoidEntity<T extends Entity> extends EntityAIBase {
@@ -653,22 +674,22 @@ index 0aa0072..5298977 100644
 +      this.closestLivingEntity = (T) var1.get(0); // BCMP
        Vec3d var2 =
            RandomPositionGenerator.findRandomTargetBlockAwayFrom(
-               this.theEntity,
+               this.entity,
 diff --git a/net/minecraft/entity/ai/EntityAIFollowGolem.java b/net/minecraft/entity/ai/EntityAIFollowGolem.java
-index 7fecdd8..c8cf061 100644
+index 43537c0..0d6ca96 100644
 --- a/net/minecraft/entity/ai/EntityAIFollowGolem.java
 +++ b/net/minecraft/entity/ai/EntityAIFollowGolem.java
 @@ -22,7 +22,7 @@ public class EntityAIFollowGolem extends EntityAIBase {
-     } else if (!this.theVillager.world.isDaytime()) {
+     } else if (!this.villager.world.isDaytime()) {
        return false;
      } else {
 -      List var1 =
 +      List<EntityIronGolem> var1 = // BCMP
-           this.theVillager.world.getEntitiesWithinAABB(
-               EntityIronGolem.class,
-               this.theVillager.getEntityBoundingBox().expand(6.0D, 2.0D, 6.0D));
+           this.villager.world.getEntitiesWithinAABB(
+               EntityIronGolem.class, this.villager.getEntityBoundingBox().expand(6.0D, 2.0D, 6.0D));
+       if (var1.isEmpty()) {
 diff --git a/net/minecraft/entity/ai/EntityAIFollowParent.java b/net/minecraft/entity/ai/EntityAIFollowParent.java
-index 393f927..72a331b 100644
+index 9497a3e..fc6ccfc 100644
 --- a/net/minecraft/entity/ai/EntityAIFollowParent.java
 +++ b/net/minecraft/entity/ai/EntityAIFollowParent.java
 @@ -19,7 +19,7 @@ public class EntityAIFollowParent extends EntityAIBase {
@@ -681,7 +702,7 @@ index 393f927..72a331b 100644
                this.childAnimal.getClass(),
                this.childAnimal.getEntityBoundingBox().expand(8.0D, 4.0D, 8.0D));
 diff --git a/net/minecraft/entity/ai/EntityAILlamaFollowCaravan.java b/net/minecraft/entity/ai/EntityAILlamaFollowCaravan.java
-index 1f776bb..cc0a602 100644
+index fdd6fb2..8caf982 100644
 --- a/net/minecraft/entity/ai/EntityAILlamaFollowCaravan.java
 +++ b/net/minecraft/entity/ai/EntityAILlamaFollowCaravan.java
 @@ -18,7 +18,7 @@ public class EntityAILlamaFollowCaravan extends EntityAIBase {
@@ -694,7 +715,7 @@ index 1f776bb..cc0a602 100644
                this.llama.getClass(), this.llama.getEntityBoundingBox().expand(9.0D, 4.0D, 9.0D));
        EntityLlama var2 = null;
 diff --git a/net/minecraft/entity/ai/EntityAIMate.java b/net/minecraft/entity/ai/EntityAIMate.java
-index f5bcd92..ee47179 100644
+index 25ab009..afe5a89 100644
 --- a/net/minecraft/entity/ai/EntityAIMate.java
 +++ b/net/minecraft/entity/ai/EntityAIMate.java
 @@ -66,7 +66,7 @@ public class EntityAIMate extends EntityAIBase {
@@ -704,16 +725,16 @@ index f5bcd92..ee47179 100644
 -    List var1 =
 +    List<EntityAnimal> var1 = // BCMP
          this.world.getEntitiesWithinAABB(
-             this.mateClass, this.theAnimal.getEntityBoundingBox().expandXyz(8.0D));
+             this.mateClass, this.animal.getEntityBoundingBox().expandXyz(8.0D));
      double var2 = Double.MAX_VALUE;
 diff --git a/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java b/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java
-index 85705dd..7a636e0 100644
+index 63cf457..d2a2135 100644
 --- a/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java
 +++ b/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java
 @@ -76,12 +76,12 @@ public class EntityAINearestAttackableTarget<T extends EntityLivingBase> extends
          return false;
        } else {
-         Collections.sort(var1, this.theNearestAttackableTargetSorter);
+         Collections.sort(var1, this.sorter);
 -        this.targetEntity = (EntityLivingBase) var1.get(0);
 +        this.targetEntity = (T) var1.get(0); // BCMP
          return true;
@@ -721,7 +742,7 @@ index 85705dd..7a636e0 100644
      } else {
        this.targetEntity =
 -          this.taskOwner.world.getNearestAttackablePlayer(
-+              (T) this.taskOwner.world.getNearestAttackablePlayer( // BCMP
++          (T) this.taskOwner.world.getNearestAttackablePlayer( // BCMP
                this.taskOwner.posX,
                this.taskOwner.posY + (double) this.taskOwner.getEyeHeight(),
                this.taskOwner.posZ,
@@ -730,23 +751,23 @@ index 85705dd..7a636e0 100644
                  }
                },
 -              this.targetEntitySelector);
-+                      (Predicate<EntityPlayer>) this.targetEntitySelector); // BCMP
++              (Predicate<EntityPlayer>) this.targetEntitySelector); // BCMP
        return this.targetEntity != null;
      }
    }
 diff --git a/net/minecraft/entity/ai/EntityAIPlay.java b/net/minecraft/entity/ai/EntityAIPlay.java
-index d7fbd95..58072eb 100644
+index 0599ed8..c1968c7 100644
 --- a/net/minecraft/entity/ai/EntityAIPlay.java
 +++ b/net/minecraft/entity/ai/EntityAIPlay.java
 @@ -25,7 +25,7 @@ public class EntityAIPlay extends EntityAIBase {
-     } else if (this.villagerObj.getRNG().nextInt(400) != 0) {
+     } else if (this.villager.getRNG().nextInt(400) != 0) {
        return false;
      } else {
 -      List var1 =
 +      List<EntityVillager> var1 = // BCMP
-           this.villagerObj.world.getEntitiesWithinAABB(
-               EntityVillager.class,
-               this.villagerObj.getEntityBoundingBox().expand(6.0D, 3.0D, 6.0D));
+           this.villager.world.getEntitiesWithinAABB(
+               EntityVillager.class, this.villager.getEntityBoundingBox().expand(6.0D, 3.0D, 6.0D));
+       double var2 = Double.MAX_VALUE;
 diff --git a/net/minecraft/entity/ai/attributes/ModifiableAttributeInstance.java b/net/minecraft/entity/ai/attributes/ModifiableAttributeInstance.java
 index 9d1ecc1..1d0c6e8 100644
 --- a/net/minecraft/entity/ai/attributes/ModifiableAttributeInstance.java
@@ -787,7 +808,7 @@ index 5d89fac..570f435 100644
                  this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox()));
          boolean var6 = var3 == Blocks.ANVIL;
 diff --git a/net/minecraft/entity/monster/AbstractSkeleton.java b/net/minecraft/entity/monster/AbstractSkeleton.java
-index 1845d2d..e208759 100644
+index 1845d2d..5fcec37 100644
 --- a/net/minecraft/entity/monster/AbstractSkeleton.java
 +++ b/net/minecraft/entity/monster/AbstractSkeleton.java
 @@ -51,7 +51,7 @@ public abstract class AbstractSkeleton extends EntityMob implements IRangedAttac
@@ -795,7 +816,7 @@ index 1845d2d..e208759 100644
        new EntityAIAttackRangedBow(this, 1.0D, 20, 15.0F);
    private final EntityAIAttackMelee aiAttackOnCollide =
 -      new EntityAIAttackMelee(this, 1.2D, var5) {
-+      new EntityAIAttackMelee(this, 1.2D, false) { // BCMP
++      new EntityAIAttackMelee(this, 1.2D, false) { // BCMP - FIXME MISSING
          public void resetTask() {
            super.resetTask();
            AbstractSkeleton.this.setSwingingArms(false);
@@ -826,7 +847,7 @@ index 66d9878..8b2694d 100644
                EntityPlayerMP.class,
                new Predicate<EntityPlayerMP>() {
 diff --git a/net/minecraft/entity/monster/EntityEvoker.java b/net/minecraft/entity/monster/EntityEvoker.java
-index 7780514..44ccae5 100644
+index af534e1..261a6b4 100644
 --- a/net/minecraft/entity/monster/EntityEvoker.java
 +++ b/net/minecraft/entity/monster/EntityEvoker.java
 @@ -215,7 +215,7 @@ public class EntityEvoker extends EntityMob {
@@ -870,7 +891,7 @@ index ed8ff15..84c1939 100644
  
      public boolean shouldExecute() {
 diff --git a/net/minecraft/entity/monster/EntityShulker.java b/net/minecraft/entity/monster/EntityShulker.java
-index c9b0138..d40161a 100644
+index 533050c..9855416 100644
 --- a/net/minecraft/entity/monster/EntityShulker.java
 +++ b/net/minecraft/entity/monster/EntityShulker.java
 @@ -345,7 +345,7 @@ public class EntityShulker extends EntityGolem implements IMob {
@@ -883,7 +904,7 @@ index c9b0138..d40161a 100644
          if (!var16.isEmpty()) {
            for (Entity var18 : var16) {
 diff --git a/net/minecraft/entity/monster/EntityWitch.java b/net/minecraft/entity/monster/EntityWitch.java
-index 65a95d7..9362912 100644
+index 65a95d7..4b944d1 100644
 --- a/net/minecraft/entity/monster/EntityWitch.java
 +++ b/net/minecraft/entity/monster/EntityWitch.java
 @@ -107,7 +107,7 @@ public class EntityWitch extends EntityMob implements IRangedAttackMob {
@@ -891,12 +912,12 @@ index 65a95d7..9362912 100644
            this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
            if (var5.getItem() == Items.POTIONITEM) {
 -            List var6 = PotionUtils.getEffectsFromStack(var5);
-+            List<PotionEffect> var6 = PotionUtils.getEffectsFromStack(var5);
++            List<PotionEffect> var6 = PotionUtils.getEffectsFromStack(var5); // BCMP
              if (var6 != null) {
                for (PotionEffect var4 : var6) {
                  this.addPotionEffect(new PotionEffect(var4));
 diff --git a/net/minecraft/entity/passive/EntityLlama.java b/net/minecraft/entity/passive/EntityLlama.java
-index 7b38af1..9cce755 100644
+index 6f052c7..e1e1c98 100644
 --- a/net/minecraft/entity/passive/EntityLlama.java
 +++ b/net/minecraft/entity/passive/EntityLlama.java
 @@ -458,7 +458,7 @@ public class EntityLlama extends AbstractChestHorse implements IRangedAttackMob
@@ -909,7 +930,7 @@ index 7b38af1..9cce755 100644
  
      public boolean shouldExecute() {
 diff --git a/net/minecraft/entity/player/EntityPlayer.java b/net/minecraft/entity/player/EntityPlayer.java
-index 18065f6..69de47e 100644
+index 6e1100e..bc2f95a 100644
 --- a/net/minecraft/entity/player/EntityPlayer.java
 +++ b/net/minecraft/entity/player/EntityPlayer.java
 @@ -537,7 +537,7 @@ public abstract class EntityPlayer extends EntityLivingBase {
@@ -935,10 +956,10 @@ index cf486e8..5e4f5b9 100644
                  EntityLivingBase.class, this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
          EntityAreaEffectCloud var3 =
 diff --git a/net/minecraft/entity/projectile/EntityFishHook.java b/net/minecraft/entity/projectile/EntityFishHook.java
-index 350b3a6..fc5c955 100644
+index 18ae1c9..8e4be65 100644
 --- a/net/minecraft/entity/projectile/EntityFishHook.java
 +++ b/net/minecraft/entity/projectile/EntityFishHook.java
-@@ -260,7 +260,7 @@ public class EntityFishHook extends Entity {
+@@ -271,7 +271,7 @@ public class EntityFishHook extends Entity {
      }
  
      Entity var4 = null;
@@ -961,7 +982,7 @@ index 5f1d8e3..5c13445 100644
              this,
              this.getEntityBoundingBox()
 diff --git a/net/minecraft/entity/projectile/EntityPotion.java b/net/minecraft/entity/projectile/EntityPotion.java
-index a305e8f..2230818 100644
+index e1a059a..2ed778b 100644
 --- a/net/minecraft/entity/projectile/EntityPotion.java
 +++ b/net/minecraft/entity/projectile/EntityPotion.java
 @@ -121,7 +121,7 @@ public class EntityPotion extends EntityThrowable {
@@ -983,45 +1004,45 @@ index a305e8f..2230818 100644
        for (EntityLivingBase var6 : var4) {
          if (var6.canBeHitWithPotion()) {
 diff --git a/net/minecraft/entity/projectile/EntityTippedArrow.java b/net/minecraft/entity/projectile/EntityTippedArrow.java
-index 147a195..4371782 100644
+index b2503d8..6bce9fb 100644
 --- a/net/minecraft/entity/projectile/EntityTippedArrow.java
 +++ b/net/minecraft/entity/projectile/EntityTippedArrow.java
-@@ -42,7 +42,7 @@ public class EntityTippedArrow extends EntityArrow {
+@@ -43,7 +43,7 @@ public class EntityTippedArrow extends EntityArrow {
    public void setPotionEffect(ItemStack var1) {
      if (var1.getItem() == Items.TIPPED_ARROW) {
-       this.potion = PotionUtils.getPotionTypeFromNBT(var1.getTagCompound());
+       this.potion = PotionUtils.getPotionFromItem(var1);
 -      List var2 = PotionUtils.getFullEffectsFromItem(var1);
 +      List<PotionEffect> var2 = PotionUtils.getFullEffectsFromItem(var1); // BCMP
        if (!var2.isEmpty()) {
          for (PotionEffect var4 : var2) {
            this.customPotionEffects.add(new PotionEffect(var4));
 diff --git a/net/minecraft/inventory/ContainerRepair.java b/net/minecraft/inventory/ContainerRepair.java
-index ae1aec7..7a01534 100644
+index ed6ccfc..635416f 100644
 --- a/net/minecraft/inventory/ContainerRepair.java
 +++ b/net/minecraft/inventory/ContainerRepair.java
-@@ -131,7 +131,7 @@ public class ContainerRepair extends Container {
-     } else {
-       ItemStack var5 = var1.copy();
+@@ -146,7 +146,7 @@ public class ContainerRepair extends Container {
+       }
+ 
        ItemStack var6 = this.inputSlots.getStackInSlot(1);
 -      Map var7 = EnchantmentHelper.getEnchantments(var5);
 +      Map<Enchantment, Integer> var7 = EnchantmentHelper.getEnchantments(var5); // BCMP
        var3 = var3 + var1.getRepairCost() + (var6.isEmpty() ? 0 : var6.getRepairCost());
        this.materialCost = 0;
        if (!var6.isEmpty()) {
-@@ -178,7 +178,7 @@ public class ContainerRepair extends Container {
+@@ -193,7 +193,7 @@ public class ContainerRepair extends Container {
              }
            }
  
--          Map var19 = EnchantmentHelper.getEnchantments(var6);
-+          Map<Enchantment, Integer> var19 = EnchantmentHelper.getEnchantments(var6); // BCMP
+-          Map var21 = EnchantmentHelper.getEnchantments(var6);
++          Map<Enchantment, Integer> var21 = EnchantmentHelper.getEnchantments(var6); // BCMP
+           boolean var23 = false;
+           boolean var25 = false;
  
-           for (Enchantment var23 : var19.keySet()) {
-             if (var23 != null) {
 diff --git a/net/minecraft/item/ItemMonsterPlacer.java b/net/minecraft/item/ItemMonsterPlacer.java
-index 689f6c2..c3425f8 100644
+index 5c40bc4..fc62589 100644
 --- a/net/minecraft/item/ItemMonsterPlacer.java
 +++ b/net/minecraft/item/ItemMonsterPlacer.java
-@@ -108,7 +108,7 @@ public class ItemMonsterPlacer extends Item {
+@@ -107,7 +107,7 @@ public class ItemMonsterPlacer extends Item {
  
    protected double getYOffset(World var1, BlockPos var2) {
      AxisAlignedBB var3 = (new AxisAlignedBB(var2)).addCoord(0.0D, -1.0D, 0.0D);
@@ -1031,7 +1052,7 @@ index 689f6c2..c3425f8 100644
        return 0.0D;
      } else {
 diff --git a/net/minecraft/item/ItemSlab.java b/net/minecraft/item/ItemSlab.java
-index 9445115..79a4c69 100644
+index 9445115..6f642a9 100644
 --- a/net/minecraft/item/ItemSlab.java
 +++ b/net/minecraft/item/ItemSlab.java
 @@ -114,6 +114,6 @@ public class ItemSlab extends ItemBlock {
@@ -1039,7 +1060,7 @@ index 9445115..79a4c69 100644
  
    protected <T extends Comparable<T>> IBlockState makeState(IProperty<T> var1, Comparable<?> var2) {
 -    return this.doubleSlab.getDefaultState().withProperty(var1, var2);
-+    return this.doubleSlab.getDefaultState().withProperty(var1, (T)var2); // BCMP
++    return this.doubleSlab.getDefaultState().withProperty(var1, (T) var2); // BCMP
    }
  }
 diff --git a/net/minecraft/item/crafting/ShapelessRecipes.java b/net/minecraft/item/crafting/ShapelessRecipes.java
@@ -1055,8 +1076,21 @@ index 30191b6..dbf63f3 100644
  
      for (int var4 = 0; var4 < var1.getHeight(); ++var4) {
        for (int var5 = 0; var5 < var1.getWidth(); ++var5) {
+diff --git a/net/minecraft/nbt/NBTTagCompound.java b/net/minecraft/nbt/NBTTagCompound.java
+index 159f92d..419be21 100644
+--- a/net/minecraft/nbt/NBTTagCompound.java
++++ b/net/minecraft/nbt/NBTTagCompound.java
+@@ -302,7 +302,7 @@ public class NBTTagCompound extends NBTBase {
+ 
+   public String toString() {
+     StringBuilder var1 = new StringBuilder("{");
+-    Object var2 = this.tagMap.keySet();
++    java.util.Collection<String> var2 = this.tagMap.keySet(); // BCMP
+     if (field_191551_b.isDebugEnabled()) {
+       ArrayList var3 = Lists.newArrayList(this.tagMap.keySet());
+       Collections.sort(var3);
 diff --git a/net/minecraft/nbt/NBTUtil.java b/net/minecraft/nbt/NBTUtil.java
-index d70f200..7e1bb6c 100644
+index d70f200..01403f9 100644
 --- a/net/minecraft/nbt/NBTUtil.java
 +++ b/net/minecraft/nbt/NBTUtil.java
 @@ -198,7 +198,7 @@ public final class NBTUtil {
@@ -1068,17 +1102,16 @@ index d70f200..7e1bb6c 100644
    }
  
    public static NBTTagCompound writeBlockState(NBTTagCompound var0, IBlockState var1) {
-@@ -220,7 +220,7 @@ public final class NBTUtil {
-     return var0;
+@@ -221,6 +221,6 @@ public final class NBTUtil {
    }
  
--  private static <T extends Comparable<T>> String getName(IProperty<T> var0, Comparable<?> var1) {
-+  private static <T extends Comparable<T>> String getName(IProperty<T> var0, T var1) { // BCMP
-     return var0.getName(var1);
+   private static <T extends Comparable<T>> String getName(IProperty<T> var0, Comparable<?> var1) {
+-    return var0.getName(var1);
++    return var0.getName((T) var1); // BCMP
    }
  }
 diff --git a/net/minecraft/network/EnumConnectionState.java b/net/minecraft/network/EnumConnectionState.java
-index 451a46f..f3c9bb0 100644
+index 451a46f..6f47c41 100644
 --- a/net/minecraft/network/EnumConnectionState.java
 +++ b/net/minecraft/network/EnumConnectionState.java
 @@ -271,7 +271,7 @@ public enum EnumConnectionState {
@@ -1095,25 +1128,25 @@ index 451a46f..f3c9bb0 100644
  
        for (EnumPacketDirection var6 : var3.directionMaps.keySet()) {
 -        for (Class var8 : ((BiMap) var3.directionMaps.get(var6)).values()) {
-+        for (Class<? extends Packet<?>> var8 : var3.directionMaps.get(var6).values()) { // BCMP
++        for (Class var8 : (java.util.Set<Class>) ((BiMap) var3.directionMaps.get(var6)).values()) { // BCMP
            if (STATES_BY_CLASS.containsKey(var8) && STATES_BY_CLASS.get(var8) != var3) {
              throw new Error(
                  "Packet "
 diff --git a/net/minecraft/network/NetworkManager.java b/net/minecraft/network/NetworkManager.java
-index d43bae5..f33cd52 100644
+index d43bae5..f5adae3 100644
 --- a/net/minecraft/network/NetworkManager.java
 +++ b/net/minecraft/network/NetworkManager.java
-@@ -134,7 +134,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
-     this.closeChannel(var3);
-   }
- 
--  protected void channelRead0(ChannelHandlerContext var1, Packet<?> var2) throws Exception {
-+  protected void channelRead0(ChannelHandlerContext var1, Packet var2) throws Exception { // BCMP
+@@ -137,7 +137,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
+   protected void channelRead0(ChannelHandlerContext var1, Packet<?> var2) throws Exception {
      if (this.channel.isOpen()) {
        try {
-         var2.processPacket(this.packetListener);
+-        var2.processPacket(this.packetListener);
++        ((Packet<INetHandler>) var2).processPacket(this.packetListener); // BCMP
+       } catch (ThreadQuickExitException var4) {
+         ;
+       }
 diff --git a/net/minecraft/pathfinding/WalkNodeProcessor.java b/net/minecraft/pathfinding/WalkNodeProcessor.java
-index 852bdd5..e48a735 100644
+index 7149a70..6bb913e 100644
 --- a/net/minecraft/pathfinding/WalkNodeProcessor.java
 +++ b/net/minecraft/pathfinding/WalkNodeProcessor.java
 @@ -71,7 +71,7 @@ public class WalkNodeProcessor extends NodeProcessor {
@@ -1135,7 +1168,7 @@ index 852bdd5..e48a735 100644
      double var13 = (double) var5.width / 2.0D;
      BlockPos var15 = new BlockPos(var5);
 diff --git a/net/minecraft/profiler/Snooper.java b/net/minecraft/profiler/Snooper.java
-index 140ae7a..3e9dc01 100644
+index ff255ae..58ba56a 100644
 --- a/net/minecraft/profiler/Snooper.java
 +++ b/net/minecraft/profiler/Snooper.java
 @@ -88,7 +88,7 @@ public class Snooper {
@@ -1148,7 +1181,7 @@ index 140ae7a..3e9dc01 100644
  
      for (String var5 : var2) {
 diff --git a/net/minecraft/scoreboard/Scoreboard.java b/net/minecraft/scoreboard/Scoreboard.java
-index 1836bbd..21b8bb7 100644
+index 0c823be..3c3fdaf 100644
 --- a/net/minecraft/scoreboard/Scoreboard.java
 +++ b/net/minecraft/scoreboard/Scoreboard.java
 @@ -41,7 +41,7 @@ public class Scoreboard {
@@ -1169,19 +1202,17 @@ index 1836bbd..21b8bb7 100644
        if (var3 == null) {
          var3 = Maps.newHashMap();
          this.entitiesScoreObjectives.put(var1, var3);
-@@ -135,10 +135,10 @@ public class Scoreboard {
+@@ -135,8 +135,8 @@ public class Scoreboard {
    }
  
    public Collection<Score> getScores() {
 -    Collection var1 = this.entitiesScoreObjectives.values();
+-    ArrayList var2 = Lists.newArrayList();
 +    Collection<Map<ScoreObjective, Score>> var1 = this.entitiesScoreObjectives.values(); // BCMP
-     ArrayList var2 = Lists.newArrayList();
++    ArrayList<Score> var2 = Lists.newArrayList(); // BCMP
  
--    for (Map var4 : var1) {
-+    for (Map<ScoreObjective, Score> var4 : var1) { // BCMP
+     for (Map var4 : var1) {
        var2.addAll(var4.values());
-     }
- 
 diff --git a/net/minecraft/scoreboard/ServerScoreboard.java b/net/minecraft/scoreboard/ServerScoreboard.java
 index 813d7de..7fa8b40 100644
 --- a/net/minecraft/scoreboard/ServerScoreboard.java
@@ -1205,7 +1236,7 @@ index 813d7de..7fa8b40 100644
      for (EntityPlayerMP var4 : this.scoreboardMCServer.getPlayerList().getPlayers()) {
        for (Packet var6 : var2) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index ca31118..4833e71 100644
+index e6d69d4..408dc74 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -840,7 +840,7 @@ public abstract class MinecraftServer
@@ -1218,7 +1249,7 @@ index ca31118..4833e71 100644
          for (String var10 : var8) {
            if (var7) {
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index ba0d9c8..6366ae9 100644
+index e3ef2db..d328d81 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -87,7 +87,7 @@ public class DedicatedServer extends MinecraftServer implements IServer {
@@ -1244,11 +1275,37 @@ index ba0d9c8..6366ae9 100644
      super.updateTimeLightAndEntities();
      this.executePendingCommands();
    }
+diff --git a/net/minecraft/server/gui/MinecraftServerGui.java b/net/minecraft/server/gui/MinecraftServerGui.java
+index 82486b8..9bfd443 100644
+--- a/net/minecraft/server/gui/MinecraftServerGui.java
++++ b/net/minecraft/server/gui/MinecraftServerGui.java
+@@ -1,6 +1,6 @@
+ package net.minecraft.server.gui;
+ 
+-import com.mojang.util.QueueLogAppender;
++// import com.mojang.util.QueueLogAppender; // BCMP - Library Removal
+ import java.awt.BorderLayout;
+ import java.awt.Component;
+ import java.awt.Dimension;
+@@ -126,9 +126,11 @@ public class MinecraftServerGui extends JComponent {
+             new Runnable() {
+               public void run() {
+                 String var1;
+-                while ((var1 = QueueLogAppender.getNextLogEvent("ServerGuiConsole")) != null) {
++                // BCMP Start - Library Removal
++                /* while ((var1 = QueueLogAppender.getNextLogEvent("ServerGuiConsole")) != null) {
+                   MinecraftServerGui.this.appendLine(var2, var3, var1);
+-                }
++                } */
++                // BCMP End
+               }
+             });
+     var5.setDaemon(true);
 diff --git a/net/minecraft/server/management/PlayerList.java b/net/minecraft/server/management/PlayerList.java
-index 81e296f..fe81777 100644
+index 322ae5e..1d37a12 100644
 --- a/net/minecraft/server/management/PlayerList.java
 +++ b/net/minecraft/server/management/PlayerList.java
-@@ -404,7 +404,7 @@ public abstract class PlayerList {
+@@ -398,7 +398,7 @@ public abstract class PlayerList {
  
    public EntityPlayerMP createPlayerForUser(GameProfile var1) {
      UUID var2 = EntityPlayer.getUUID(var1);
@@ -1258,7 +1315,7 @@ index 81e296f..fe81777 100644
      for (int var4 = 0; var4 < this.playerEntityList.size(); ++var4) {
        EntityPlayerMP var5 = (EntityPlayerMP) this.playerEntityList.get(var4);
 diff --git a/net/minecraft/server/management/PlayerProfileCache.java b/net/minecraft/server/management/PlayerProfileCache.java
-index 52473d6..d46f6d3 100644
+index 52473d6..d8c9a2a 100644
 --- a/net/minecraft/server/management/PlayerProfileCache.java
 +++ b/net/minecraft/server/management/PlayerProfileCache.java
 @@ -192,7 +192,7 @@ public class PlayerProfileCache {
@@ -1266,7 +1323,7 @@ index 52473d6..d46f6d3 100644
      try {
        var1 = Files.newReader(this.usercacheFile, Charsets.UTF_8);
 -      List var2 = (List) this.gson.fromJson(var1, TYPE);
-+      List<PlayerProfileCache.ProfileEntry> var2 = (List) this.gson.fromJson(var1, TYPE); // BCMP
++      List<ProfileEntry> var2 = (List) this.gson.fromJson(var1, TYPE); // BCMP
        this.usernameToProfileEntryMap.clear();
        this.uuidToProfileEntryMap.clear();
        this.gameProfiles.clear();
@@ -1293,7 +1350,7 @@ index c4bceff..d480b02 100644
  
          for (String var4 : var2.keySet()) {
 diff --git a/net/minecraft/server/management/UserList.java b/net/minecraft/server/management/UserList.java
-index c6aca35..7ca6695 100644
+index c6aca35..95f742f 100644
 --- a/net/minecraft/server/management/UserList.java
 +++ b/net/minecraft/server/management/UserList.java
 @@ -146,7 +146,7 @@ public class UserList<K, V extends UserListEntry<K>> {
@@ -1301,19 +1358,19 @@ index c6aca35..7ca6695 100644
  
    public void readSavedFile() throws FileNotFoundException {
 -    Collection var1 = null;
-+    Collection<V> var1 = null; // BCMP
++    Collection<UserListEntry> var1 = null; // BCMP
      BufferedReader var2 = null;
  
      try {
-@@ -159,7 +159,7 @@ public class UserList<K, V extends UserListEntry<K>> {
-     if (var1 != null) {
-       this.values.clear();
+@@ -161,7 +161,7 @@ public class UserList<K, V extends UserListEntry<K>> {
  
--      for (UserListEntry var4 : var1) {
-+      for (V var4 : var1) { // BCMP
+       for (UserListEntry var4 : var1) {
          if (var4.getValue() != null) {
-           this.values.put(this.getObjectKey(var4.getValue()), var4);
+-          this.values.put(this.getObjectKey(var4.getValue()), var4);
++          this.values.put(this.getObjectKey((K) var4.getValue()), (V) var4); // BCMP
          }
+       }
+     }
 diff --git a/net/minecraft/server/network/NetHandlerLoginServer.java b/net/minecraft/server/network/NetHandlerLoginServer.java
 index 6af37c7..16f4c2d 100644
 --- a/net/minecraft/server/network/NetHandlerLoginServer.java
@@ -1328,10 +1385,10 @@ index 6af37c7..16f4c2d 100644
                    NetHandlerLoginServer.LOGGER.info(
                        "UUID of player {} is {}",
 diff --git a/net/minecraft/stats/StatList.java b/net/minecraft/stats/StatList.java
-index 6dafe41..96f161e 100644
+index c42a8b1..518cdf9 100644
 --- a/net/minecraft/stats/StatList.java
 +++ b/net/minecraft/stats/StatList.java
-@@ -359,7 +359,7 @@ public class StatList {
+@@ -350,7 +350,7 @@ public class StatList {
    }
  
    private static void initCraftableStats() {
@@ -1353,19 +1410,41 @@ index ff29bfa..f394dfe 100644
  
        for (EntityPlayer var11 : var9) {
          var11.addPotionEffect(new PotionEffect(this.primaryEffect, var4, var3, true, true));
+diff --git a/net/minecraft/tileentity/TileEntityPiston.java b/net/minecraft/tileentity/TileEntityPiston.java
+index 1bfdf65..43f53f2 100644
+--- a/net/minecraft/tileentity/TileEntityPiston.java
++++ b/net/minecraft/tileentity/TileEntityPiston.java
+@@ -161,7 +161,7 @@ public class TileEntityPiston extends TileEntity implements ITickable {
+                   var11 * (double) var2.getFrontOffsetX(),
+                   var11 * (double) var2.getFrontOffsetY(),
+                   var11 * (double) var2.getFrontOffsetZ());
+-              MOVING_ENTITY.set((Object) null);
++              MOVING_ENTITY.set(null); // BCMP
+               if (!this.extending && this.shouldHeadBeRendered) {
+                 this.fixEntityWithinPistonBase(var10, var2, var3);
+               }
+@@ -254,7 +254,7 @@ public class TileEntityPiston extends TileEntity implements ITickable {
+             var8 * (double) var7.getFrontOffsetX(),
+             var8 * (double) var7.getFrontOffsetY(),
+             var8 * (double) var7.getFrontOffsetZ());
+-        MOVING_ENTITY.set((Object) null);
++        MOVING_ENTITY.set(null); // BCMP
+       }
+     }
+   }
 diff --git a/net/minecraft/util/ClassInheritanceMultiMap.java b/net/minecraft/util/ClassInheritanceMultiMap.java
-index 5c70b02..d949952 100644
+index 5c70b02..83e68a4 100644
 --- a/net/minecraft/util/ClassInheritanceMultiMap.java
 +++ b/net/minecraft/util/ClassInheritanceMultiMap.java
-@@ -30,7 +30,7 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T> {
-   protected void createLookup(Class<?> var1) {
-     ALL_KNOWN.add(var1);
+@@ -32,7 +32,7 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T> {
  
--    for (Object var3 : this.values) {
-+    for (T var3 : this.values) { // BCMP
+     for (Object var3 : this.values) {
        if (var1.isAssignableFrom(var3.getClass())) {
-         this.addForClass(var3, var1);
+-        this.addForClass(var3, var1);
++        this.addForClass((T) var3, var1); // BCMP
        }
+     }
+ 
 @@ -64,7 +64,7 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T> {
    private void addForClass(T var1, Class<?> var2) {
      List var3 = (List) this.map.get(var2);
@@ -1385,20 +1464,20 @@ index 94354d8..e14a0c8 100644
 -public interface IObjectIntIterable extends Iterable {}
 +public interface IObjectIntIterable<V> extends Iterable<V> {} // BCMP
 diff --git a/net/minecraft/util/IntHashMap.java b/net/minecraft/util/IntHashMap.java
-index 46fee47..9b77225 100644
+index 46fee47..ad47516 100644
 --- a/net/minecraft/util/IntHashMap.java
 +++ b/net/minecraft/util/IntHashMap.java
-@@ -21,7 +21,7 @@ public class IntHashMap<V> {
-   public V lookup(int var1) {
-     int var2 = computeHash(var1);
- 
--    for (IntHashMap.Entry var3 = this.slots[getSlotIndex(var2, this.slots.length)];
-+    for (IntHashMap.Entry<V> var3 = this.slots[getSlotIndex(var2, this.slots.length)]; // BCMP
+@@ -25,7 +25,7 @@ public class IntHashMap<V> {
          var3 != null;
          var3 = var3.nextEntry) {
        if (var3.hashEntry == var1) {
+-        return var3.valueEntry;
++        return (V) var3.valueEntry; // BCMP
+       }
+     }
+ 
 diff --git a/net/minecraft/util/IntIdentityHashBiMap.java b/net/minecraft/util/IntIdentityHashBiMap.java
-index 861b746..d589201 100644
+index 861b746..b102779 100644
 --- a/net/minecraft/util/IntIdentityHashBiMap.java
 +++ b/net/minecraft/util/IntIdentityHashBiMap.java
 @@ -17,9 +17,9 @@ public class IntIdentityHashBiMap<K> implements IObjectIntIterable<K> {
@@ -1413,23 +1492,27 @@ index 861b746..d589201 100644
    }
  
    public int getId(@Nullable K var1) {
-@@ -50,11 +50,11 @@ public class IntIdentityHashBiMap<K> implements IObjectIntIterable<K> {
-   }
- 
+@@ -52,15 +52,15 @@ public class IntIdentityHashBiMap<K> implements IObjectIntIterable<K> {
    private void grow(int var1) {
--    Object[] var2 = this.values;
-+    K[] var2 = this.values; // BCMP
+     Object[] var2 = this.values;
      int[] var3 = this.intKeys;
 -    this.values = (Object[]) (new Object[var1]);
-+    this.values = (K[]) new Object[var1]; // BCMP
++    this.values = (K[]) (new Object[var1]); // BCMP
      this.intKeys = new int[var1];
 -    this.byId = (Object[]) (new Object[var1]);
-+    this.byId = (K[]) new Object[var1]; // BCMP
++    this.byId = (K[]) (new Object[var1]); // BCMP
      this.nextFreeIndex = 0;
      this.mapSize = 0;
  
+     for (int var4 = 0; var4 < var2.length; ++var4) {
+       if (var2[var4] != null) {
+-        this.put(var2[var4], var3[var4]);
++        this.put((K) var2[var4], var3[var4]); // BCMP
+       }
+     }
+   }
 diff --git a/net/minecraft/util/LowerStringMap.java b/net/minecraft/util/LowerStringMap.java
-index bae41ba..59c105a 100644
+index bae41ba..2316059 100644
 --- a/net/minecraft/util/LowerStringMap.java
 +++ b/net/minecraft/util/LowerStringMap.java
 @@ -40,7 +40,7 @@ public class LowerStringMap<V> implements Map<String, V> {
@@ -1437,26 +1520,23 @@ index bae41ba..59c105a 100644
    public void putAll(Map<? extends String, ? extends V> var1) {
      for (Entry var3 : var1.entrySet()) {
 -      this.put((String) var3.getKey(), var3.getValue());
-+      this.put((String) var3.getKey(), ((Entry<String, V>)var3).getValue()); // BCMP
++      this.put((String) var3.getKey(), (V) var3.getValue()); // BCMP
      }
    }
  
 diff --git a/net/minecraft/util/MapPopulator.java b/net/minecraft/util/MapPopulator.java
-index a057351..a288c4b 100644
+index a057351..756f2c4 100644
 --- a/net/minecraft/util/MapPopulator.java
 +++ b/net/minecraft/util/MapPopulator.java
-@@ -11,9 +11,9 @@ public class MapPopulator {
-   }
+@@ -14,7 +14,7 @@ public class MapPopulator {
+     Iterator var3 = var1.iterator();
  
-   public static <K, V> Map<K, V> populateMap(Iterable<K> var0, Iterable<V> var1, Map<K, V> var2) {
--    Iterator var3 = var1.iterator();
-+    Iterator<V> var3 = var1.iterator(); // BCMP
- 
--    for (Object var5 : var0) {
-+    for (K var5 : var0) { // BCMP
-       var2.put(var5, var3.next());
+     for (Object var5 : var0) {
+-      var2.put(var5, var3.next());
++      var2.put((K) var5, (V) var3.next()); // BCMP
      }
  
+     if (var3.hasNext()) {
 diff --git a/net/minecraft/util/ObjectIntIdentityMap.java b/net/minecraft/util/ObjectIntIdentityMap.java
 index 7b6f346..5b63280 100644
 --- a/net/minecraft/util/ObjectIntIdentityMap.java
@@ -1471,7 +1551,7 @@ index 7b6f346..5b63280 100644
  
      this.objectList.set(var2, var1);
 diff --git a/net/minecraft/util/datafix/DataFixer.java b/net/minecraft/util/datafix/DataFixer.java
-index 9a4dd94..9188458 100644
+index 1e7443f..3b3ee8c 100644
 --- a/net/minecraft/util/datafix/DataFixer.java
 +++ b/net/minecraft/util/datafix/DataFixer.java
 @@ -93,7 +93,7 @@ public class DataFixer implements IDataFixer {
@@ -1479,7 +1559,7 @@ index 9a4dd94..9188458 100644
  
    private <V> List<V> getTypeList(Map<IFixType, List<V>> var1, IFixType var2) {
 -    Object var3 = (List) var1.get(var2);
-+    List<V> var3 = (List) var1.get(var2); // BCMP
++    List<V> var3 = var1.get(var2); // BCMP
      if (var3 == null) {
        var3 = Lists.newArrayList();
        var1.put(var2, var3);
@@ -1513,10 +1593,10 @@ index 93855fe..e6e5849 100644
    }
  
 diff --git a/net/minecraft/world/World.java b/net/minecraft/world/World.java
-index bde7dc0..0e32f90 100644
+index 4467e89..a689211 100644
 --- a/net/minecraft/world/World.java
 +++ b/net/minecraft/world/World.java
-@@ -2132,7 +2132,7 @@ public abstract class World implements IBlockAccess {
+@@ -2108,7 +2108,7 @@ public abstract class World implements IBlockAccess {
      ArrayList var3 = Lists.newArrayList();
  
      for (Entity var5 : this.loadedEntityList) {
@@ -1525,7 +1605,7 @@ index bde7dc0..0e32f90 100644
          var3.add(var5);
        }
      }
-@@ -2144,7 +2144,7 @@ public abstract class World implements IBlockAccess {
+@@ -2120,7 +2120,7 @@ public abstract class World implements IBlockAccess {
      ArrayList var3 = Lists.newArrayList();
  
      for (Entity var5 : this.playerEntities) {
@@ -1535,10 +1615,10 @@ index bde7dc0..0e32f90 100644
        }
      }
 diff --git a/net/minecraft/world/chunk/Chunk.java b/net/minecraft/world/chunk/Chunk.java
-index 2a0117a..3d4eb93 100644
+index c88e31e..d99cda8 100644
 --- a/net/minecraft/world/chunk/Chunk.java
 +++ b/net/minecraft/world/chunk/Chunk.java
-@@ -726,8 +726,8 @@ public class Chunk {
+@@ -724,8 +724,8 @@ public class Chunk {
      for (int var7 = var5; var7 <= var6; ++var7) {
        for (Entity var9 : this.entityLists[var7].getByClass(var1)) {
          if (var9.getEntityBoundingBox().intersectsWith(var2)
@@ -1550,10 +1630,10 @@ index 2a0117a..3d4eb93 100644
        }
      }
 diff --git a/net/minecraft/world/chunk/storage/AnvilChunkLoader.java b/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
-index cccc439..b2d9973 100644
+index 20c1132..6745772 100644
 --- a/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
 +++ b/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
-@@ -285,7 +285,7 @@ public class AnvilChunkLoader implements IChunkLoader, IThreadedFileIO {
+@@ -284,7 +284,7 @@ public class AnvilChunkLoader implements IChunkLoader, IThreadedFileIO {
      }
  
      var3.setTag("TileEntities", var19);
@@ -1602,7 +1682,7 @@ index 8b28ff1..e90d4f3 100644
      var31 = GenLayerZoom.magnify(1000L, var31, var6);
      GenLayerRiver var33 = new GenLayerRiver(1L, var31);
 diff --git a/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java b/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java
-index 54a2e4c..8fade96 100644
+index 54a2e4c..1ca4574 100644
 --- a/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java
 +++ b/net/minecraft/world/gen/structure/ComponentScatteredFeaturePieces.java
 @@ -1144,7 +1144,7 @@ public class ComponentScatteredFeaturePieces {
@@ -1610,7 +1690,7 @@ index 54a2e4c..8fade96 100644
                        var9, new BlockPos(3, -1 - var13 * 3, 5), var9, new BlockPos(3, 5, 7)));
            var12.addBlocksToWorldChunk(var1, var21, var9);
 -          Map var22 = var12.getDataBlocks(var21, var9);
-+          Map<?, ?> var22 = var12.getDataBlocks(var21, var9); // BCMP
++          Map<BlockPos, String> var22 = var12.getDataBlocks(var21, var9); // BCMP
  
            for (Entry var17 : var22.entrySet()) {
              if ("chest".equals(var17.getValue())) {
@@ -1641,7 +1721,7 @@ index a2033e7..4927a6c 100644
          boolean var8 = false;
          int var9 = var6.nextInt();
 diff --git a/net/minecraft/world/gen/structure/StructureOceanMonumentPieces.java b/net/minecraft/world/gen/structure/StructureOceanMonumentPieces.java
-index 87d28ae..3264906 100644
+index 87d28ae..b9e7cd6 100644
 --- a/net/minecraft/world/gen/structure/StructureOceanMonumentPieces.java
 +++ b/net/minecraft/world/gen/structure/StructureOceanMonumentPieces.java
 @@ -903,7 +903,7 @@ public class StructureOceanMonumentPieces {
@@ -1658,7 +1738,7 @@ index 87d28ae..3264906 100644
                .claimed =
            true;
 -      ArrayList var30 = Lists.newArrayList();
-+      ArrayList<RoomDefinition> var30 = Lists.newArrayList(); // BCMP
++      ArrayList<StructureOceanMonumentPieces.RoomDefinition> var30 = Lists.newArrayList(); // BCMP
  
        for (StructureOceanMonumentPieces.RoomDefinition var37 : var2) {
          if (var37 != null) {
@@ -1703,7 +1783,7 @@ index 2c15830..6eae4a6 100644
    }
  }
 diff --git a/net/minecraft/world/gen/structure/template/Template.java b/net/minecraft/world/gen/structure/template/Template.java
-index 0ca46d2..6ec2baa 100644
+index b91180e..d7435b9 100644
 --- a/net/minecraft/world/gen/structure/template/Template.java
 +++ b/net/minecraft/world/gen/structure/template/Template.java
 @@ -110,7 +110,7 @@ public class Template {
@@ -1768,5 +1848,5 @@ index ac4cafd..5bc8888 100644
  
        for (Entry var6 : var3) {
 -- 
-2.11.0.windows.1
+2.13.0.windows.1
 

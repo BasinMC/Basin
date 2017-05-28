@@ -1,4 +1,4 @@
-From 9a81825b0433d2079f6f264200884361bb5a1e2b Mon Sep 17 00:00:00 2001
+From 4d970379719c9a07631a3b63afaadd184cddab9a Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Thu, 22 Dec 2016 18:50:48 +0100
 Subject: [PATCH] Disabled logging via System.out.
@@ -18,5 +18,5 @@ index dede974..2bb98f4 100644
        Block.registerBlocks();
        BlockFire.init();
 -- 
-2.11.0.windows.1
+2.13.0.windows.1
 

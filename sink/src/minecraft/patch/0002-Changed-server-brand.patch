@@ -1,11 +1,11 @@
-From 7782e6a1c8b162dfb67a401bfcb0e366e9f43718 Mon Sep 17 00:00:00 2001
+From fd5fa7150fcd5ac86eea67e7ae9045c4cb21055c Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Fri, 16 Dec 2016 07:11:54 +0100
 Subject: [PATCH] Changed Server Brand
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 4833e71..b7a12e3 100644
+index 408dc74..680d7a9 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -787,7 +787,7 @@ public abstract class MinecraftServer
@@ -18,5 +18,5 @@ index 4833e71..b7a12e3 100644
  
    public CrashReport addServerInfoToCrashReport(CrashReport var1) {
 -- 
-2.11.0.windows.1
+2.13.0.windows.1
 

@@ -1,14 +1,14 @@
-From 17789b1adf6adeed11e8c6f6915d7bc63b485240 Mon Sep 17 00:00:00 2001
+From a2508bb1d36e94088c5036de6d8828c290d83edb Mon Sep 17 00:00:00 2001
 From: Johannes Donath <johannesd@torchmind.com>
 Date: Fri, 3 Jun 2016 11:33:41 +0200
 Subject: [PATCH] Eastereggs!
 
 
 diff --git a/net/minecraft/entity/player/EntityPlayerMP.java b/net/minecraft/entity/player/EntityPlayerMP.java
-index ec9e545..c346070 100644
+index 39b6e7b..793e035 100644
 --- a/net/minecraft/entity/player/EntityPlayerMP.java
 +++ b/net/minecraft/entity/player/EntityPlayerMP.java
-@@ -447,6 +447,38 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener {
+@@ -470,6 +470,38 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener {
      this.extinguish();
      this.setFlag(0, false);
      this.getCombatTracker().reset();
@@ -48,5 +48,5 @@ index ec9e545..c346070 100644
  
    public boolean attackEntityFrom(DamageSource var1, float var2) {
 -- 
-2.11.0.windows.1
+2.13.0.windows.1
 
