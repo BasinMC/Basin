@@ -12,14 +12,11 @@ A modular Minecraft API.
 
 1. Execute `git clone https://github.com/BasinMC/Basin.git` from your shell
 1. Execute `cd Basin`
-1. Execute `git submodule init`
-1. Execute `git submodule update --remote`
 1. Execute `mvn clean install`
 
 ## Writing Patches
 
 1. Execute the steps described in [Building](#Building)
-1. Check out master in both sink and faucet using `git checkout master`
 1. Apply your changes to the NMS classes in `src/minecraft/java`
 1. Commit your changes in `src/minecraft/java` (**Note:** Commit by purpose - No single files!)
 1. Run `mvn org.basinmc.maven.plugins:minecraft-maven-plugin:generate-patches` from the `sink` directory
