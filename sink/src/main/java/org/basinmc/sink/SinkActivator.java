@@ -88,8 +88,8 @@ public class SinkActivator implements BundleActivator {
     }
 
     properties.put("org.ops4j.pax.logging.log4j2.config.file", configFile.toString());
-
     configuration.update(properties);
+
     logger.info("Loggers have been adjusted to sane levels.");
   }
 
