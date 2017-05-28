@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Johannes Donath <johannesd@torchmind.com>
+  ~ and other copyright owners as documented in the project's IP log.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ 	http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Parent Artifact Information -->
+  <parent>
+    <artifactId>parent</artifactId>
+    <groupId>org.basinmc</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <!-- Artifact Information -->
+  <artifactId>sink</artifactId>
+  <packaging>bundle</packaging>
+
+  <!-- Artifact Metadata -->
+  <name>Sink</name>
+  <description>An implementation of the Faucet Minecraft API.</description>
+
+  <!-- Dependencies -->
+  <dependencies>
+    <!-- Modules -->
+    <dependency>
+      <groupId>org.basinmc</groupId>
+      <artifactId>faucet</artifactId>
+    </dependency>
+
+    <!-- Minecraft -->
+    <dependency>
+      <groupId>org.basinmc.bundles</groupId>
+      <artifactId>com.mojang.authlib</artifactId>
+
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.basinmc.bundles</groupId>
+      <artifactId>it.unimi.dsi.fastutil</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.basinmc.bundles</groupId>
+      <artifactId>io.netty.netty-all</artifactId>
+    </dependency>
+
+    <!-- Plugin Framework -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-log4j2</artifactId>
+    </dependency>
+
+    <!-- Utility -->
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j</groupId>
+      <artifactId>peaberry</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-all</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+    </dependency>
+
+    <!-- Unit Test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
+
+  <!-- Build Settings -->
+  <build>
+    <finalName>Sink-${project.version}</finalName>
+
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/resource</directory>
+        <filtering>true</filtering>
+
+        <includes>
+          <include>sink-version.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/src/main/resource</directory>
+
+        <includes>
+          <include>log4j2.xml</include>
+        </includes>
+      </resource>
+    </resources>
+
+    <plugins>
+      <!-- Java Compiler -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+
+      <!-- Minecraft Source -->
+      <plugin>
+        <groupId>org.basinmc.maven.plugins</groupId>
+        <artifactId>minecraft-maven-plugin</artifactId>
+
+        <configuration>
+          <gameVersion>${game.version}</gameVersion>
+          <mappingVersion>${mcp.version}</mappingVersion>
+          <module>server</module>
+          <accessTransformation>${project.basedir}/src/minecraft/at.json</accessTransformation>
+
+          <excludedResources>
+            <excludedResource>log4j2.xml</excludedResource>
+          </excludedResources>
+        </configuration>
+      </plugin>
+
+      <!-- Checkstyle -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <!-- Bundle Creation -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+
+        <configuration>
+          <instructions>
+            <Bundle-Activator>org.basinmc.sink.SinkActivator</Bundle-Activator>
+            <Import-Package>javax.annotation; version="${findbugs.version}",
+              org.apache.logging.log4j; version="[2,3)"; provider=paxlogging, *
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
