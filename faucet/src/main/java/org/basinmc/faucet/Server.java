@@ -16,12 +16,9 @@
  */
 package org.basinmc.faucet;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.nio.file.Path;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.Signed;
-import org.osgi.framework.Bundle;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
@@ -31,7 +28,7 @@ public interface Server {
   /**
    * Retrieves the currently active API version.
    */
-  @Nonnull
+  @NonNull
   default String getApiVersion() {
     Package p = this.getClass().getPackage();
 
@@ -49,35 +46,27 @@ public interface Server {
   /**
    * Retrieves a path pointing at the base server directory.
    */
-  @Nonnull
+  @NonNull
   Path getBaseDirectory();
 
   /**
    * Retrieves a mutable representation of the server configuration.
    */
-  @Nonnull
+  @NonNull
   Configuration getConfiguration();
-
-  /**
-   * Retrieves the bundle which is providing the implementation for this and other Faucet
-   * implementations.
-   */
-  @Nonnull
-  Bundle getImplementationBundle();
 
   /**
    * Retrieves the overall time the server has been running for in game ticks.
    *
-   * This number is equal to the amount of ticks processed by the server during its runtime and
-   * thus may differ from the usual 20 ticks = 1 second scale.
+   * This number is equal to the amount of ticks processed by the server during its runtime and thus
+   * may differ from the usual 20 ticks = 1 second scale.
    */
-  @Nonnegative
   int getLifeTime();
 
   /**
    * Retrieves the currently active server version (as in game version such as 1.9.4 or 1.10).
    */
-  @Nonnull
+  @NonNull
   String getVersion();
 
   /**
@@ -121,29 +110,26 @@ public interface Server {
     /**
      * Retrieves the address the server is configured to listen on.
      */
-    @Nonnull
+    @NonNull
     String getHostname();
 
     /**
      * Retrieves the maximum amount of concurrent players connected to the server.
      */
-    @Nonnegative
     int getMaximumConcurrentPlayers();
 
     /**
      * Retrieves the maximum height players are allowed to build at.
      */
-    @Nonnegative
     int getMaximumBuildHeight();
 
     /**
-     * Retrieves the maximum amount a server is allowed to wait for a single tick to process
-     * before assuming the server is hanging.
+     * Retrieves the maximum amount a server is allowed to wait for a single tick to process before
+     * assuming the server is hanging.
      *
-     * A value of -1 indicates, that the watchdog shall not shutdown the server regardless of
-     * how long a tick needs to process.
+     * A value of -1 indicates, that the watchdog shall not shutdown the server regardless of how
+     * long a tick needs to process.
      */
-    @Signed
     long getMaximumTickTime();
 
     /**
@@ -151,27 +137,25 @@ public interface Server {
      *
      * @return a threshold in bytes.
      */
-    @Signed
     int getNetworkCompressionThreshold();
 
     /**
      * Retrieves the operator permission level.
      *
      * Each level grants an additional set of permissions in the vanilla permission system as
-     * follows: <ul> <li><strong>1</strong> - Allows operators to bypass spawn protection.</li>
-     * <li> <strong>2</strong> - Allows operators to utilize /clear, /difficulty, /effect,
-     * /gamemode, /gamerule, /give, and /tp, and can edit command blocks. </li>
-     * <li><strong>3</strong> - Allows operators to utilize /ban, /deop, /kick, and /op</li>
-     * <li><strong>4</strong> - Allows operators to utilize /stop</li> </ul>
+     * follows: <ul> <li><strong>1</strong> - Allows operators to bypass spawn protection.</li> <li>
+     * <strong>2</strong> - Allows operators to utilize /clear, /difficulty, /effect, /gamemode,
+     * /gamerule, /give, and /tp, and can edit command blocks. </li> <li><strong>3</strong> - Allows
+     * operators to utilize /ban, /deop, /kick, and /op</li> <li><strong>4</strong> - Allows
+     * operators to utilize /stop</li> </ul>
      *
      * @return an operator permission level.
      */
-    @Nonnegative
     int getOperatorPermissionLevel();
 
     /**
-     * Retrieves the maximum amount of minutes a player is allowed to idle before being kicked
-     * from the server.
+     * Retrieves the maximum amount of minutes a player is allowed to idle before being kicked from
+     * the server.
      *
      * If set to zero, players will not be kicked for idling.
      */
@@ -180,32 +164,27 @@ public interface Server {
     /**
      * Retrieves the port the server is listening on for server status queries.
      */
-    @Nonnegative
     int getQueryPort();
 
     /**
-     * Retrieves the password used for authentication purposes on the remote console (RCon)
-     * server.
+     * Retrieves the password used for authentication purposes on the remote console (RCon) server.
      */
-    @Nonnull
+    @NonNull
     String getRemoteConsolePassword();
 
     /**
      * Retrieves the port the server is listening on for remote console (RCon) connections.
      */
-    @Nonnegative
     int getRemoteConsolePort();
 
     /**
      * Retrieves the radius (in blocks) which is protected from building by operators.
      */
-    @Nonnegative
     int getSpawnProtectionRadius();
 
     /**
      * Retrieves a player's view distance in chunks.
      */
-    @Nonnegative
     int getViewDistance();
 
     /**

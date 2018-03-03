@@ -17,8 +17,8 @@
  */
 package org.basinmc.faucet.entity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.basinmc.faucet.capability.CapabilityHolder;
 import org.basinmc.faucet.math.Vector3;
 import org.basinmc.faucet.world.WorldObject;
@@ -49,7 +49,7 @@ public interface Entity extends CapabilityHolder, WorldObject<Entity> {
    *
    * @return a motion vector
    */
-  @Nonnull
+  @NonNull
   Vector3 getMotion();
 
   /**

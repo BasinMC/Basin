@@ -16,8 +16,8 @@
  */
 package org.basinmc.faucet.key;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * Represents an application-wide registration of {@link Key} namespaces.
@@ -31,7 +31,7 @@ public interface GlobalKeyRegistry {
    * @return a new registry
    * @throws IllegalArgumentException if the given namespace is already in use
    */
-  @Nonnull
+  @NonNull
   KeyRegistry create(String namespace) throws IllegalArgumentException;
 
   /**
@@ -39,7 +39,7 @@ public interface GlobalKeyRegistry {
    *
    * @return a new registry
    */
-  @Nonnull
+  @NonNull
   KeyRegistry create();
 
   /**

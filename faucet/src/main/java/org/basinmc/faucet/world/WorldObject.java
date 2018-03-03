@@ -18,8 +18,8 @@
 package org.basinmc.faucet.world;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.basinmc.faucet.math.Direction;
 import org.basinmc.faucet.math.Vector3;
 import org.basinmc.faucet.math.WorldPosition;
@@ -36,7 +36,7 @@ public interface WorldObject<T extends WorldObject> {
    *
    * @return a world position
    */
-  @Nonnull
+  @NonNull
   WorldPosition getPosition();
 
   /**
@@ -48,8 +48,8 @@ public interface WorldObject<T extends WorldObject> {
    * @param vector the translation vector
    * @return an instance of the new object, or the same object if no change occured.
    */
-  @Nonnull
-  T translate(@Nonnull Vector3 vector);
+  @NonNull
+  T translate(@NonNull Vector3 vector);
 
   /**
    * Checks for an object in the world of the <i>same type</i> as this and returns it if it

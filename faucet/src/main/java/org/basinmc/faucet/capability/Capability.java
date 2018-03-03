@@ -17,8 +17,8 @@
  */
 package org.basinmc.faucet.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * Super-interface for anything stored in a {@link Capabilities} object.
@@ -35,7 +35,7 @@ public interface Capability {
    *
    * @return an ordered array, or an empty array if no parameters are present
    */
-  @Nonnull
+  @NonNull
   Class<?>[] getParameterTypes();
 
   /**

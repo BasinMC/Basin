@@ -51,8 +51,8 @@ JSR 305
 Generally all methods and classes should indicate their thread safety, null-ness and signing. So
 generally:
 
-* Declare the nullness of method return types with `@Nullable` and `@Nonnull`
-* Document the nullness of all method parameters using `@Nullable` and `@Nonnull`
+* Declare the nullness of method return types with `@Nullable` and `@NonNull`
+* Document the nullness of all method parameters using `@Nullable` and `@NonNull`
 * Annotate all string based fields which are bound to certain patterns with `@MatchesPattern`
 * Declare the signing of all integer parameters and return values using `@Signed` and `@Nonnegative`
 * Document all returned or passed closable resources with `@WillClose` or `@WillNotClose`

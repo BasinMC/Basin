@@ -16,7 +16,7 @@
  */
 package org.basinmc.faucet.event;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.basinmc.faucet.util.State;
 
 /**
@@ -33,7 +33,7 @@ public interface StatefulEvent extends MutableEvent {
    *
    * Note: This method is guaranteed to return {@link State#ALLOW} or {@link State#DENY}.
    */
-  @Nonnull
+  @NonNull
   State getDefaultState();
 
   /**
@@ -43,7 +43,7 @@ public interface StatefulEvent extends MutableEvent {
    *
    * @see #getDefaultState() in order to retrieve the respective default value for this event.
    */
-  @Nonnull
+  @NonNull
   State getState();
 
   /**
@@ -55,5 +55,5 @@ public interface StatefulEvent extends MutableEvent {
    * @throws IllegalArgumentException when {@link State#WILDCARD} is being passed.
    * @throws IllegalStateException when the event state has been finalized.
    */
-  void setState(@Nonnull State state);
+  void setState(@NonNull State state);
 }

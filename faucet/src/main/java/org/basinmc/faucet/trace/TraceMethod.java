@@ -18,10 +18,8 @@
 package org.basinmc.faucet.trace;
 
 import java.lang.invoke.MethodHandle;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * Represents a generic method that is used in a trace chain. If a more specific {@link TraceNode}
@@ -34,18 +32,8 @@ public interface TraceMethod extends TraceNode {
    *
    * @return a class descriptor
    */
-  @Nonnull
+  @NonNull
   Class<?> getStartingClass();
-
-  /**
-   * Get the OSGi bundle that holds the class that triggered this action.
-   *
-   * @return an OSGi bundle
-   */
-  @Nonnull
-  default Bundle getStartingBundle() {
-    return FrameworkUtil.getBundle(this.getStartingClass());
-  }
 
   /**
    * Get the name of the method. Constructors and static initialization blocks will return
@@ -53,7 +41,7 @@ public interface TraceMethod extends TraceNode {
    *
    * @return a method name
    */
-  @Nonnull
+  @NonNull
   String getMethodName();
 
   /**
@@ -65,7 +53,7 @@ public interface TraceMethod extends TraceNode {
    *
    * @return a signature string
    */
-  @Nonnull
+  @NonNull
   String getSignature();
 
   /**

@@ -16,17 +16,17 @@
  */
 package org.basinmc.faucet.command;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Represents an object able to receive and send messages or commands.
  */
 public interface Communicable {
 
-  void sendMessage(@Nonnull String message);
+  void sendMessage(@NonNull String message);
 
-  void sendCommand(@Nonnull String command);
+  void sendCommand(@NonNull String command);
 
-  @Nonnull
+  @NonNull
   String getName();
 }

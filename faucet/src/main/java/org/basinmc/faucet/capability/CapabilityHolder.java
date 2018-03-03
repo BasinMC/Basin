@@ -17,7 +17,7 @@
  */
 package org.basinmc.faucet.capability;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Base interface for things that can have capabilities
@@ -29,6 +29,6 @@ public interface CapabilityHolder {
    *
    * @return the object's unique capability registry
    */
-  @Nonnull
+  @NonNull
   Capabilities getCapabilities();
 }

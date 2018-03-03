@@ -17,12 +17,10 @@
  */
 package org.basinmc.faucet.network;
 
-import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Handles the construction of packets.
  */
-@ThreadSafe
 public interface PacketFactory {
 
 }

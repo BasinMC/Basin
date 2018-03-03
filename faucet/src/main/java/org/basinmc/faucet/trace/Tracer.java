@@ -17,8 +17,7 @@
  */
 package org.basinmc.faucet.trace;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.basinmc.faucet.internal.warn.Volatile;
 
 /**
@@ -48,8 +47,7 @@ public interface Tracer extends Iterable<TraceNode> {
   /**
    * Get the (1-indexed) length of this event chain.
    */
-  @Nonnegative
-  int getLength();
+    int getLength();
 
   /**
    * Determine if this trace chain is complete. If {@code true} is returned, then that means

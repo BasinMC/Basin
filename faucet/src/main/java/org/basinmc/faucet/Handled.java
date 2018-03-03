@@ -17,7 +17,7 @@
 
 package org.basinmc.faucet;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Represents a type that wraps another type. This would primarily be used for API-NMS
@@ -27,6 +27,6 @@ import javax.annotation.Nonnull;
  */
 public interface Handled<T> {
 
-  @Nonnull
+  @NonNull
   T getHandle();
 }

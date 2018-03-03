@@ -17,7 +17,7 @@
  */
 package org.basinmc.faucet.capability;
 
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * An object that stores various capabilities something might have.

@@ -17,7 +17,7 @@
  */
 package org.basinmc.faucet.world;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.basinmc.faucet.capability.CapabilityHolder;
 
 /**
@@ -28,7 +28,7 @@ public interface Block extends CapabilityHolder, WorldObject<Block> {
   /**
    * Get the material type associated with this block
    */
-  @Nonnull
+  @NonNull
   BlockType getBlockType();
 
 }

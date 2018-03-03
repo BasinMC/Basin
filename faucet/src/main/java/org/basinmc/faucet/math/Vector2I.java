@@ -17,8 +17,8 @@
  */
 package org.basinmc.faucet.math;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * Two-dimensional integer vector. This should be used for the likes of
@@ -48,7 +48,7 @@ public final class Vector2I implements Cloneable {
    * {@inheritDoc}
    */
   @Override
-  @Nonnull
+  @NonNull
   public final Vector2I clone() {
     return new Vector2I(x, y);
   }
@@ -102,7 +102,7 @@ public final class Vector2I implements Cloneable {
    * {@inheritDoc}
    */
   @Override
-  @Nonnull
+  @NonNull
   public final String toString() {
     return "V2i" + x + "," + y + ";";
   }
@@ -114,7 +114,7 @@ public final class Vector2I implements Cloneable {
    * @param y The amount to add to the y value
    * @return A new vector
    */
-  @Nonnull
+  @NonNull
   public final Vector2I add(int x, int y) {
     return new Vector2I(this.x + x, this.y + y);
   }
@@ -125,7 +125,7 @@ public final class Vector2I implements Cloneable {
    * @param vector The vector to add to this vector
    * @return A new vector
    */
-  @Nonnull
+  @NonNull
   public final Vector2I add(Vector2I vector) {
     return new Vector2I(this.x + vector.x, this.y + vector.y);
   }
@@ -136,7 +136,7 @@ public final class Vector2I implements Cloneable {
    * @param amount The scalar to multiply by
    * @return A new vector
    */
-  @Nonnull
+  @NonNull
   public final Vector2I multiply(int amount) {
     return new Vector2I(x * amount, y * amount);
   }

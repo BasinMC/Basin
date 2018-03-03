@@ -17,8 +17,8 @@
 package org.basinmc.faucet.key;
 
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * Holds registrations for keys. One instance is created for each namespace.
@@ -28,7 +28,7 @@ public interface KeyRegistry {
   /**
    * Get the namespace for which this registry holds keys.
    */
-  @Nonnull
+  @NonNull
   String getNamespace();
 
   /**
@@ -39,8 +39,8 @@ public interface KeyRegistry {
    * @throws IllegalStateException if a key with the given namespace and name is already
    * registered.
    */
-  @Nonnull
-  Key create(@Nonnull String name) throws IllegalStateException;
+  @NonNull
+  Key create(@NonNull String name) throws IllegalStateException;
 
   /**
    * Attempt to retrieve an already-created key.
@@ -49,7 +49,7 @@ public interface KeyRegistry {
    * @return an existing key, or null if none has been registered
    */
   @Nullable
-  Key get(@Nonnull String name);
+  Key get(@NonNull String name);
 
   /**
    * Attempts to retrieve an already-created key, or creates one if none exists.
@@ -57,13 +57,13 @@ public interface KeyRegistry {
    * @param name the name of the key
    * @return an existing key, or a new one if it didn't previously exist
    */
-  @Nonnull
-  Key getOrCreate(@Nonnull String name);
+  @NonNull
+  Key getOrCreate(@NonNull String name);
 
   /**
    * Get a set of keys present in this registry
    */
-  @Nonnull
+  @NonNull
   Set<Key> getKeys();
 
 }

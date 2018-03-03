@@ -21,7 +21,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.basinmc.faucet.event.MutableEvent;
 import org.basinmc.faucet.util.Priority;
 import org.basinmc.faucet.util.State;
@@ -41,7 +41,7 @@ public @interface Subscribe {
    * Higher priority handlers will be called first within the queue and as such get the highest
    * authority over the event state.
    */
-  @Nonnull
+  @NonNull
   Priority priority() default Priority.NORMAL;
 
   /**
@@ -60,6 +60,6 @@ public @interface Subscribe {
    * {@link State#DEFAULT} in order to reduce the set of events to events which are currently in
    * their default state as well as {@link State#WILDCARD} to retrieve events from both sides.
    */
-  @Nonnull
+  @NonNull
   State receiveState() default State.ALLOW;
 }

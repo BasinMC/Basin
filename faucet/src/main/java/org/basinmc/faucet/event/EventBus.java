@@ -17,15 +17,13 @@
  */
 package org.basinmc.faucet.event;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.basinmc.faucet.event.handler.EventHandler;
 
 /**
  * Provides an event management system which will automatically post events to all registered
  * services of type {@link EventHandler}.
  */
-@ThreadSafe
 public interface EventBus {
 
   /**
@@ -36,5 +34,5 @@ public interface EventBus {
    * @param event The even to post
    * @param <T> The type of event
    */
-  <T extends Event> void post(@Nonnull T event);
+  <T extends Event> void post(@NonNull T event);
 }

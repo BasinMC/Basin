@@ -17,26 +17,25 @@
 package org.basinmc.faucet.command;
 
 import java.util.Set;
-import javax.annotation.Nonnull;
-import org.osgi.framework.Bundle;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public interface CommandSpec {
 
   /**
    * Get the name of this command.
    */
-  @Nonnull
+  @NonNull
   String getName();
 
   /**
    * Get a set of aliases that can be used to refer to this command, or an empty set.
    */
-  @Nonnull
+  @NonNull
   Set<String> getAliases();
 
   /**
    * Get the bundle that provides this command. Will either be a plugin or the server.
    */
-  @Nonnull
-  Bundle getOwner();
+  @NonNull
+  Module getOwner();
 }

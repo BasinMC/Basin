@@ -16,7 +16,7 @@
  */
 package org.basinmc.faucet.observable;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Represents an observable value (e.g. a value that can be changed by third party code at any time
@@ -32,7 +32,7 @@ public interface ObservableProperty<T> {
    *
    * @param observer an observer which will receive notifications of this property's changes.
    */
-  void attach(@Nonnull Observer<? super T> observer);
+  void attach(@NonNull Observer<? super T> observer);
 
   /**
    * Removes an observer from the property.
@@ -40,7 +40,7 @@ public interface ObservableProperty<T> {
    * @param observer an observer which is currently receiving notifications of this property's
    * changes.
    */
-  void remove(@Nonnull Observer<? super T> observer);
+  void remove(@NonNull Observer<? super T> observer);
 
   /**
    * Retrieves the current observable value.

@@ -16,16 +16,14 @@
  */
 package org.basinmc.faucet.internal.trace;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.basinmc.faucet.trace.Tracer;
 
 /**
  * Delegating Tracer for concurrently-tracked types.
  */
-@ThreadSafe
 public interface ParallelTracer extends Tracer {
 
-  @Nonnull
+  @NonNull
   Tracer getDelegate();
 }

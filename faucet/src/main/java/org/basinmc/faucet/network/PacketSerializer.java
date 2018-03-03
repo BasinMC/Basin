@@ -17,9 +17,8 @@
  */
 package org.basinmc.faucet.network;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * Converts between API objects and internal packet data types.
@@ -36,7 +35,7 @@ public interface PacketSerializer<T extends Packet> {
    *
    * @param packet the packet to parse
    */
-  void accept(@Nonnull T packet);
+  void accept(@NonNull T packet);
 
   /**
    * Retrieve the value of the field at the given index.
@@ -46,7 +45,7 @@ public interface PacketSerializer<T extends Packet> {
    * @return the field's value, or null if none is found
    */
   @Nullable
-  <F> F read(@Nonnegative int fieldIndex);
+  <F> F read(int fieldIndex);
 
   /**
    * Write the given value to the field at the given index
@@ -55,5 +54,5 @@ public interface PacketSerializer<T extends Packet> {
    * @param value the value to set the field to
    * @param <F> the type of the field at the given index
    */
-  <F> void write(@Nonnegative int fieldIndex, @Nullable F value);
+  <F> void write(int fieldIndex, @Nullable F value);
 }

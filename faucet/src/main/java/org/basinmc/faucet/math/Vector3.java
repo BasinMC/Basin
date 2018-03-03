@@ -17,8 +17,8 @@
  */
 package org.basinmc.faucet.math;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * Represents an immutable vector in three dimensions. This class is not
@@ -42,7 +42,7 @@ public class Vector3 implements Cloneable {
    * {@inheritDoc}
    */
   @Override
-  @Nonnull
+  @NonNull
   public final Vector3 clone() {
     // We don't need to call super.clone() because the method is final.
     return new Vector3(x, y, z);
@@ -65,7 +65,7 @@ public class Vector3 implements Cloneable {
    * {@inheritDoc}
    */
   @Override
-  @Nonnull
+  @NonNull
   public final String toString() {
     return "V" + x + "," + y + "," + z + ";";
   }
@@ -113,7 +113,7 @@ public class Vector3 implements Cloneable {
    * @param z The amount to add to the z value
    * @return A new vector
    */
-  @Nonnull
+  @NonNull
   public final Vector3 add(double x, double y, double z) {
     return new Vector3(this.x + x, this.y + y, this.z + z);
   }
@@ -124,7 +124,7 @@ public class Vector3 implements Cloneable {
    * @param vector The vector to add to this vector
    * @return A new vector
    */
-  @Nonnull
+  @NonNull
   public final Vector3 add(Vector3 vector) {
     return new Vector3(this.x + vector.x, this.y + vector.y, this.z + vector.z);
   }
@@ -135,7 +135,7 @@ public class Vector3 implements Cloneable {
    * @param amount The scalar to multiply by
    * @return A new vector
    */
-  @Nonnull
+  @NonNull
   public final Vector3 multiply(double amount) {
     return new Vector3(x * amount, y * amount, z * amount);
   }
@@ -146,7 +146,7 @@ public class Vector3 implements Cloneable {
    * @param other The other vector for which to compute the cross product
    * @return A new vector representing the cross product
    */
-  @Nonnull
+  @NonNull
   public final Vector3 crossProduct(Vector3 other) {
     return new Vector3(
         (this.y * other.z) - (this.z * other.y),
@@ -171,7 +171,7 @@ public class Vector3 implements Cloneable {
    * @param other The other vector for which to compute the midpoint
    * @return A new vector representing the midpoint
    */
-  @Nonnull
+  @NonNull
   public final Vector3 midpoint(Vector3 other) {
     return new Vector3(
         (this.x + other.x) / 2,
@@ -219,7 +219,7 @@ public class Vector3 implements Cloneable {
    *
    * @return a new 2-dimensional integer vector
    */
-  @Nonnull
+  @NonNull
   public Vector2I flatten() {
     return new Vector2I((int) x, (int) z);
   }

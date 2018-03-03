@@ -16,7 +16,7 @@
  */
 package org.basinmc.faucet.observable;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Provides a base interface for observing value changes.
@@ -35,5 +35,5 @@ public interface Observer<T> {
    * @param newValue a new value.
    * @return if true allows altering of the property value, if false retains the old value.
    */
-  boolean change(@Nonnull ObservableProperty<? extends T> observable, T oldValue, T newValue);
+  boolean change(@NonNull ObservableProperty<? extends T> observable, T oldValue, T newValue);
 }

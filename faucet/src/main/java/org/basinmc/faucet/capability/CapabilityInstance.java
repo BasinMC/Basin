@@ -17,27 +17,27 @@
  */
 package org.basinmc.faucet.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 public interface CapabilityInstance {
 
   /**
    * Get the type of capability this instance corresponds with
    */
-  @Nonnull
+  @NonNull
   Capability getType();
 
   /**
    * Get the object holding this specific instance.
    */
-  @Nonnull
+  @NonNull
   CapabilityHolder getHolder();
 
   /**
    * Get a list of parameters for this capability
    */
-  @Nonnull
+  @NonNull
   Capability.Parameter[] getParameters();
 
   /**

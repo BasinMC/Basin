@@ -17,7 +17,7 @@
  */
 package org.basinmc.faucet.capability;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Interface for interaction with capabilities
@@ -33,7 +33,7 @@ public interface CapabilityRegistry {
    * @param parameterTypes types the capability stores as parameters
    * @return a capability instance for universal usage
    */
-  @Nonnull
+  @NonNull
   Capability registerCapability(String name, Class<?>[] parameterTypes);
 
   /**

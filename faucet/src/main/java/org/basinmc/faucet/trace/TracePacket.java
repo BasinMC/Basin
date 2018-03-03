@@ -17,7 +17,7 @@
  */
 package org.basinmc.faucet.trace;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.basinmc.faucet.network.NetDirection;
 import org.basinmc.faucet.network.NetHandler;
 import org.basinmc.faucet.network.Packet;
@@ -36,7 +36,7 @@ public interface TracePacket extends TraceNode {
    *
    * @return the packet's direction
    */
-  @Nonnull
+  @NonNull
   NetDirection getDirection();
 
   /**
@@ -46,7 +46,7 @@ public interface TracePacket extends TraceNode {
    *
    * @return a network handler
    */
-  @Nonnull
+  @NonNull
   NetHandler getSource();
 
   /**
@@ -55,6 +55,6 @@ public interface TracePacket extends TraceNode {
    *
    * @return the packet whose processing triggered this trace node
    */
-  @Nonnull
+  @NonNull
   Packet getPacket();
 }

@@ -18,8 +18,8 @@
 package org.basinmc.faucet.trace;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.basinmc.faucet.event.Event;
 
 /**
@@ -41,7 +41,7 @@ public interface TraceEvent<T extends Event> extends TraceMethod {
    *
    * @return a class extending {@link Event}
    */
-  @Nonnull
+  @NonNull
   Class<? extends T> getEventType();
 
   /**
@@ -50,7 +50,7 @@ public interface TraceEvent<T extends Event> extends TraceMethod {
    *
    * @return an event
    */
-  @Nonnull
+  @NonNull
   T getSnapshot();
 
   /**
@@ -69,6 +69,6 @@ public interface TraceEvent<T extends Event> extends TraceMethod {
    * java.lang.invoke.LambdaMetafactory}, which should be taken into account for performance
    * reasons.
    */
-  @Nonnull
+  @NonNull
   Consumer<T> lookup();
 }

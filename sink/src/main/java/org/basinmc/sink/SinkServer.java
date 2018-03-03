@@ -24,8 +24,8 @@ import com.google.inject.Module;
 import com.google.inject.Singleton;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.apache.logging.log4j.LogManager;
@@ -57,7 +57,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
   private Export<SinkServer> serverImplExport;
 
   @SuppressWarnings("ThisEscapedInObjectConstruction")
-  SinkServer(@Nonnull BundleContext ctx, @Nonnull DedicatedServer server) {
+  SinkServer(@NonNull BundleContext ctx, @NonNull DedicatedServer server) {
     this.ctx = ctx;
     this.server = server;
 
@@ -71,7 +71,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
    * {@inheritDoc}
    */
   @Override
-  public void configure(@Nonnull Binder binder) {
+  public void configure(@NonNull Binder binder) {
     // Local Instances
     binder.bind(SinkServer.class).toInstance(this);
 
@@ -83,7 +83,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
   /**
    * {@inheritDoc}
    */
-  @Nonnull
+  @NonNull
   @Override
   public String getVersion() {
     return this.server.getMinecraftVersion();
@@ -131,7 +131,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
   /**
    * {@inheritDoc}
    */
-  @Nonnull
+  @NonNull
   @Override
   public Path getBaseDirectory() {
     // TODO: Add support for a variable base directory since this might be useful in order to share jars
@@ -141,7 +141,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
   /**
    * {@inheritDoc}
    */
-  @Nonnull
+  @NonNull
   @Override
   public Server.Configuration getConfiguration() {
     return this.configuration;
@@ -150,7 +150,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
   /**
    * {@inheritDoc}
    */
-  @Nonnull
+  @NonNull
   @Override
   public Bundle getImplementationBundle() {
     return this.ctx.getBundle();
@@ -167,7 +167,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
   /**
    * {@inheritDoc}
    */
-  @Nonnull
+  @NonNull
   @Override
   public DedicatedServer getHandle() {
     return server;
@@ -194,7 +194,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
     /**
      * {@inheritDoc}
      */
-    @Nonnull
+    @NonNull
     @Override
     public String getHostname() {
       return SinkServer.this.server.getServerHostname();
@@ -256,7 +256,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
     /**
      * {@inheritDoc}
      */
-    @Nonnull
+    @NonNull
     @Override
     public String getRemoteConsolePassword() {
       return SinkServer.this.server.settings.getStringProperty("rcon.password", "");

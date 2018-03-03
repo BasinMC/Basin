@@ -17,8 +17,7 @@
  */
 package org.basinmc.faucet.network;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Base interface for objects that can send and receive packets.
@@ -31,8 +30,7 @@ public interface NetHandler {
    *
    * @return the protocol version as a positive integer
    */
-  @Nonnegative
-  int getProtocolVersion();
+    int getProtocolVersion();
 
   /**
    * Determine which protocol versions this is capable of communicating with. Versions can
@@ -47,5 +45,5 @@ public interface NetHandler {
    *
    * @param packet the packet to send
    */
-  void sendPacket(@Nonnull Packet packet);
+  void sendPacket(@NonNull Packet packet);
 }

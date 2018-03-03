@@ -17,7 +17,7 @@
 package org.basinmc.faucet.key;
 
 import java.util.UUID;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * A minecraft key. Has a namespace and a name and is represented in the form {@code
@@ -25,12 +25,12 @@ import javax.annotation.Nonnull;
  */
 public interface Key {
 
-  @Nonnull
+  @NonNull
   String getNamespace();
 
-  @Nonnull
+  @NonNull
   String getName();
 
-  @Nonnull
+  @NonNull
   UUID getUUID();
 }

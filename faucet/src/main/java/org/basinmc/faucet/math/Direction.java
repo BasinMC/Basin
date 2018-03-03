@@ -17,7 +17,7 @@
  */
 package org.basinmc.faucet.math;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Relative directions.
@@ -70,7 +70,7 @@ public enum Direction {
    *
    * @return a 3-dimensional transformation vector
    */
-  @Nonnull
+  @NonNull
   Vector3 vector() {
     return vector;
   }
