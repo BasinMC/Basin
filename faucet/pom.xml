@@ -20,16 +20,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Parent Artifact Information -->
+  <!-- Artifact Information -->
   <parent>
     <artifactId>parent</artifactId>
     <groupId>org.basinmc</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <!-- Artifact Information -->
   <artifactId>faucet</artifactId>
-  <packaging>bundle</packaging>
 
   <properties>
     <describe/>
@@ -43,30 +41,24 @@
   <dependencies>
     <!-- Minecraft -->
     <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.basinmc.bundles</groupId>
-      <artifactId>io.netty.netty-all</artifactId>
-    </dependency>
-
-    <!-- Plugin Framework -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi.core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.logging</groupId>
-      <artifactId>pax-logging-api</artifactId>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
     </dependency>
 
     <!-- Utility -->
@@ -75,18 +67,8 @@
       <artifactId>guava</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j</groupId>
-      <artifactId>peaberry</artifactId>
-    </dependency>
-
-    <!-- Code Quality -->
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
     </dependency>
 
     <!-- Unit Test -->
@@ -110,56 +92,23 @@
     </resources>
 
     <plugins>
-      <!-- Java Compiler -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
 
-      <!-- Checkstyle -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-      </plugin>
-
-      <!-- Bundle Creation -->
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-
-        <configuration>
-          <instructions>
-            <Export-Package>org.basinmc.faucet.*</Export-Package>
-            <Import-Package>javax.annotation; version="${findbugs.version}", *</Import-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-
-      <!-- Attach Sources -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
       </plugin>
-
-      <!-- Attach JavaDoc -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
-
-      <!-- Git Versioning-->
-      <!-- <plugin>
-          <groupId>net.md-5</groupId>
-          <artifactId>scriptus</artifactId>
-          <executions>
-              <execution>
-                  <phase>initialize</phase>
-                  <goals>
-                      <goal>describe</goal>
-                  </goals>
-              </execution>
-          </executions>
-      </plugin> -->
     </plugins>
   </build>
 </project>
