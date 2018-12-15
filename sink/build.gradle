@@ -122,7 +122,7 @@ project(':sink:server') {
 
   patcher {
     parent = project(':sink:clean')
-    patches = file("$rootDir/sink/src/main/patches/minecraft")
+    patches = file("$rootDir/sink/src/main/patches")
     patchedSrc = file("$rootDir/sink/src/minecraft/java")
     accessTransformer = file("$rootDir/sink/src/main/resources/basin_at.cfg")
     exc = file("$rootDir/sink/src/main/resources/basin.exc")
