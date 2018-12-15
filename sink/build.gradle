@@ -1,0 +1,331 @@
+/*
+ * Copyright 2018 Johannes Donath <johannesd@torchmind.com>
+ * and other copyright owners as documented in the project's IP log.
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+buildscript {
+  repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+
+    maven {url = 'https://files.minecraftforge.net/maven'}
+  }
+
+  dependencies {
+    classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+  }
+}
+
+import net.minecraftforge.gradle.common.task.ArchiveChecksum
+import net.minecraftforge.gradle.common.task.DownloadMavenArtifact
+import net.minecraftforge.gradle.patcher.task.ApplyBinPatches
+
+plugins {
+  id 'net.minecrell.licenser' version '0.4'
+  id 'de.undercouch.download' version '3.3.0'
+}
+
+description = 'Sink'
+
+ext {
+  MAPPING_CHANNEL = 'snapshot'
+  MAPPING_VERSION = '20180921-1.13'
+  MC_VERSION = '1.13'
+  MCP_VERSION = '2018.09.12.04.11.00'
+}
+
+project(':sink:mcp') {
+  apply plugin: 'net.minecraftforge.gradle.forgedev.mcp'
+  mcp {
+    config = MC_VERSION + '-' + MCP_VERSION
+    pipeline = 'joined'
+  }
+}
+
+project(':sink:clean') {
+  evaluationDependsOn(':sink:mcp')
+
+  apply plugin: 'net.minecraftforge.gradle.forgedev.patcher'
+
+  repositories {
+    mavenCentral()
+  }
+
+  patcher {
+    parent = project(':sink:mcp')
+    patchedSrc = file("src/main/java")
+    mappings channel: MAPPING_CHANNEL, version: MAPPING_VERSION
+    mcVersion = MC_VERSION
+  }
+
+//  task runclient(type: JavaExec) {
+//    doFirst {
+//      mkdir 'runclient'
+//    }
+//    classpath sourceSets.main.runtimeClasspath
+//    args = ['--accessToken', '0', '--version', '1.13']
+//    main 'net.minecraft.client.main.Main'
+//    workingDir 'runclient'
+//  }
+}
+
+project(':sink:server') {
+  evaluationDependsOn(':sink:clean')
+
+  apply plugin: 'java-library'
+  apply plugin: 'maven-publish'
+  apply plugin: 'net.minecraftforge.gradle.forgedev.patcher'
+  apply plugin: 'de.undercouch.download'
+
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
+
+  sourceSets {
+    main {
+      java {
+        srcDir "$rootDir/sink/src/main/java"
+      }
+      resources {
+        srcDir "$rootDir/sink/src/main/resources"
+      }
+    }
+//    userdev {
+//      compileClasspath += sourceSets.main.runtimeClasspath
+//      runtimeClasspath += sourceSets.main.runtimeClasspath
+//      java {
+//        srcDir "$rootDir/$rootDir/sink/srcuserdev/java"
+//      }
+//      resources {
+//        srcDir "$rootDir/$rootDir/sink/srcuserdev/resources"
+//      }
+//    }
+  }
+
+  ext {
+    MCP_ARTIFACT = project(':sink:mcp').mcp.config
+  }
+
+  patcher {
+    parent = project(':sink:clean')
+    patches = file("$rootDir/sink/src/main/patches/minecraft")
+    patchedSrc = file("$rootDir/sink/src/minecraft/java")
+    accessTransformer = file("$rootDir/sink/src/main/resources/basin_at.cfg")
+    exc = file("$rootDir/sink/src/main/resources/basin.exc")
+    srgPatches = true
+
+    serverRun {
+      main = 'org.basinmc.sink.LaunchTesting'
+      environment = [
+          target: 'basindevserver'
+      ]
+      properties = [
+          'mc.version'   : MC_VERSION,
+          'mcp.version'  : MCP_VERSION,
+          'basin.version': "${project.version.substring(MC_VERSION.length() + 1)}".toString(),
+          'basin.group'  : project.group
+      ]
+    }
+  }
+
+  applyPatches {
+    canonicalizeAccess true
+    canonicalizeWhitespace true
+    maxFuzz 3
+  }
+
+  dependencies {
+    api 'net.minecraft:client:1.13:extra'
+
+    api project(':faucet')
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:3.1.1'
+
+    api 'com.paulscode:soundsystem:2018+'
+    api 'org.ow2.asm:asm:6.2'
+    api 'org.ow2.asm:asm-commons:6.2'
+    api 'org.ow2.asm:asm-tree:6.2'
+    api 'cpw.mods:modlauncher:0.1.0'
+//    api 'net.minecraftforge:accesstransformers:0.10+:shadowed'
+    api 'com.electronwill.night-config:core:3.4.0'
+    api 'com.electronwill.night-config:toml:3.4.0'
+    api 'org.jline:jline:3.5.1'
+    api 'org.apache.maven:maven-artifact:3.5.3'
+    api 'net.jodah:typetools:0.5.0'
+    api 'java3d:vecmath:1.5.2'
+    api 'org.apache.logging.log4j:log4j-api:2.11.1'
+    api 'org.apache.logging.log4j:log4j-core:2.11.1'
+  }
+
+  task runserver(type: JavaExec) {
+    doFirst {
+      mkdir 'runserver'
+    }
+    doFirst {
+      copy {
+        from sourceSets.main.resources
+        into "$buildDir/classes/java/main"
+      }
+    }
+
+    classpath sourceSets.main.runtimeClasspath
+
+    main 'org.basinmc.sink.LaunchTesting'
+    args 'nogui'
+    systemProperties = [
+        "mc.version"   : "${MC_VERSION}",
+        "mcp.version"  : "${MCP_VERSION}",
+        "basin.version": "${project.version.substring(MC_VERSION.length() + 1)}",
+        "basin.group"  : project.group
+    ]
+
+    environment target: 'basindevserver'
+    workingDir 'runserver'
+    standardInput = System.in
+  }
+
+  task applyServerBinPatches(type: ApplyBinPatches, dependsOn: genServerBinPatches) {
+    clean = {genServerBinPatches.cleanJar}
+    input = genServerBinPatches.output
+  }
+  task applyJoinedBinPatches(type: ApplyBinPatches, dependsOn: genJoinedBinPatches) {
+    clean = {genJoinedBinPatches.cleanJar}
+    input = genJoinedBinPatches.output
+  }
+
+  task clientBaseChecksum(type: ArchiveChecksum, dependsOn: genClientBinPatches) {
+    input = {genClientBinPatches.cleanJar}//Lazy because Patcher Plugin sets the value afterEvaluate
+    name = 'client'
+  }
+  task serverBaseChecksum(type: ArchiveChecksum, dependsOn: genServerBinPatches) {
+    input = {genServerBinPatches.cleanJar}
+    name = 'server'
+  }
+  task joinedBaseChecksum(type: ArchiveChecksum, dependsOn: genJoinedBinPatches) {
+    input = {genJoinedBinPatches.cleanJar}
+    name = 'joined'
+  }
+  task serverPatchedChecksum(type: ArchiveChecksum, dependsOn: applyServerBinPatches) {
+    input = applyServerBinPatches.output
+    name = 'server_patched'
+  }
+  task joinedPatchedChecksum(type: ArchiveChecksum, dependsOn: applyJoinedBinPatches) {
+    input = applyJoinedBinPatches.output
+    name = 'joined_patched'
+  }
+
+  task cleanChecksums() {
+    ['server', 'joined'].each {side ->
+      ['Base', 'Patched'].each {type ->
+        def clean = "clean${side.capitalize()}${type}Checksum"
+        dependsOn(clean)
+        tasks.findByName("${side}${type}Checksum").mustRunAfter(clean)
+      }
+    }
+  }
+  task checksums() {
+    ['server', 'joined'].each {side ->
+      ['Base', 'Patched'].each {type ->
+        dependsOn("${side}${type}Checksum")
+      }
+    }
+  }
+
+  ['server'].each {side ->
+    ['slim', 'extra', 'data'].each {type ->
+      def name = "download${side.capitalize()}${type.capitalize()}"
+      task "${name}"(type: DownloadMavenArtifact) {
+        artifact = "net.minecraft:${side}:${MC_VERSION}:${type}"
+      }
+    }
+  }
+
+  universalJar {
+    ['server'].each {side ->
+      ['Base', 'Patched'].each {type ->
+        from(tasks.getByName("${side}${type}Checksum").output) {
+          into 'checksums/'
+        }
+      }
+    }
+    dependsOn checksums
+
+    doFirst {
+      def classpath = new StringBuilder()
+      def artifacts = getArtifacts(project, project.configurations.installer, false)
+      artifacts.each {key, lib ->
+        classpath += "libraries/${lib.downloads.artifact.path} "
+      }
+      classpath += "libraries/net/minecraft/server/${MC_VERSION}/server-${MC_VERSION}-data.jar "
+      classpath += "libraries/net/minecraft/server/${MC_VERSION}/server-${MC_VERSION}-extra.jar"
+
+      manifest.attributes([
+          'Main-Class': 'net.minecraftforge.server.ServerMain',
+          'Timestamp' : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+          'Class-Path': classpath.toString()
+      ] as LinkedHashMap)
+      manifest.attributes([
+          'Specification-Title'   : 'Forge',
+          'Specification-Vendor'  : 'Forge Development LLC',
+          'Implementation-Title'  : project.group,
+          'Implementation-Version': project.version.substring(MC_VERSION.length() + 1),
+          'Implementation-Vendor' : 'Forge Development LLC'
+      ] as LinkedHashMap, 'net/minecraftforge/versions/forge/')
+      manifest.attributes([
+          'Specification-Title'   : 'Minecraft',
+          'Specification-Vendor'  : 'Mojang',
+          'Specification-Version' : MC_VERSION,
+          'Implementation-Title'  : 'MCP',
+          'Implementation-Version': MCP_VERSION,
+          'Implementation-Vendor' : 'Forge'
+      ] as LinkedHashMap, 'net/minecraftforge/versions/mcp/')
+    }
+  }
+
+//  userdevConfig {
+//    def artifacts = getArtifacts(project, project.configurations.installer, true)
+//    artifacts.each { key, lib ->
+//      addLibrary(lib.name)
+//    }
+//  }
+
+//  task userdevExtras(type:Jar) {
+//    dependsOn classes
+//    from sourceSets.userdev.output
+//    classifier 'userdev-temp'
+//  }
+//
+//  task userdevExtrasReobf(type:TaskReobfuscateJar) {
+//    dependsOn userdevExtras, createMcp2Srg
+//    input = tasks.userdevExtras.archivePath
+//    classpath = project.configurations.getByName("compile")
+//    srg = tasks.createMcp2Srg.output
+//  }
+//
+//  userdevJar {
+//    dependsOn userdevExtrasReobf
+//    from (zipTree(tasks.userdevExtrasReobf.output)) {
+//      into '/inject/'
+//    }
+//    from (sourceSets.userdev.output.resourcesDir) {
+//      into '/inject/'
+//    }
+//  }
+//
+//  applyRangeMap {
+//    setSources sourceSets.userdev.java.srcDirs.findAll({f -> (f != patcher.patchedSrc) })
+//  }
+}

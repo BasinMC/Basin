@@ -1,5 +1,6 @@
 
-# Created by https://www.gitignore.io/api/java,maven
+# Created by https://www.gitignore.io/api/java,gradle
+# Edit at https://www.gitignore.io/?templates=java,gradle
 
 ### Java ###
 # Compiled class file
@@ -17,6 +18,7 @@
 # Package Files #
 *.jar
 *.war
+*.nar
 *.ear
 *.zip
 *.tar.gz
@@ -25,21 +27,27 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-### Maven ###
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
+### Gradle ###
+.gradle
+/build/
 
-# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
-!/.mvn/wrapper/maven-wrapper.jar
+# Ignore Gradle GUI config
+gradle-app.setting
 
-# End of https://www.gitignore.io/api/java,maven
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
 
-### IntelliJ OSGi
-out/
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+### Gradle Patch ###
+**/build/
+
+# End of https://www.gitignore.io/api/java,gradle
+
+### Runtime Directory ###
+run/*
+!run/.emptydir
