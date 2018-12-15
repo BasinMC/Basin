@@ -91,13 +91,6 @@ public interface Server {
   interface Configuration {
 
     /**
-     * Checks whether achievements will be publicly announced in chat.
-     *
-     * @return true if enabled, false otherwise.
-     */
-    boolean areAchievementAnnouncementsEnabled();
-
-    /**
      * Checks whether command blocks are enabled on the server.
      *
      * When true, opped players in creative mode will be able to alter command blocks as well as

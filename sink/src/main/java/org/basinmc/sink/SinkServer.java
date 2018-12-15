@@ -16,68 +16,31 @@
  */
 package org.basinmc.sink;
 
-import com.google.inject.Binder;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
-import org.ops4j.peaberry.Export;
-import org.ops4j.peaberry.Peaberry;
-import org.ops4j.peaberry.util.TypeLiterals;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public class SinkServer implements Server, Handled<DedicatedServer>, Module {
+public class SinkServer implements Server, Handled<DedicatedServer> {
 
   private static final Logger logger = LogManager.getFormatterLogger(SinkServer.class);
 
-  private final BundleContext ctx;
   private final DedicatedServer server;
-  private final Injector injector;
-  private final Server.Configuration configuration = new Configuration();
+  private final Configuration configuration = new Configuration();
 
-  @Inject
-  private Export<Server> serverExport;
-  @Inject
-  private Export<SinkServer> serverImplExport;
-
-  @SuppressWarnings("ThisEscapedInObjectConstruction")
-  SinkServer(@NonNull BundleContext ctx, @NonNull DedicatedServer server) {
-    this.ctx = ctx;
+  SinkServer(@NonNull DedicatedServer server) {
     this.server = server;
-
-    this.injector = Guice.createInjector(Peaberry.osgiModule(ctx), this);
-
-    this.injector.injectMembers(this);
     logger.debug("Faucet services are ready for consumption");
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void configure(@NonNull Binder binder) {
-    // Local Instances
-    binder.bind(SinkServer.class).toInstance(this);
-
-    // Service Registration
-    binder.bind(TypeLiterals.export(Server.class)).toProvider(Peaberry.service(this).export());
-    binder.bind(TypeLiterals.export(SinkServer.class)).toProvider(Peaberry.service(this).export());
   }
 
   /**
@@ -106,15 +69,7 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
     this.server.logInfo("Server Shutdown: " + reason);
 
     DedicatedPlayerList playerList = this.server.getPlayerList();
-
-    if (playerList != null) {
-      playerList.getPlayers().forEach((p) -> p.connection.disconnect(reason));
-    }
-
-    // de-register all services (this isn't required as our framework should clean up when the
-    // bundle shuts down but we'll do it anyways)
-    // TODO: Move into bundle shutdown callback of sorts
-    this.serverExport.unput();
+    playerList.getPlayers().forEach(EntityPlayerMP::disconnect); // TODO: Restore reason
 
     this.server.stopServer();
   }
@@ -150,15 +105,6 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
   /**
    * {@inheritDoc}
    */
-  @NonNull
-  @Override
-  public Bundle getImplementationBundle() {
-    return this.ctx.getBundle();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public int getLifeTime() {
     return this.server.getTickCounter();
@@ -170,18 +116,10 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
   @NonNull
   @Override
   public DedicatedServer getHandle() {
-    return server;
+    return this.server;
   }
 
   private class Configuration implements Server.Configuration {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean areAchievementAnnouncementsEnabled() {
-      return SinkServer.this.server.isAnnouncingPlayerAchievements();
-    }
 
     /**
      * {@inheritDoc}
@@ -245,12 +183,16 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
      */
     @Override
     public int getPlayerIdleTimeout() {
-      return SinkServer.this.server.settings.getIntProperty("player-idle-timeout", 0);
+      return SinkServer.this.server.getMaxPlayerIdleMinutes();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getQueryPort() {
-      return SinkServer.this.server.settings.getIntProperty("query.port", 25565);
+//      return SinkServer.this.server.settings.getIntProperty("query.port", 25565);
+      return 0; // FIXME
     }
 
     /**
@@ -259,7 +201,8 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
     @NonNull
     @Override
     public String getRemoteConsolePassword() {
-      return SinkServer.this.server.settings.getStringProperty("rcon.password", "");
+//      return SinkServer.this.server.settings.getStringProperty("rcon.password", "");
+      return ""; // FIXME
     }
 
     /**
@@ -267,7 +210,8 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
      */
     @Override
     public int getRemoteConsolePort() {
-      return SinkServer.this.server.settings.getIntProperty("rcon.port", 25575);
+//      return SinkServer.this.server.settings.getIntProperty("rcon.port", 25575);
+      return 0; // FIXME
     }
 
     /**
@@ -283,7 +227,8 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
      */
     @Override
     public int getViewDistance() {
-      return SinkServer.this.server.settings.getIntProperty("view-distance", 10);
+//      return SinkServer.this.server.settings.getIntProperty("view-distance", 10);
+      return 0; // FIXME
     }
 
     /**
@@ -339,7 +284,8 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
      */
     @Override
     public boolean isRemoteConsoleEnabled() {
-      return SinkServer.this.server.settings.getBooleanProperty("enable-rcon", false);
+//      return SinkServer.this.server.settings.getBooleanProperty("enable-rcon", false);
+      return false; // FIXME
     }
 
     /**
@@ -347,7 +293,8 @@ public class SinkServer implements Server, Handled<DedicatedServer>, Module {
      */
     @Override
     public boolean isQueryEnabled() {
-      return SinkServer.this.server.settings.getBooleanProperty("enable-query", false);
+//      return SinkServer.this.server.settings.getBooleanProperty("enable-query", false);
+      return false; // FIXME
     }
 
     /**
