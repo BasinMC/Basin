@@ -20,13 +20,11 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import org.basinmc.faucet.util.State;
 
 /**
- * Provides a base interface for "stateful" events (e.g. events which make use of the standard set
- * of states as declared by {@link State} in order to decide whether the action which initially
- * triggered the event posting is to be executed or not).
+ * Provides a context to event handlers which wish to alter the event outcome (where applicable).
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public interface StatefulEvent {
+public interface ExecutionContext<STATE extends Enum<STATE>> {
 
   /**
    * Retrieves the events respective default state.
@@ -34,7 +32,7 @@ public interface StatefulEvent {
    * Note: This method is guaranteed to return {@link State#ALLOW} or {@link State#DENY}.
    */
   @NonNull
-  State getDefaultState();
+  STATE getDefaultState();
 
   /**
    * Retrieves the current event state.
@@ -44,7 +42,7 @@ public interface StatefulEvent {
    * @see #getDefaultState() in order to retrieve the respective default value for this event.
    */
   @NonNull
-  State getState();
+  STATE getState();
 
   /**
    * Sets the current event state.
@@ -55,5 +53,5 @@ public interface StatefulEvent {
    * @throws IllegalArgumentException when {@link State#WILDCARD} is being passed.
    * @throws IllegalStateException when the event state has been finalized.
    */
-  void setState(@NonNull State state);
+  void setState(@NonNull STATE state);
 }

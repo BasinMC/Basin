@@ -22,6 +22,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.basinmc.faucet.event.ExecutionContext;
 import org.basinmc.faucet.util.Priority;
 import org.basinmc.faucet.util.State;
 
@@ -44,7 +45,7 @@ public @interface Subscribe {
   Priority priority() default Priority.NORMAL;
 
   /**
-   * Indicates which state an event (of instance {@link org.basinmc.faucet.event.StatefulEvent}) has
+   * Indicates which state an event (of instance {@link ExecutionContext}) has
    * to be in at the time of posting in order to cause the framework to notify the annotated
    * member.
    *
