@@ -15,3 +15,12 @@
  
              while(this.field_71317_u) {
                 long i = Util.func_211177_b() - this.field_211151_aa;
+@@ -918,7 +919,7 @@
+    }
+ 
+    public String getServerModName() {
+-      return "vanilla";
++      return "basin"; // BS
+    }
+ 
+    public CrashReport func_71230_b(CrashReport p_71230_1_) {
