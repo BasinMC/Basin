@@ -21,8 +21,7 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.dedicated.DedicatedPlayerList;
-import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.Handled;
@@ -35,14 +34,14 @@ import org.springframework.stereotype.Service;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 @Service
-public class SinkServer implements Server, Handled<DedicatedServer> {
+public class SinkServer implements Server, Handled<MinecraftServer> {
 
   private static final Logger logger = LogManager.getFormatterLogger(SinkServer.class);
 
-  private final DedicatedServer server;
+  private final MinecraftServer server;
   private final Configuration configuration = new Configuration();
 
-  public SinkServer(@NonNull DedicatedServer server) {
+  public SinkServer(@NonNull MinecraftServer server) {
     this.server = server;
     logger.debug("Faucet services are ready for consumption");
   }
@@ -72,7 +71,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     // TODO Fire shutdown event here, once I add it. :)
     this.server.logInfo("Server Shutdown: " + reason);
 
-    DedicatedPlayerList playerList = this.server.getPlayerList();
+    var playerList = this.server.getPlayerList();
     playerList.getPlayers().forEach(EntityPlayerMP::disconnect); // TODO: Restore reason
 
     this.server.stopServer();
@@ -110,7 +109,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
    */
   @NonNull
   @Override
-  public DedicatedServer getHandle() {
+  public MinecraftServer getHandle() {
     return this.server;
   }
 
@@ -154,7 +153,8 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
      */
     @Override
     public long getMaximumTickTime() {
-      return SinkServer.this.server.getMaxTickTime();
+      return 0;
+//      return SinkServer.this.server.getMaxTickTime();
     }
 
     /**
