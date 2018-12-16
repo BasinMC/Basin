@@ -22,11 +22,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Denotes an API method, class, or constructor subject to extreme breaking changes in the
- * near future.
+ * Denotes an API method, class, or constructor subject to extreme breaking changes in the near
+ * future.
  */
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Target({ElementType.PACKAGE, ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
 public @interface Volatile {
 
   String value() default "";
