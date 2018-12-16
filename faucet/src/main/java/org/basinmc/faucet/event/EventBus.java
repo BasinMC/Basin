@@ -27,12 +27,10 @@ import org.basinmc.faucet.event.handler.EventHandler;
 public interface EventBus {
 
   /**
-   * Posts an event to the event bus. Each handler configured to
-   * accept a supertype or equivalent type of event will receive
-   * the event.
+   * Posts an event to the event bus. Each handler configured to accept a supertype or equivalent
+   * type of event will receive the event.
    *
    * @param event The even to post
-   * @param <T> The type of event
    */
-  <T extends Event> void post(@NonNull T event);
+  void post(@NonNull Object event);
 }
