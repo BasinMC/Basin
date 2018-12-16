@@ -14,33 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply from: 'gradle/basin.gradle'
-apply from: 'gradle/dependencies.gradle'
-
 allprojects {
-  group = basin.groupId
-  version = basin.version
-}
+  ext {
+    basin = [
+        groupId: 'org.basinmc',
+        brand  : 'Basin',
 
-subprojects {
-  repositories {
-    mavenLocal()
-    mavenCentral()
-
-    maven {
-      url = 'http://repo.maven.apache.org/maven2'
-    }
-
-    maven {
-      url = 'https://libraries.minecraft.net'
-    }
-
-    maven {
-      url = 'https://files.minecraftforge.net/maven'
-    }
-  }
-
-  tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+        java   : '10',
+        version: '1.0-SNAPSHOT',
+        game   : '1.13'
+    ]
   }
 }
