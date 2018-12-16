@@ -1,6 +1,6 @@
 package org.basinmc.faucet.event;
 
-import org.basinmc.faucet.internal.warn.Volatile;
+import javax.annotation.Nullable;
 
 /**
  * Marks the annotated type as an event which may be passed to the local event bus.
@@ -14,7 +14,7 @@ public interface Event<STATE extends Enum<STATE>> {
    *
    * @return an arbitrary state.
    */
-  @Volatile
+  @Nullable
   default STATE getDefaultState() {
     return null;
   }
