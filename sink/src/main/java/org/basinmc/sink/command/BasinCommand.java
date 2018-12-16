@@ -40,18 +40,16 @@ public class BasinCommand {
 
   @Subcommand("plugins")
   @Alias("pl")
-  @Alias("bundles")
   @Description("List plugins.")
   public void plugins(Communicable sender,
       @Option(desc = "Nicely format output in a table", shortOpt = 't', longOpt = "table") boolean table,
-      @Option(desc = "Hide initialization states", shortOpt = 'H', longOpt = "hide-init") boolean hideinit,
-      @Option(desc = "Show internal bundles", shortOpt = 'a', longOpt = "show-all") boolean all) {
+      @Option(desc = "Hide initialization states", shortOpt = 'H', longOpt = "hide-init") boolean hideinit) {
 
   }
 
   @Subcommand("restart")
   @Alias("reload")
-  @Description("Restart a bundle.")
+  @Description("Restart a plugin.")
   public void restart(Communicable sender,
       @Option(desc = "Bundle to restart, defaults to the server") Optional<String> bundleName,
       @Option(desc = "Delay before the restart occurs", shortOpt = 'd', longOpt = "delay") @DateFormat long delay,
