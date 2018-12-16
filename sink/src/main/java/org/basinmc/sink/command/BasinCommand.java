@@ -35,7 +35,7 @@ public class BasinCommand {
 
   @Supercommand
   public void printServerState(Communicable sender) {
-    sender.sendMessage(Color.GOLD + "Basin Server Software");
+    sender.sendMessage(Color.GOLD + "Basin Sink");
   }
 
   @Subcommand("plugins")
