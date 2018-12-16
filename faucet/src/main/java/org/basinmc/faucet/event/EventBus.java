@@ -19,11 +19,10 @@ package org.basinmc.faucet.event;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.function.Consumer;
-import org.basinmc.faucet.event.handler.EventHandler;
 
 /**
  * Provides an event management system which will automatically post events to all registered
- * services of type {@link EventHandler}.
+ * listeners.
  */
 public interface EventBus {
 
