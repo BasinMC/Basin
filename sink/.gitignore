@@ -1,6 +1,9 @@
 
-# MCP
-server/
+### MCP ###
+server/*
 mcp/
 
 src/minecraft
+
+### Exclusions ###
+!src/main/patches/*
