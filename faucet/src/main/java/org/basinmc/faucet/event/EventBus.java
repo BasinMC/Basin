@@ -27,11 +27,6 @@ import java.util.function.Consumer;
 public interface EventBus {
 
   /**
-   * @see #post(Event)
-   */
-  void post(@NonNull Object object);
-
-  /**
    * Posts an event to the event bus. Each handler configured to accept a supertype or equivalent
    * type of event will receive the event.
    *
