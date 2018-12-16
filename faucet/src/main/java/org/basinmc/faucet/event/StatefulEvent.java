@@ -26,7 +26,7 @@ import org.basinmc.faucet.util.State;
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public interface StatefulEvent extends MutableEvent {
+public interface StatefulEvent {
 
   /**
    * Retrieves the events respective default state.

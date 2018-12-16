@@ -17,19 +17,18 @@
  */
 package org.basinmc.faucet.event.handler;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import org.basinmc.faucet.event.MutableEvent;
 import org.basinmc.faucet.util.Priority;
 import org.basinmc.faucet.util.State;
 
 /**
- * Annotates a method that is to be subscribed to events. Can annotate a class for this operation
- * to be applied to all methods within it annotated with this annotation upon construction.
- * This is also used to annotate synthetic {@link EventHandler} implementations internally.
+ * Annotates a method that is to be subscribed to events. Can annotate a class for this operation to
+ * be applied to all methods within it annotated with this annotation upon construction. This is
+ * also used to annotate synthetic {@link EventHandler} implementations internally.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
@@ -45,20 +44,13 @@ public @interface Subscribe {
   Priority priority() default Priority.NORMAL;
 
   /**
-   * Indicates whether the annotated member will be notified of events which have been finalized.
-   *
-   * @see MutableEvent#isFinalized() for a detailed documentation on finalization.
-   */
-  boolean receiveFinalized() default false;
-
-  /**
-   * Indicates which state an event (of instance {@link org.basinmc.faucet.event.StatefulEvent})
-   * has to be in at the time of posting in order to cause the framework to notify the annotated
+   * Indicates which state an event (of instance {@link org.basinmc.faucet.event.StatefulEvent}) has
+   * to be in at the time of posting in order to cause the framework to notify the annotated
    * member.
    *
-   * Note: In addition to {@link State#ALLOW} and {@link State#DENY}, you may also use
-   * {@link State#DEFAULT} in order to reduce the set of events to events which are currently in
-   * their default state as well as {@link State#WILDCARD} to retrieve events from both sides.
+   * Note: In addition to {@link State#ALLOW} and {@link State#DENY}, you may also use {@link
+   * State#DEFAULT} in order to reduce the set of events to events which are currently in their
+   * default state as well as {@link State#WILDCARD} to retrieve events from both sides.
    */
   @NonNull
   State receiveState() default State.ALLOW;
