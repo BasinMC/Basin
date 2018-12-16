@@ -22,9 +22,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.basinmc.faucet.event.Event;
 import org.basinmc.faucet.event.ExecutionContext;
 import org.basinmc.faucet.util.Priority;
 import org.basinmc.faucet.util.State;
+import org.springframework.core.annotation.AliasFor;
 
 /**
  * Annotates a method that is to be subscribed to events. Can annotate a class for this operation to
@@ -36,6 +38,22 @@ import org.basinmc.faucet.util.State;
 public @interface Subscribe {
 
   /**
+   * @see #eventType()
+   */
+  @NonNull
+  @AliasFor("eventType")
+  Class<? extends Event<?>> value() default DefaultEvent.class;
+
+  /**
+   * Specifies the event type to bind this particular handler to.
+   *
+   * @return an event type.
+   */
+  @NonNull
+  @AliasFor("value")
+  Class<? extends Event<?>> eventType() default DefaultEvent.class;
+
+  /**
    * Declares the priority at which this handler is being called.
    *
    * Higher priority handlers will be called first within the queue and as such get the highest
@@ -45,9 +63,8 @@ public @interface Subscribe {
   Priority priority() default Priority.NORMAL;
 
   /**
-   * Indicates which state an event (of instance {@link ExecutionContext}) has
-   * to be in at the time of posting in order to cause the framework to notify the annotated
-   * member.
+   * Indicates which state an event (of instance {@link ExecutionContext}) has to be in at the time
+   * of posting in order to cause the framework to notify the annotated member.
    *
    * Note: In addition to {@link State#ALLOW} and {@link State#DENY}, you may also use {@link
    * State#DEFAULT} in order to reduce the set of events to events which are currently in their
@@ -55,4 +72,8 @@ public @interface Subscribe {
    */
   @NonNull
   State receiveState() default State.ALLOW;
+
+  final class DefaultEvent implements Event<State> {
+
+  }
 }
