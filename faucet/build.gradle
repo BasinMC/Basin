@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 /*
  * Copyright 2018 Johannes Donath <johannesd@torchmind.com>
  * and other copyright owners as documented in the project's IP log.
@@ -18,6 +20,8 @@ description = 'Faucet'
 
 apply plugin: 'java'
 
+sourceCompatibility = targetCompatibility = basin.java
+
 dependencies {
   compile libraries.di_container
   compileOnly libraries.annotations
@@ -25,9 +29,15 @@ dependencies {
 
   compile 'org.ow2.asm:asm:6.1-beta2'
   compile 'org.apache.commons:commons-lang3:3.5'
-  compile 'com.google.code.gson:gson:2.8.0'
-  compile 'com.google.guava:guava:21.0'
-  testCompile 'junit:junit:4.12'
+  compile 'org.apache.logging.log4j:log4j-api:2.8.1'
 }
 
-sourceCompatibility = '10'
+processResources {
+  with copySpec {
+    from 'src/main/resources/sink-version.properties'
+    filter([
+        'version'     : project.version,
+        'game-version': basin.game,
+    ], ReplaceTokens)
+  }
+}

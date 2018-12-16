@@ -27,10 +27,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.Handled;
 import org.basinmc.faucet.Server;
+import org.springframework.stereotype.Service;
 
 /**
+ * Abstracts access to the server configuration and state.
+ *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
+@Service
 public class SinkServer implements Server, Handled<DedicatedServer> {
 
   private static final Logger logger = LogManager.getFormatterLogger(SinkServer.class);
@@ -38,7 +42,7 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
   private final DedicatedServer server;
   private final Configuration configuration = new Configuration();
 
-  SinkServer(@NonNull DedicatedServer server) {
+  public SinkServer(@NonNull DedicatedServer server) {
     this.server = server;
     logger.debug("Faucet services are ready for consumption");
   }
@@ -72,15 +76,6 @@ public class SinkServer implements Server, Handled<DedicatedServer> {
     playerList.getPlayers().forEach(EntityPlayerMP::disconnect); // TODO: Restore reason
 
     this.server.stopServer();
-  }
-
-  /**
-   * Handles the startup phase of the server.
-   */
-  void start() {
-    logger.info("Starting Minecraft Server");
-    this.server.startServerThread();
-    logger.debug("Server thread has been started");
   }
 
   /**
