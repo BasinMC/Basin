@@ -18,6 +18,7 @@
 package org.basinmc.faucet.event;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import java.util.function.Consumer;
 import org.basinmc.faucet.event.handler.EventHandler;
 
 /**
@@ -27,10 +28,36 @@ import org.basinmc.faucet.event.handler.EventHandler;
 public interface EventBus {
 
   /**
+   * @see #post(Event)
+   */
+  void post(@NonNull Object object);
+
+  /**
    * Posts an event to the event bus. Each handler configured to accept a supertype or equivalent
    * type of event will receive the event.
    *
    * @param event The even to post
+   * @param <STATE> identifies the desired return state (as specified by the event listeners).
    */
-  void post(@NonNull Object event);
+  <STATE extends Enum<STATE>> STATE post(@NonNull Event<STATE> event);
+
+  void subscribe(@NonNull Object listener);
+
+  /**
+   * Subscribes the specified runnable functional to an arbitrary event.
+   *
+   * @param eventClass an event class.
+   * @param runnable an arbitrary runnable which is invoked when the event is received.
+   * @param <E> an event type.
+   */
+  <E extends Event<?>> void subscribe(@NonNull Class<E> eventClass, @NonNull Runnable runnable);
+
+  /**
+   * Subscribes the specified consumer functional to an arbitrary event.
+   *
+   * @param eventClass an event class.
+   * @param consumer an event.
+   * @param <E> an event type.
+   */
+  <E extends Event<?>> void subscribe(@NonNull Class<E> eventClass, @NonNull Consumer<E> consumer);
 }
