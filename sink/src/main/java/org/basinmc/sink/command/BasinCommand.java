@@ -16,6 +16,7 @@
  */
 package org.basinmc.sink.command;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Optional;
 import org.basinmc.faucet.command.Color;
 import org.basinmc.faucet.command.Communicable;
@@ -34,14 +35,14 @@ import org.basinmc.faucet.command.annotation.Supercommand;
 public class BasinCommand {
 
   @Supercommand
-  public void printServerState(Communicable sender) {
+  public void printServerState(@NonNull Communicable sender) {
     sender.sendMessage(Color.GOLD + "Basin Sink");
   }
 
   @Subcommand("plugins")
   @Alias("pl")
   @Description("List plugins.")
-  public void plugins(Communicable sender,
+  public void plugins(@NonNull Communicable sender,
       @Option(desc = "Nicely format output in a table", shortOpt = 't', longOpt = "table") boolean table,
       @Option(desc = "Hide initialization states", shortOpt = 'H', longOpt = "hide-init") boolean hideinit) {
 
@@ -50,7 +51,7 @@ public class BasinCommand {
   @Subcommand("restart")
   @Alias("reload")
   @Description("Restart a plugin.")
-  public void restart(Communicable sender,
+  public void restart(@NonNull Communicable sender,
       @Option(desc = "Bundle to restart, defaults to the server") Optional<String> bundleName,
       @Option(desc = "Delay before the restart occurs", shortOpt = 'd', longOpt = "delay") @DateFormat long delay,
       @Option(desc = "Notify online players", shortOpt = 'n', longOpt = "notify") boolean notify) {
