@@ -19,6 +19,24 @@ allprojects {
   version = '1.0-SNAPSHOT'
 }
 
+ext.libraries = [
+    annotations     : [
+        'com.github.spotbugs:spotbugs-annotations:3.1.1'
+    ],
+    di_container    : [
+        'org.springframework:spring-core:5.1.3.RELEASE'
+    ],
+    minecraft       : [
+        'org.jline:jline:3.5.1',
+        'java3d:vecmath:1.5.2',
+        'org.apache.logging.log4j:log4j-api:2.11.1',
+        'org.apache.logging.log4j:log4j-core:2.11.1',
+    ],
+    minecraft_client: [
+        'com.paulscode:soundsystem:2018+'
+    ]
+]
+
 subprojects {
   repositories {
     mavenLocal()

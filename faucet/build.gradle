@@ -19,14 +19,15 @@ description = 'Faucet'
 apply plugin: 'java'
 
 dependencies {
+  compile libraries.di_container
+  compileOnly libraries.annotations
+  compileOnly libraries.minecraft
+
   compile 'org.ow2.asm:asm:6.1-beta2'
   compile 'org.apache.commons:commons-lang3:3.5'
-  compile 'org.apache.logging.log4j:log4j-api:2.8.1'
   compile 'com.google.code.gson:gson:2.8.0'
-  compile 'io.netty:netty-all:4.1.9.Final'
   compile 'com.google.guava:guava:21.0'
   testCompile 'junit:junit:4.12'
-  compileOnly 'com.github.spotbugs:spotbugs-annotations:3.1.1'
 }
 
 sourceCompatibility = '10'
