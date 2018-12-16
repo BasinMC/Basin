@@ -34,7 +34,7 @@ import org.springframework.core.annotation.AliasFor;
  * also used to annotate synthetic {@link EventHandler} implementations internally.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target(ElementType.METHOD)
 public @interface Subscribe {
 
   /**
@@ -42,7 +42,7 @@ public @interface Subscribe {
    */
   @NonNull
   @AliasFor("eventType")
-  Class<? extends Event<?>> value() default DefaultEvent.class;
+  Class<? extends Event<?>>[] value() default DefaultEvent.class;
 
   /**
    * Specifies the event type to bind this particular handler to.
@@ -51,7 +51,7 @@ public @interface Subscribe {
    */
   @NonNull
   @AliasFor("value")
-  Class<? extends Event<?>> eventType() default DefaultEvent.class;
+  Class<? extends Event<?>>[] eventType() default DefaultEvent.class;
 
   /**
    * Declares the priority at which this handler is being called.
