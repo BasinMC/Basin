@@ -1,0 +1,17 @@
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -521,12 +521,13 @@
+    }
+ 
+    public void run() {
+-      try {
++      try (var bsServer = new org.basinmc.sink.Sink(this)) { // BS
+          if (this.func_71197_b()) {
+             this.field_211151_aa = Util.func_211177_b();
+             this.field_147147_p.func_151315_a(new TextComponentString(this.field_71286_C));
+             this.field_147147_p.func_151321_a(new ServerStatusResponse.Version("1.13", 393));
+             this.func_184107_a(this.field_147147_p);
++            bsServer.onStart(); // BS
+ 
+             while(this.field_71317_u) {
+                long i = Util.func_211177_b() - this.field_211151_aa;
