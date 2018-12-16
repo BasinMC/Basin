@@ -16,6 +16,7 @@
  */
 package org.basinmc.faucet.internal.warn;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,6 +26,7 @@ import java.lang.annotation.Target;
  * Denotes an API method, class, or constructor whose use is not recommended. This should be used to
  * produce warnings at compile-time or at loading time.
  */
+@Documented
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.PACKAGE, ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
 public @interface Unrecommended {
