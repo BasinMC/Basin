@@ -70,7 +70,7 @@ public @interface Subscribe {
    * default state as well as {@link State#WILDCARD} to retrieve events from both sides.
    */
   @NonNull
-  State receiveState() default State.ALLOW;
+  State receiveState() default State.WILDCARD;
 
   final class DefaultEvent implements Event<State> {
 
