@@ -20,6 +20,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.basinmc.faucet.event.filter.InceptionFilter;
 import org.basinmc.faucet.event.filter.BooleanFilter;
 import org.basinmc.faucet.event.filter.ClassFilter;
 import org.basinmc.faucet.event.filter.DoubleFilter;
@@ -64,5 +66,12 @@ public final class RepeatedFilters {
   public @interface RepeatedClassFilter {
 
     ClassFilter[] value();
+  }
+
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.METHOD)
+  public @interface RepeatedInceptionFilter {
+
+    InceptionFilter[] value();
   }
 }
