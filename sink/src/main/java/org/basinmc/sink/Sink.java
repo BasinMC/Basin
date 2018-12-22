@@ -4,6 +4,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.basinmc.faucet.event.EventBus;
+import org.basinmc.faucet.event.system.StartupEvent;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -32,8 +34,14 @@ public class Sink implements AutoCloseable {
     this.context.refresh();
     this.context.start();
 
-    // TODO: Initialize plugin system
-    // TODO: Publish startup event
+    var eventBus = this.context.getBean(EventBus.class);
+
+    eventBus.post(new StartupEvent.Pre());
+    {
+      // TODO: Initialize plugin system
+      // TODO: Publish startup event
+    }
+    eventBus.post(new StartupEvent.Post());
   }
 
   /**

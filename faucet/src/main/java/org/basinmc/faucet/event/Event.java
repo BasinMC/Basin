@@ -18,4 +18,7 @@ public interface Event<STATE extends Enum<STATE>> {
   default STATE getDefaultState() {
     return null;
   }
+
+  enum EmptyState {
+  }
 }
