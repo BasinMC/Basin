@@ -66,7 +66,7 @@ public interface Plugin {
    *
    * <p>This value is expected to follow the <a href="https://semver.org">Semantic Versioning</a>
    * specification in order to permit automatic dependency resolving based on compatibility (e.g.
-   * evaluate whether an alternaive version is expected to be API compatible).</p>
+   * evaluate whether an alternative version is expected to be API compatible).</p>
    *
    * @return a plugin version.
    */
