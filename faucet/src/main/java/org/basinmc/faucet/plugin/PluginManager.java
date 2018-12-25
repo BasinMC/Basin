@@ -29,6 +29,16 @@ import java.util.List;
 public interface PluginManager {
 
   /**
+   * Specifies the file extension which is expected to be present on all plugin containers.
+   */
+  String CONTAINER_EXTENSION = ".bec";
+
+  /**
+   * Specifies the mime type which is typically transmitted for plugin containers.
+   */
+  String CONTAINER_MIME = "application/basin-extension";
+
+  /**
    * <p>Retrieves a list of plugins which have been registered with the server.</p>
    *
    * <p>Note that plugins may reside in different phases depending on when they are registered with
