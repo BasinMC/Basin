@@ -39,14 +39,14 @@ public interface ExtensionManager {
   String CONTAINER_MIME = "application/basin-extension";
 
   /**
-   * <p>Retrieves a list of plugins which have been registered with the server.</p>
+   * <p>Retrieves a list of extensions which have been registered with the server.</p>
    *
-   * <p>Note that plugins may reside in different phases depending on when they are registered with
+   * <p>Note that extensions may reside in different phases depending on when they are registered with
    * the server and whether their startup completed successfully (failed plugins may retain their
    * resolved state until removed from the server).</p>
    *
-   * @return a list of registered plugins.
+   * @return a list of registered extensions.
    */
   @NonNull
-  List<Extension> getPlugins();
+  List<Extension> getExtensions();
 }
