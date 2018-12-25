@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.faucet.plugin.annotation;
+package org.basinmc.faucet.extension.annotation;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.lang.annotation.Documented;

@@ -19,7 +19,7 @@ package org.basinmc.faucet.exception;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
- * Provides a base exception for all issues which arise within a plugin (or other bundle) while
+ * Provides a base exception for all issues which arise within a extension (or other bundle) while
  * being called inside of Faucet or one of its implementations.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>

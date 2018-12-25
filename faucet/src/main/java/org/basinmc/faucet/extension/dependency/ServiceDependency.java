@@ -14,35 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.faucet.plugin.dependency;
+package org.basinmc.faucet.extension.dependency;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.Objects;
 
 /**
- * Represents a versioned reference to another plugin.
- *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  * @since 1.0
  */
-public class PluginReference {
+public class ServiceDependency extends ServiceReference {
 
-  private final String identifier;
-  private final String version;
+  private final boolean optional;
 
-  public PluginReference(@NonNull String identifier, @NonNull String version) {
-    this.identifier = identifier;
-    this.version = version;
+  public ServiceDependency(@NonNull String baseClassName,
+      @Nullable String version, boolean optional) {
+    super(baseClassName, version);
+    this.optional = optional;
   }
 
-  @NonNull
-  public String getIdentifier() {
-    return this.identifier;
-  }
-
-  @NonNull
-  public String getVersion() {
-    return this.version;
+  public boolean isOptional() {
+    return this.optional;
   }
 
   /**
@@ -53,12 +46,14 @@ public class PluginReference {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof PluginReference)) {
+    if (!(o instanceof ServiceDependency)) {
       return false;
     }
-    PluginReference that = (PluginReference) o;
-    return Objects.equals(this.identifier, that.identifier) &&
-        Objects.equals(this.version, that.version);
+    if (!super.equals(o)) {
+      return false;
+    }
+    ServiceDependency that = (ServiceDependency) o;
+    return this.optional == that.optional;
   }
 
   /**
@@ -66,6 +61,6 @@ public class PluginReference {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(this.identifier, this.version);
+    return Objects.hash(super.hashCode(), this.optional);
   }
 }

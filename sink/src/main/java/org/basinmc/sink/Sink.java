@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * Provides utility methods which permit the initialization of the Basin application and plugin
+ * Provides utility methods which permit the initialization of the Basin application and extension
  * context during the server startup.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
@@ -32,7 +32,7 @@ public class Sink implements AutoCloseable {
     this.context.refresh();
     this.context.start();
 
-    // TODO: Initialize plugin system
+    // TODO: Initialize extension system
     // TODO: Publish startup event
   }
 

@@ -14,33 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.faucet.plugin;
+package org.basinmc.faucet.extension;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
-import org.basinmc.faucet.plugin.dependency.PluginDependency;
-import org.basinmc.faucet.plugin.dependency.ServiceDependency;
-import org.basinmc.faucet.plugin.dependency.ServiceReference;
+import org.basinmc.faucet.extension.dependency.ExtensionDependency;
+import org.basinmc.faucet.extension.dependency.ServiceDependency;
+import org.basinmc.faucet.extension.dependency.ServiceReference;
 
 /**
- * Represents the metadata associated with a loaded or to-be-loaded plugin.
+ * Represents the metadata associated with a loaded or to-be-loaded extension.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  * @since 1.0
  */
-public interface Plugin {
+public interface Extension {
 
   String IDENTIFIER_HEADER = "Basin-Extension-Id";
   String VERSION_HEADER = "Basin-Extension-Version";
 
   /**
-   * <p>Retrieves the distribution network identifier for this plugin.</p>
+   * <p>Retrieves the distribution network identifier for this extension.</p>
    *
    * <p>This value is used for auto-update and auto-download purposes and may be left empty when
-   * the plugin is not available via the distribution network.</p>
+   * the extension is not available via the distribution network.</p>
    *
    * @return a distribution identifier or an empty optional.
    */
@@ -48,36 +48,36 @@ public interface Plugin {
   Optional<UUID> getDistributionId();
 
   /**
-   * <p>Retrieves the globally unique identification for this plugin.</p>
+   * <p>Retrieves the globally unique identification for this extension.</p>
    *
-   * <p>This value is used to refer to this plugin within manifests (for instance, when a
+   * <p>This value is used to refer to this extension within manifests (for instance, when a
    * dependency is declared) and is expected to be globally unique (e.g. may only ever exist once
-   * within the plugin ecosystem).</p>
+   * within the extension ecosystem).</p>
    *
    * <p>The expected format for this particular field is equal to the Java package format (as
    * outlined in the Java specification and Oracle Code Style). For instance: {@code
-   * org.example.project.plugin}</p>
+   * org.example.project.extension}</p>
    *
-   * @return a unique plugin identifier.
+   * @return a unique extension identifier.
    */
   @NonNull
   String getIdentifier();
 
   /**
-   * <p>Retrieves a human readable (yet machine parsable) representation of the plugin's version
+   * <p>Retrieves a human readable (yet machine parsable) representation of the extension's version
    * number.</p>
    *
    * <p>This value is expected to follow the <a href="https://semver.org">Semantic Versioning</a>
    * specification in order to permit automatic dependency resolving based on compatibility (e.g.
    * evaluate whether an alternative version is expected to be API compatible).</p>
    *
-   * @return a plugin version.
+   * @return a extension version.
    */
   @NonNull
   String getVersion();
 
   /**
-   * Retrieves the phase in which this plugin currently resides.
+   * Retrieves the phase in which this extension currently resides.
    *
    * @return a phase.
    */
@@ -85,7 +85,7 @@ public interface Plugin {
   Phase getPhase();
 
   /**
-   * Retrieves a list of services which are provided by this plugin and are made available to
+   * Retrieves a list of services which are provided by this extension and are made available to
    * plugins which wish to consume them.
    *
    * @return a list of provided services and their versions.
@@ -94,17 +94,17 @@ public interface Plugin {
   List<ServiceReference> getServices();
 
   /**
-   * Retrieves a list of plugin level dependencies which are required to be present in order to
-   * permit plugin loading or alter the plugin loading order if present.
+   * Retrieves a list of extension level dependencies which are required to be present in order to
+   * permit extension loading or alter the extension loading order if present.
    *
    * @return a list of dependencies.
    */
   @NonNull
-  List<PluginDependency> getDependencies();
+  List<ExtensionDependency> getDependencies();
 
   /**
-   * Retrieves a list of services which are required to be present in order to permit plugin loading
-   * or alter the plugin loading order if present.
+   * Retrieves a list of services which are required to be present in order to permit extension loading
+   * or alter the extension loading order if present.
    *
    * @return a list of service dependencies.
    */
@@ -112,7 +112,7 @@ public interface Plugin {
   List<ServiceDependency> getServiceDependencies();
 
   /**
-   * <p>Retrieves a human readable name for this plugin.</p>
+   * <p>Retrieves a human readable name for this extension.</p>
    *
    * <p>This method behaves the same way as {@link #getDisplayName(Locale)} but will always choose
    * the current server locale as its display locale.</p>
@@ -124,10 +124,10 @@ public interface Plugin {
   String getDisplayName();
 
   /**
-   * <p>Retrieves a human readable name for this plugin (e.g. a project name or summary of the
+   * <p>Retrieves a human readable name for this extension (e.g. a project name or summary of the
    * provided functionality).</p>
    *
-   * <p>This value may be localized by the plugin author in order to make their plugins more
+   * <p>This value may be localized by the extension author in order to make their plugins more
    * accessible.</p>
    *
    * <p>When no localization has been declared for the specified display locale, a standard
@@ -140,7 +140,7 @@ public interface Plugin {
   String getDisplayName(@NonNull Locale locale);
 
   /**
-   * Retrieves a list of authors who are actively involved with the development of this plugin.
+   * Retrieves a list of authors who are actively involved with the development of this extension.
    *
    * @return a sorted list of authors.
    */
@@ -148,7 +148,7 @@ public interface Plugin {
   List<String> getAuthors();
 
   /**
-   * Retrieves a list of contributors who contributed to the plugin's development at least once.
+   * Retrieves a list of contributors who contributed to the extension's development at least once.
    *
    * @return a sorted list of contributors.
    */

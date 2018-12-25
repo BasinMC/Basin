@@ -34,7 +34,7 @@ public interface CommandSpec {
   Set<String> getAliases();
 
   /**
-   * Get the bundle that provides this command. Will either be a plugin or the server.
+   * Get the bundle that provides this command. Will either be a extension or the server.
    */
   @NonNull
   Module getOwner();

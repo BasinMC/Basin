@@ -14,28 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.faucet.plugin.dependency;
+package org.basinmc.faucet.extension.dependency;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.Objects;
 
 /**
+ * Provides a reference to a service implementation.
+ *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  * @since 1.0
  */
-public class ServiceDependency extends ServiceReference {
+public class ServiceReference {
 
-  private final boolean optional;
+  private final String baseClassName;
+  private final String version;
 
-  public ServiceDependency(@NonNull String baseClassName,
-      @Nullable String version, boolean optional) {
-    super(baseClassName, version);
-    this.optional = optional;
+  public ServiceReference(@NonNull String baseClassName, @NonNull String version) {
+    this.baseClassName = baseClassName;
+    this.version = version;
   }
 
-  public boolean isOptional() {
-    return this.optional;
+  @NonNull
+  public String getBaseClassName() {
+    return this.baseClassName;
+  }
+
+  @NonNull
+  public String getVersion() {
+    return this.version;
   }
 
   /**
@@ -46,14 +53,12 @@ public class ServiceDependency extends ServiceReference {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ServiceDependency)) {
+    if (!(o instanceof ServiceReference)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
-    ServiceDependency that = (ServiceDependency) o;
-    return this.optional == that.optional;
+    ServiceReference that = (ServiceReference) o;
+    return Objects.equals(this.baseClassName, that.baseClassName) &&
+        Objects.equals(this.version, that.version);
   }
 
   /**
@@ -61,6 +66,6 @@ public class ServiceDependency extends ServiceReference {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), this.optional);
+    return Objects.hash(this.baseClassName, this.version);
   }
 }

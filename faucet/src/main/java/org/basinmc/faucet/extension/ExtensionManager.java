@@ -15,26 +15,26 @@
  * limitations under the License.
  */
 
-package org.basinmc.faucet.plugin;
+package org.basinmc.faucet.extension;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 
 /**
- * Provides utility methods which permit the initialization of the Basin application and plugin
+ * Provides utility methods which permit the initialization of the Basin application and extension
  * context during the server startup.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public interface PluginManager {
+public interface ExtensionManager {
 
   /**
-   * Specifies the file extension which is expected to be present on all plugin containers.
+   * Specifies the file extension which is expected to be present on all extension containers.
    */
   String CONTAINER_EXTENSION = ".bec";
 
   /**
-   * Specifies the mime type which is typically transmitted for plugin containers.
+   * Specifies the mime type which is typically transmitted for extension containers.
    */
   String CONTAINER_MIME = "application/basin-extension";
 
@@ -48,5 +48,5 @@ public interface PluginManager {
    * @return a list of registered plugins.
    */
   @NonNull
-  List<Plugin> getPlugins();
+  List<Extension> getPlugins();
 }

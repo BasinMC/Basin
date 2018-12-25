@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotates a field or a local variable to signify that string values that each
- * might represent will be transformed (at plugin load time) into an unlocalized
+ * might represent will be transformed (at extension load time) into an unlocalized
  * string, which will be localized during outgoing packet processing for
  * significant packets, such as chat, item metadata (including name and lore), etc.
  */

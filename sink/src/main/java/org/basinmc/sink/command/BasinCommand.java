@@ -50,7 +50,7 @@ public class BasinCommand {
 
   @Subcommand("restart")
   @Alias("reload")
-  @Description("Restart a plugin.")
+  @Description("Restart a extension.")
   public void restart(@NonNull Communicable sender,
       @Option(desc = "Bundle to restart, defaults to the server") Optional<String> bundleName,
       @Option(desc = "Delay before the restart occurs", shortOpt = 'd', longOpt = "delay") @DateFormat long delay,
