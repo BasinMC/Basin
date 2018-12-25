@@ -33,6 +33,9 @@ import org.basinmc.faucet.plugin.dependency.ServiceReference;
  */
 public interface Plugin {
 
+  String IDENTIFIER_HEADER = "Basin-Extension-Id";
+  String VERSION_HEADER = "Basin-Extension-Version";
+
   /**
    * <p>Retrieves the distribution network identifier for this plugin.</p>
    *
