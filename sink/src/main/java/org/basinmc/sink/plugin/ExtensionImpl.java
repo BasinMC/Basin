@@ -36,6 +36,7 @@ import org.basinmc.faucet.extension.dependency.ServiceReference;
 import org.basinmc.faucet.extension.error.ExtensionContainerException;
 import org.basinmc.faucet.extension.error.ExtensionException;
 import org.basinmc.faucet.extension.error.ExtensionManifestException;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -273,6 +274,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     this.ctx.setParent(parentCtx);
     this.ctx.setClassLoader(this.classLoader);
 
+    this.ctx.getBean(ConfigurableBeanFactory.class).registerSingleton("logger", this.logger);
     // TODO: Register service registration beans
 
     try {
