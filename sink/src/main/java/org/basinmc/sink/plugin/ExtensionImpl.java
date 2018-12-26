@@ -205,7 +205,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     return Optional.ofNullable(this.ctx);
   }
 
-  public void start(@NonNull ApplicationContext parentCtx) {
+  public void initialize(@NonNull ApplicationContext parentCtx) {
     if (this.ctx != null) {
       return;
     }

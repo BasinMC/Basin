@@ -150,7 +150,7 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
         .filter((e) -> e.getPhase() == Phase.RESOLVED)
         .forEach((e) -> {
           try {
-            e.start(this.ctx);
+            e.initialize(this.ctx);
           } catch (Throwable ex) {
             logger
                 .warn("Failed to start extension " + e.getIdentifier() + "#" + e.getVersion(), ex);
