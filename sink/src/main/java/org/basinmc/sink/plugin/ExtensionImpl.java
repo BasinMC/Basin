@@ -19,18 +19,16 @@ package org.basinmc.sink.plugin;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.jar.JarFile;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.extension.Extension;
 import org.basinmc.faucet.extension.dependency.ExtensionDependency;
 import org.basinmc.faucet.extension.dependency.ServiceDependency;
@@ -49,6 +47,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
 
   private final Path containerPath;
   private final JarFile jarFile;
+  private final Logger logger;
 
   private final String identifier;
   private final String version;
@@ -76,6 +75,8 @@ public class ExtensionImpl implements AutoCloseable, Extension {
       if (this.version == null || this.version.isEmpty()) {
         throw new ExtensionManifestException("Missing extension version");
       }
+
+      this.logger = LogManager.getFormatterLogger(this.identifier + "#" + this.version);
     } catch (IOException ex) {
       throw new ExtensionManifestException("Cannot access extension manifest", ex);
     }
@@ -203,6 +204,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
 
   /**
    * Retrieves a list of dependencies which have already been resolved.
+   *
    * @return a list of extensions.
    */
   @NonNull
@@ -237,6 +239,11 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     return Optional.ofNullable(this.ctx);
   }
 
+  /**
+   * Initializes the extension class loader along with all of its dependencies.
+   *
+   * @throws ExtensionContainerException when the container cannot be accessed.
+   */
   public void initialize() throws ExtensionContainerException {
     if (this.ctx != null) {
       return;
@@ -251,6 +258,12 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     this.phase = Phase.LOADED;
   }
 
+  /**
+   * Performs the extension startup sequence (e.g. initializes the context, registers services,
+   * etc).
+   *
+   * @param parentCtx a parent context from which the extension context will inherit.
+   */
   public void start(@NonNull ApplicationContext parentCtx) {
     if (this.ctx != null) {
       return;
@@ -262,10 +275,20 @@ public class ExtensionImpl implements AutoCloseable, Extension {
 
     // TODO: Register service registration beans
 
-    this.ctx.refresh();
-    this.ctx.start();
+    try {
+      this.ctx.refresh();
+      this.ctx.start();
+    } catch (Throwable ex) {
+      this.logger.error("Failed to perform clean startup", ex);
+      this.stop();
+    }
   }
 
+  /**
+   * <p>Performs a graceful shutdown of the extension.</p>
+   *
+   * <p>When the shutdown fails, it will be forced via garbage collection.</p>
+   */
   public void stop() {
     if (this.ctx == null) {
       return;
@@ -273,7 +296,11 @@ public class ExtensionImpl implements AutoCloseable, Extension {
 
     try {
       this.ctx.close();
+    } catch (Throwable ex) {
+      this.logger.error("Failed to perform graceful shutdown", ex);
     } finally {
+      // TODO: Remove all registrations with the server (and other extensions)
+
       this.ctx = null;
     }
   }
