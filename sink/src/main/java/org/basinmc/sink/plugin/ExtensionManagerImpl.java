@@ -49,6 +49,7 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
   private final ApplicationContext ctx;
   private final Path pluginDir;
 
+  // TODO: Given a copy on write list we won't need to sync as long as only one thread writes to this list
   private final Lock lock = new ReentrantLock();
   private final List<ExtensionImpl> extensions = new CopyOnWriteArrayList<>();
   private final List<Path> registrations = new CopyOnWriteArrayList<>(); // TODO: Probably won't need CopyOnWrite
