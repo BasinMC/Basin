@@ -171,6 +171,40 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     return Collections.emptyList(); // TODO
   }
 
+  /**
+   * Retrieves the location of the container in which this extension resides.
+   *
+   * @return a container file path.
+   */
+  @NonNull
+  // TODO: Expose this via the API definition
+  public Path getContainerPath() {
+    return this.containerPath;
+  }
+
+  /**
+   * Retrieves the file from which extension classes and resources are loaded.
+   *
+   * @return an archive file.
+   */
+  @NonNull
+  public JarFile getJarFile() {
+    return this.jarFile;
+  }
+
+  /**
+   * <p>Retrieves the context in which this extension is <strong>currently</strong> executed.</p>
+   *
+   * <p>If the plugin is not in the running phase, an empty optional will be returned instead as no
+   * context is present at the moment.</p>
+   *
+   * @return an application context.
+   */
+  @NonNull
+  public Optional<AnnotationConfigApplicationContext> getContext() {
+    return Optional.ofNullable(this.ctx);
+  }
+
   public void start(@NonNull ApplicationContext parentCtx) {
     if (this.ctx != null) {
       return;
