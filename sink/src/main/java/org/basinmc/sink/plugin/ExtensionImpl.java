@@ -280,6 +280,8 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     try {
       this.ctx.refresh();
       this.ctx.start();
+
+      this.phase = Phase.RUNNING;
     } catch (Throwable ex) {
       this.logger.error("Failed to perform clean startup", ex);
       this.stop();
