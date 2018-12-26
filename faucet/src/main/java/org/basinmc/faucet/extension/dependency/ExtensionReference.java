@@ -18,6 +18,7 @@ package org.basinmc.faucet.extension.dependency;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Objects;
+import org.basinmc.faucet.extension.Extension;
 
 /**
  * Represents a versioned reference to another extension.
@@ -43,6 +44,18 @@ public class ExtensionReference {
   @NonNull
   public String getVersion() {
     return this.version;
+  }
+
+  /**
+   * Evaluates whether this reference matches the indicated extension.
+   *
+   * @param extension an extension.
+   * @return true if extension matches, false otherwise.
+   */
+  public boolean matches(@NonNull Extension extension) {
+    // TODO: Semantic version ranges
+    return extension.getIdentifier().equalsIgnoreCase(this.identifier) && extension.getVersion()
+        .equalsIgnoreCase(this.version);
   }
 
   /**
