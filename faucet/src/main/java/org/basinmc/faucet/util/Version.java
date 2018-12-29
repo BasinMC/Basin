@@ -17,6 +17,7 @@
 package org.basinmc.faucet.util;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -48,6 +49,12 @@ public class Version implements Comparable<Version> {
       "^(([1-9][0-9]*)|0)\\.(([1-9][0-9]*)|0)\\.(([1-9][0-9]*)|0)(-([A-Z0-9-.]+))?(\\+([A-Z0-9-.]+))?$",
       Pattern.CASE_INSENSITIVE);
 
+  /**
+   * Represents the default version which may be substituted in cases where no specific version is
+   * expected.
+   */
+  public static final Version DEFAULT = new Version(0, 0, 0, null, null, Stability.UNKNOWN, 0);
+
   private final int major;
   private final int minor;
   private final int patch;
@@ -56,6 +63,23 @@ public class Version implements Comparable<Version> {
 
   private final Stability stability;
   private final int stabilityIndex;
+
+  private Version(
+      int major,
+      int minor,
+      int patch,
+      @Nullable String extra,
+      @Nullable String buildMetadata,
+      @NonNull Stability stability,
+      int stabilityIndex) {
+    this.major = major;
+    this.minor = minor;
+    this.patch = patch;
+    this.extra = extra;
+    this.buildMetadata = buildMetadata;
+    this.stability = stability;
+    this.stabilityIndex = stabilityIndex;
+  }
 
   public Version(@NonNull String version) {
     var matcher = PATTERN.matcher(version);
