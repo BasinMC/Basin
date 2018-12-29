@@ -17,6 +17,7 @@
 package org.basinmc.faucet.util;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -107,5 +108,18 @@ public class VersionRangeTest {
     assertFalse(range9.matches(version4));
     assertFalse(range9.matches(version5));
     assertFalse(range9.matches(version6));
+  }
+
+  @Test
+  public void testMalformed() {
+    assertThrows(IllegalArgumentException.class, () -> new VersionRange("(1.0.0)"));
+    assertThrows(IllegalArgumentException.class, () -> new VersionRange("(1.0.0]"));
+    assertThrows(IllegalArgumentException.class, () -> new VersionRange("[1.0.0)"));
+    assertThrows(IllegalArgumentException.class, () -> new VersionRange("[1.0.0]"));
+    assertThrows(IllegalArgumentException.class, () -> new VersionRange("1.0.0,2.0.0"));
+    assertThrows(IllegalArgumentException.class, () -> new VersionRange("1.0.0,2.0.0]"));
+    assertThrows(IllegalArgumentException.class, () -> new VersionRange("1.0.0,2.0.0)"));
+    assertThrows(IllegalArgumentException.class, () -> new VersionRange("[1.0.0,2.0.0"));
+    assertThrows(IllegalArgumentException.class, () -> new VersionRange("(1.0.0,2.0.0"));
   }
 }
