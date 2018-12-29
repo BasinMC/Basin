@@ -237,6 +237,21 @@ public class Version implements Comparable<Version> {
    * {@inheritDoc}
    */
   @Override
+  public String toString() {
+    var str = String.format("%d.%d.%d", this.major, this.minor, this.patch);
+    if (this.extra != null) {
+      str += "-" + this.extra;
+    }
+    if (this.buildMetadata != null) {
+      str += "+" + this.buildMetadata;
+    }
+    return str;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;

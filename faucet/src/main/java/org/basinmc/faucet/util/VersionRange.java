@@ -158,6 +158,39 @@ public class VersionRange {
     return true;
   }
 
+  @Override
+  public String toString() {
+    if (this.start == this.end) {
+      return this.start.toString();
+    }
+
+    var builder = new StringBuilder();
+    if (this.start != null) {
+      if (this.startInclusive) {
+        builder.append('[');
+      } else if (this.end != null) {
+        builder.append('(');
+      }
+
+      builder.append(this.start);
+    }
+    if (this.end != null) {
+      if (this.start != null) {
+        builder.append(',');
+      }
+
+      builder.append(this.end);
+
+      if (this.endInclusive) {
+        builder.append(']');
+      } else if (this.start != null) {
+        builder.append(')');
+      }
+    }
+
+    return builder.toString();
+  }
+
   /**
    * {@inheritDoc}
    */

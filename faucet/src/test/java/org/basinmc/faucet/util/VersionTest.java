@@ -151,4 +151,12 @@ public class VersionTest {
       }
     }
   }
+
+  @Test
+  public void testToString() {
+    assertEquals("1.0.0", new Version("1.0.0").toString());
+    assertEquals("1.0.1", new Version("1.0.1").toString());
+    assertEquals("1.1.0", new Version("1.1.0").toString());
+    assertEquals("2.0.0", new Version("2.0.0").toString());
+  }
 }
