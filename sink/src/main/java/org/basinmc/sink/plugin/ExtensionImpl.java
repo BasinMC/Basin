@@ -55,7 +55,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
   private final Version version;
 
   private Phase phase = Phase.REGISTERED;
-  private final List<ExtensionImpl> dependencies = new ArrayList<>();
+  private final List<ExtensionImpl> resolvedDependencies = new ArrayList<>();
   private ExtensionClassLoader classLoader;
   private AnnotationConfigApplicationContext ctx;
 
@@ -216,7 +216,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
    */
   @NonNull
   public List<ExtensionImpl> getResolvedDependencies() {
-    return Collections.unmodifiableList(this.dependencies);
+    return Collections.unmodifiableList(this.resolvedDependencies);
   }
 
   /**
@@ -244,6 +244,21 @@ public class ExtensionImpl implements AutoCloseable, Extension {
   @NonNull
   public Optional<AnnotationConfigApplicationContext> getContext() {
     return Optional.ofNullable(this.ctx);
+  }
+
+  /**
+   * Wires a dependency into this extension.
+   *
+   * @param extension an extension.
+   * @throws IllegalStateException when invoked outside of the resolve (e.g. {@link Phase#LOADED}
+   * phase).
+   */
+  public void wireDependency(@NonNull ExtensionImpl extension) {
+    if (this.phase != Phase.REGISTERED) {
+      throw new IllegalStateException("Cannot wire dependency in " + this.phase + " phase");
+    }
+
+    this.resolvedDependencies.add(extension);
   }
 
   /**
