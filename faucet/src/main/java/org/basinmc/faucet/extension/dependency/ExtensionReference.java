@@ -19,9 +19,10 @@ package org.basinmc.faucet.extension.dependency;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Objects;
 import org.basinmc.faucet.extension.Extension;
+import org.basinmc.faucet.util.VersionRange;
 
 /**
- * Represents a versioned reference to another extension.
+ * Represents a reference to one or more versions of a given extension.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  * @since 1.0
@@ -29,11 +30,11 @@ import org.basinmc.faucet.extension.Extension;
 public class ExtensionReference {
 
   private final String identifier;
-  private final String version;
+  private final VersionRange versionRange;
 
-  public ExtensionReference(@NonNull String identifier, @NonNull String version) {
+  public ExtensionReference(@NonNull String identifier, @NonNull VersionRange versionRange) {
     this.identifier = identifier;
-    this.version = version;
+    this.versionRange = versionRange;
   }
 
   @NonNull
@@ -42,8 +43,8 @@ public class ExtensionReference {
   }
 
   @NonNull
-  public String getVersion() {
-    return this.version;
+  public VersionRange getVersionRange() {
+    return this.versionRange;
   }
 
   /**
@@ -53,9 +54,8 @@ public class ExtensionReference {
    * @return true if extension matches, false otherwise.
    */
   public boolean matches(@NonNull Extension extension) {
-    // TODO: Semantic version ranges
-    return extension.getIdentifier().equalsIgnoreCase(this.identifier) && extension.getVersion()
-        .equalsIgnoreCase(this.version);
+    return extension.getIdentifier().equalsIgnoreCase(this.identifier) && this.versionRange
+        .matches(extension.getVersion());
   }
 
   /**
@@ -71,7 +71,7 @@ public class ExtensionReference {
     }
     ExtensionReference that = (ExtensionReference) o;
     return Objects.equals(this.identifier, that.identifier) &&
-        Objects.equals(this.version, that.version);
+        Objects.equals(this.versionRange, that.versionRange);
   }
 
   /**
@@ -79,6 +79,6 @@ public class ExtensionReference {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(this.identifier, this.version);
+    return Objects.hash(this.identifier, this.versionRange);
   }
 }

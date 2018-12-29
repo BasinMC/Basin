@@ -18,9 +18,10 @@ package org.basinmc.faucet.extension.dependency;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Objects;
+import org.basinmc.faucet.util.VersionRange;
 
 /**
- * Provides a reference to a service implementation.
+ * Represents a reference to one or more versions of a given service.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  * @since 1.0
@@ -28,11 +29,11 @@ import java.util.Objects;
 public class ServiceReference {
 
   private final String baseClassName;
-  private final String version;
+  private final VersionRange versionRange;
 
-  public ServiceReference(@NonNull String baseClassName, @NonNull String version) {
+  public ServiceReference(@NonNull String baseClassName, @NonNull VersionRange versionRange) {
     this.baseClassName = baseClassName;
-    this.version = version;
+    this.versionRange = versionRange;
   }
 
   @NonNull
@@ -41,8 +42,8 @@ public class ServiceReference {
   }
 
   @NonNull
-  public String getVersion() {
-    return this.version;
+  public VersionRange getVersionRange() {
+    return this.versionRange;
   }
 
   /**
@@ -58,7 +59,7 @@ public class ServiceReference {
     }
     ServiceReference that = (ServiceReference) o;
     return Objects.equals(this.baseClassName, that.baseClassName) &&
-        Objects.equals(this.version, that.version);
+        Objects.equals(this.versionRange, that.versionRange);
   }
 
   /**
@@ -66,6 +67,6 @@ public class ServiceReference {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(this.baseClassName, this.version);
+    return Objects.hash(this.baseClassName, this.versionRange);
   }
 }

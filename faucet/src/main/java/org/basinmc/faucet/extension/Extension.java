@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.basinmc.faucet.extension.dependency.ExtensionDependency;
 import org.basinmc.faucet.extension.dependency.ServiceDependency;
 import org.basinmc.faucet.extension.dependency.ServiceReference;
+import org.basinmc.faucet.util.Version;
 
 /**
  * Represents the metadata associated with a loaded or to-be-loaded extension.
@@ -74,7 +75,7 @@ public interface Extension {
    * @return a extension version.
    */
   @NonNull
-  String getVersion();
+  Version getVersion();
 
   /**
    * Retrieves the phase in which this extension currently resides.

@@ -36,6 +36,7 @@ import org.basinmc.faucet.extension.dependency.ServiceReference;
 import org.basinmc.faucet.extension.error.ExtensionContainerException;
 import org.basinmc.faucet.extension.error.ExtensionException;
 import org.basinmc.faucet.extension.error.ExtensionManifestException;
+import org.basinmc.faucet.util.Version;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -51,10 +52,10 @@ public class ExtensionImpl implements AutoCloseable, Extension {
   private final Logger logger;
 
   private final String identifier;
-  private final String version;
+  private final Version version;
 
   private Phase phase = Phase.REGISTERED;
-  private List<ExtensionImpl> dependencies = new ArrayList<>();
+  private final List<ExtensionImpl> dependencies = new ArrayList<>();
   private ExtensionClassLoader classLoader;
   private AnnotationConfigApplicationContext ctx;
 
@@ -68,13 +69,18 @@ public class ExtensionImpl implements AutoCloseable, Extension {
       var attrs = manifest.getMainAttributes();
 
       this.identifier = attrs.getValue(IDENTIFIER_HEADER);
-      this.version = attrs.getValue(VERSION_HEADER);
-
       if (this.identifier == null || this.identifier.isEmpty()) {
         throw new ExtensionManifestException("Missing extension identifier");
       }
-      if (this.version == null || this.version.isEmpty()) {
-        throw new ExtensionManifestException("Missing extension version");
+
+      try {
+        var version = attrs.getValue(VERSION_HEADER);
+        if (version == null) {
+          throw new ExtensionManifestException("Missing extension version");
+        }
+        this.version = new Version(version);
+      } catch (IllegalArgumentException | NullPointerException ex) {
+        throw new ExtensionManifestException("Illegal extension version", ex);
       }
 
       this.logger = LogManager.getFormatterLogger(this.identifier + "#" + this.version);
@@ -106,7 +112,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
    */
   @NonNull
   @Override
-  public String getVersion() {
+  public Version getVersion() {
     return this.version;
   }
 

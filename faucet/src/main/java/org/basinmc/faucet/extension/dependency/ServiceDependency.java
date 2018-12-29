@@ -17,8 +17,8 @@
 package org.basinmc.faucet.extension.dependency;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.Objects;
+import org.basinmc.faucet.util.VersionRange;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
@@ -28,9 +28,9 @@ public class ServiceDependency extends ServiceReference {
 
   private final boolean optional;
 
-  public ServiceDependency(@NonNull String baseClassName,
-      @Nullable String version, boolean optional) {
-    super(baseClassName, version);
+  public ServiceDependency(@NonNull String baseClassName, @NonNull VersionRange versionRange,
+      boolean optional) {
+    super(baseClassName, versionRange);
     this.optional = optional;
   }
 

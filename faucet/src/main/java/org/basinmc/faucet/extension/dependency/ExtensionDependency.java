@@ -17,8 +17,8 @@
 package org.basinmc.faucet.extension.dependency;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.Objects;
+import org.basinmc.faucet.util.VersionRange;
 
 /**
  * Represents a dependency to another extension.
@@ -30,9 +30,9 @@ public class ExtensionDependency extends ExtensionReference {
 
   private final boolean optional;
 
-  public ExtensionDependency(@NonNull String identifier,
-      @Nullable String version, boolean optional) {
-    super(identifier, version);
+  public ExtensionDependency(@NonNull String identifier, @NonNull VersionRange versionRange,
+      boolean optional) {
+    super(identifier, versionRange);
     this.optional = optional;
   }
 
