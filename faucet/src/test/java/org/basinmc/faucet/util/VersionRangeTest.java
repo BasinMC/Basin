@@ -29,10 +29,14 @@ public class VersionRangeTest {
   @Test
   public void testMatch() {
     var range1 = new VersionRange("1.0.0");
-    var range2 = new VersionRange("(1.0.0,2.0.0]");
-    var range3 = new VersionRange("[1.0.0,2.0.0)");
-    var range4 = new VersionRange("[1.0.0,2.0.0]");
-    var range5 = new VersionRange("(1.0.0,2.0.0)");
+    var range2 = new VersionRange("(1.0.0");
+    var range3 = new VersionRange("[1.0.0");
+    var range4 = new VersionRange("1.0.0)");
+    var range5 = new VersionRange("1.0.0]");
+    var range6 = new VersionRange("(1.0.0,2.0.0]");
+    var range7 = new VersionRange("[1.0.0,2.0.0)");
+    var range8 = new VersionRange("[1.0.0,2.0.0]");
+    var range9 = new VersionRange("(1.0.0,2.0.0)");
 
     var version1 = new Version("0.9.0");
     var version2 = new Version("1.0.0");
@@ -52,28 +56,56 @@ public class VersionRangeTest {
     assertFalse(range2.matches(version2));
     assertTrue(range2.matches(version3));
     assertTrue(range2.matches(version4));
-    assertFalse(range2.matches(version5));
-    assertFalse(range2.matches(version6));
+    assertTrue(range2.matches(version5));
+    assertTrue(range2.matches(version6));
 
     assertFalse(range3.matches(version1));
     assertTrue(range3.matches(version2));
     assertTrue(range3.matches(version3));
-    assertFalse(range3.matches(version4));
-    assertFalse(range3.matches(version5));
-    assertFalse(range3.matches(version6));
+    assertTrue(range3.matches(version4));
+    assertTrue(range3.matches(version5));
+    assertTrue(range3.matches(version6));
 
-    assertFalse(range4.matches(version1));
-    assertTrue(range4.matches(version2));
-    assertTrue(range4.matches(version3));
-    assertTrue(range4.matches(version4));
+    assertTrue(range4.matches(version1));
+    assertFalse(range4.matches(version2));
+    assertFalse(range4.matches(version3));
+    assertFalse(range4.matches(version4));
     assertFalse(range4.matches(version5));
     assertFalse(range4.matches(version6));
 
-    assertFalse(range5.matches(version1));
-    assertFalse(range5.matches(version2));
-    assertTrue(range5.matches(version3));
+    assertTrue(range5.matches(version1));
+    assertTrue(range5.matches(version2));
+    assertFalse(range5.matches(version3));
     assertFalse(range5.matches(version4));
     assertFalse(range5.matches(version5));
     assertFalse(range5.matches(version6));
+
+    assertFalse(range6.matches(version1));
+    assertFalse(range6.matches(version2));
+    assertTrue(range6.matches(version3));
+    assertTrue(range6.matches(version4));
+    assertFalse(range6.matches(version5));
+    assertFalse(range6.matches(version6));
+
+    assertFalse(range7.matches(version1));
+    assertTrue(range7.matches(version2));
+    assertTrue(range7.matches(version3));
+    assertFalse(range7.matches(version4));
+    assertFalse(range7.matches(version5));
+    assertFalse(range7.matches(version6));
+
+    assertFalse(range8.matches(version1));
+    assertTrue(range8.matches(version2));
+    assertTrue(range8.matches(version3));
+    assertTrue(range8.matches(version4));
+    assertFalse(range8.matches(version5));
+    assertFalse(range8.matches(version6));
+
+    assertFalse(range9.matches(version1));
+    assertFalse(range9.matches(version2));
+    assertTrue(range9.matches(version3));
+    assertFalse(range9.matches(version4));
+    assertFalse(range9.matches(version5));
+    assertFalse(range9.matches(version6));
   }
 }
