@@ -45,7 +45,8 @@ import java.util.Objects;
  *
  * <p>Note that none or only one prefix may be present when only a single version is specified
  * (e.g. {@code 1.0.0}, {@code (1.0.0} and {@code 1.0.0)} are valid while {@code (1.0.0]} is
- * considered invalid).</p>
+ * considered invalid). When two versions are given, both prefixes must be present at the same time
+ * to specify the bounds.</p>
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  * @since 1.0
@@ -126,6 +127,9 @@ public class VersionRange {
       } else if (validSuffix) {
         start = null;
       }
+    } else if (!validPrefix || !validSuffix) {
+      throw new IllegalArgumentException(
+          "Illegal range: \"" + range + "\" must specify upper and lower bound");
     }
 
     this.start = start;
