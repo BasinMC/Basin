@@ -79,7 +79,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
           throw new ExtensionManifestException("Missing extension version");
         }
         this.version = new Version(version);
-      } catch (IllegalArgumentException | NullPointerException ex) {
+      } catch (IllegalArgumentException ex) {
         throw new ExtensionManifestException("Illegal extension version", ex);
       }
 
