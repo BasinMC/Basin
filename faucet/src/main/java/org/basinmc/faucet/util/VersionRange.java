@@ -20,67 +20,119 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Objects;
 
 /**
+ * <p>Represents a range which may match one or multiple versions.</p>
+ *
+ * <p>Each range may consist of one or two versions in the format of {@code
+ * &lt;version&gt;[,&lt;version&gt;]} as well as a prefix and/or suffix which expresses whether a
+ * given version is included or excluded from the range. Where:</p>
+ *
+ * <ul>
+ * <li>{@code [} and {@code ]} indicate that the start or end of the range is to be included</li>
+ * <li>{@code (} and {@code )} indicate that the start or end of the range is to be excluded</li>
+ * </ul>
+ *
+ * <p>As such:</p>
+ *
+ * <ul>
+ * <li>{@code 1.0.0} includes 1.0.0</li>
+ * <li>{@code [1.0.0} includes all versions newer than or equal to 1.0.0</li>
+ * <li>{@code (1.0.0} includes all versions newer than 1.0.0</li>
+ * <li>{@code 1.0.0]} includes all versions older than or equal to 1.0.0</li>
+ * <li>{@code 1.0.0)} includes all versions older than 1.0.0</li>
+ * <li>{@code [1.0.0,2.0.0)} includes all versions newer than or equal to 1.0.0 up to (excluding)
+ * 2.0.0</li>
+ * </ul>
+ *
+ * <p>Note that none or only one prefix may be present when only a single version is specified
+ * (e.g. {@code 1.0.0}, {@code (1.0.0} and {@code 1.0.0)} are valid while {@code (1.0.0]} is
+ * considered invalid).</p>
+ *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  * @since 1.0
  */
 public class VersionRange {
+
+  private static final String PREFIX_CHARS = "([";
+  private static final String SUFFIX_CHARS = "])";
 
   private final Version start;
   private final boolean startInclusive;
   private final Version end;
   private final boolean endInclusive;
 
+  /**
+   * Parses a version range from its string representation.
+   *
+   * @param range an arbitrary range string.
+   * @throws IllegalArgumentException when the specified range is partially or entirely invalid.
+   */
   public VersionRange(@NonNull String range) {
-    var elements = range.split(",");
-    if (elements.length > 2) {
-      throw new IllegalArgumentException("Malformed version range: " + range);
+    var startString = range;
+    var endString = range;
+
+    var i = range.indexOf(',');
+    if (i != -1) {
+      startString = range.substring(0, i);
+      endString = range.substring(i + 1);
     }
 
-    var firstElement = elements[0];
-    var lastElement = elements[elements.length - 1];
+    char prefix = startString.charAt(0);
+    char suffix = endString.charAt(endString.length() - 1);
 
-    var prefix = firstElement.charAt(0);
-    var suffix = lastElement.charAt(lastElement.length() - 1);
+    boolean validPrefix = PREFIX_CHARS.indexOf(prefix) != -1;
+    boolean validSuffix = SUFFIX_CHARS.indexOf(suffix) != -1;
 
-    if (prefix == '[' || prefix == '(') {
-      firstElement = firstElement.substring(1);
+    if (validPrefix) {
+      startString = startString.substring(1);
     }
-    if (suffix == ']' || suffix == ')') {
-      lastElement = lastElement.substring(0, lastElement.length() - 1);
+    if (validSuffix) {
+      endString = endString.substring(0, endString.length() - 1);
     }
 
-    if (elements.length == 2) {
-      if (prefix != '[' && prefix != '(') {
-        throw new IllegalArgumentException(
-            "Illegal range parameters: Expected either ( or [ prefix");
+    if (i == -1) {
+      if (validSuffix) {
+        startString = startString.substring(0, startString.length() - 1);
       }
-      if (suffix != ']' && suffix != ')') {
-        throw new IllegalArgumentException(
-            "Illegal range parameters: Expected either ) or ] suffix");
+      if (validPrefix) {
+        endString = endString.substring(1);
       }
-
-      this.startInclusive = prefix == '[';
-      this.endInclusive = suffix == ']';
-    } else {
-      this.startInclusive = prefix != '(';
-      this.endInclusive = suffix != ')';
     }
 
+    Version start;
+    Version end;
     try {
-      this.start = new Version(firstElement);
+      start = new Version(startString);
     } catch (IllegalArgumentException ex) {
-      throw new IllegalArgumentException("Illegal start of range: " + firstElement, ex);
+      throw new IllegalArgumentException("Illegal range start: " + startString, ex);
+    }
+    if (i != -1) {
+      try {
+        end = new Version(endString);
+      } catch (IllegalArgumentException ex) {
+        throw new IllegalArgumentException("Illegal range end: " + endString, ex);
+      }
+    } else {
+      end = start;
     }
 
-    if (elements.length == 1) {
-      this.end = this.start;
-    } else {
-      try {
-        this.end = new Version(lastElement);
-      } catch (IllegalArgumentException ex) {
-        throw new IllegalArgumentException("Illegal end of range: " + lastElement, ex);
+    if (i == -1) {
+      if (validPrefix && validSuffix) {
+        throw new IllegalArgumentException(
+            "Illegal range: \"" + range + "\" specifies upper and lower bound with single version");
+      }
+
+      if (validPrefix) {
+        end = null;
+      } else if (validSuffix) {
+        start = null;
       }
     }
+
+    this.start = start;
+    this.end = end;
+    this.startInclusive =
+        (i == -1 && !validPrefix && !validSuffix) || (validPrefix && prefix == '[');
+    this.endInclusive = (i == -1 && !validPrefix && !validSuffix) || (validSuffix && suffix == ']');
   }
 
   /**
@@ -90,9 +142,16 @@ public class VersionRange {
    * @return true if within range, false otherwise.
    */
   public boolean matches(@NonNull Version version) {
-    return (version.isNewerThan(this.start) && version.isOlderThan(this.end)) || (
-        version.equals(this.start) && this.startInclusive) || (version.equals(this.end)
-        && this.endInclusive);
+    if (this.start != null && (this.start.isNewerThan(version) || (!this.startInclusive
+        && this.start.equals(version)))) {
+      return false;
+    }
+    if (this.end != null && (this.end.isOlderThan(version) || (!this.endInclusive && this.end
+        .equals(version)))) {
+      return false;
+    }
+
+    return true;
   }
 
   /**
