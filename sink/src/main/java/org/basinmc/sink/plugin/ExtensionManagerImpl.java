@@ -153,7 +153,8 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
             e.initialize();
           } catch (Throwable ex) {
             logger
-                .warn("Failed to start extension " + e.getIdentifier() + "#" + e.getVersion(), ex);
+                .warn("Failed to start extension " + e.getManifest().getIdentifier() + "#" + e
+                    .getManifest().getVersion(), ex);
             e.stop(); // ensure context is destroyed
           }
         });
