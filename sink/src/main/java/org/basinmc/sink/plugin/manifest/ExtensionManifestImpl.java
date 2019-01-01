@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import org.basinmc.faucet.extension.dependency.ExtensionDependency;
 import org.basinmc.faucet.extension.dependency.ServiceDependency;
 import org.basinmc.faucet.extension.dependency.ServiceVersion;
@@ -65,6 +66,7 @@ public class ExtensionManifestImpl implements ExtensionManifest {
 
     BufferUtil.readList(buffer, () -> this.authors, ExtensionAuthorImpl::new);
     BufferUtil.readList(buffer, () -> this.contributors, ExtensionAuthorImpl::new);
+
     BufferUtil.readList(buffer, () -> this.services, (buf) -> {
       var identifier = BufferUtil.readString(buf)
           .orElseThrow(() -> new IllegalArgumentException("Service must define identifier"));
@@ -74,26 +76,17 @@ public class ExtensionManifestImpl implements ExtensionManifest {
 
       return new ServiceVersion(identifier, version);
     });
-    BufferUtil.readList(buffer, () -> this.extensionDependencies, (buf) -> {
-      var identifier = BufferUtil.readString(buf)
-          .orElseThrow(() -> new IllegalArgumentException("Dependency must define identifier"));
-      var version = BufferUtil.readString(buf)
-          .map(VersionRange::new)
-          .orElseThrow(() -> new IllegalArgumentException("Dependency must define version range"));
-      var optional = buf.readBoolean(); // TODO: Replace with bitmask
 
-      return new ExtensionDependency(identifier, version, optional);
-    });
-    BufferUtil.readList(buffer, () -> this.serviceDependencies, (buf) -> {
-      var identifier = BufferUtil.readString(buf)
-          .orElseThrow(() -> new IllegalArgumentException("Dependency must define identifier"));
-      var version = BufferUtil.readString(buf)
-          .map(VersionRange::new)
-          .orElseThrow(() -> new IllegalArgumentException("Dependency must define version range"));
-      var optional = buf.readBoolean(); // TODO: Replace with bitmask
-
-      return new ServiceDependency(identifier, version, optional);
-    });
+    BufferUtil.readList(
+        buffer,
+        () -> this.extensionDependencies,
+        readDependency(ExtensionDependency::new)
+    );
+    BufferUtil.readList(
+        buffer,
+        () -> this.serviceDependencies,
+        readDependency(ServiceDependency::new)
+    );
   }
 
   public ExtensionManifestImpl(
@@ -113,6 +106,20 @@ public class ExtensionManifestImpl implements ExtensionManifest {
     this.serviceDependencies.addAll(serviceDependencies);
     this.authors.addAll(authors);
     this.contributors.addAll(contributors);
+  }
+
+  @NonNull
+  private static <D> Function<ByteBuf, D> readDependency(@NonNull DependencyFactory<D> factory) {
+    return (in) -> {
+      var identifier = BufferUtil.readString(in)
+          .orElseThrow(() -> new IllegalArgumentException("Dependency must define identifier"));
+      var version = BufferUtil.readString(in)
+          .map(VersionRange::new)
+          .orElseThrow(() -> new IllegalArgumentException("Dependency must define version range"));
+      var optional = in.readBoolean(); // TODO: Replace with bitmask
+
+      return factory.create(identifier, version, optional);
+    };
   }
 
   /**
@@ -227,5 +234,12 @@ public class ExtensionManifestImpl implements ExtensionManifest {
   @Override
   public int hashCode() {
     return Objects.hash(this.identifier, this.version);
+  }
+
+  @FunctionalInterface
+  private interface DependencyFactory<D> {
+
+    @NonNull
+    D create(@NonNull String identifier, @NonNull VersionRange version, boolean optional);
   }
 }
