@@ -22,10 +22,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import io.netty.buffer.ByteBuf;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 import org.basinmc.faucet.extension.manifest.ExtensionAuthor;
+import org.basinmc.sink.util.BufferUtil;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
@@ -34,6 +36,19 @@ public class ExtensionAuthorImpl implements ExtensionAuthor {
 
   private final String name;
   private final String alias;
+
+  /**
+   * Decodes an extension author from its binary representation.
+   *
+   * @param in an input buffer.
+   * @throws IllegalArgumentException when the buffer contains illegal data.
+   */
+  public ExtensionAuthorImpl(@NonNull ByteBuf in) {
+    this.name = BufferUtil.readString(in)
+        .orElseThrow(() -> new IllegalArgumentException("Author must specify name"));
+    this.alias = BufferUtil.readString(in)
+        .orElse(null);
+  }
 
   public ExtensionAuthorImpl(@NonNull String name, @Nullable String alias) {
     this.name = name;

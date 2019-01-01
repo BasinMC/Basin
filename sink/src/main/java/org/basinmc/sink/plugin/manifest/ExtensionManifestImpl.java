@@ -27,7 +27,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 import org.basinmc.faucet.extension.dependency.ExtensionDependency;
 import org.basinmc.faucet.extension.dependency.ServiceDependency;
 import org.basinmc.faucet.extension.dependency.ServiceVersion;
@@ -64,17 +63,8 @@ public class ExtensionManifestImpl implements ExtensionManifest {
     this.distributionId = BufferUtil.readUUID(buffer)
         .orElse(null);
 
-    Function<ByteBuf, ExtensionAuthorImpl> authorDecoder = (buf) -> {
-      var name = BufferUtil.readString(buf)
-          .orElseThrow(() -> new IllegalArgumentException("Author must specify name"));
-      var alias = BufferUtil.readString(buf)
-          .orElse(null);
-
-      return new ExtensionAuthorImpl(name, alias);
-    };
-
-    BufferUtil.readList(buffer, () -> this.authors, authorDecoder);
-    BufferUtil.readList(buffer, () -> this.contributors, authorDecoder);
+    BufferUtil.readList(buffer, () -> this.authors, ExtensionAuthorImpl::new);
+    BufferUtil.readList(buffer, () -> this.contributors, ExtensionAuthorImpl::new);
     BufferUtil.readList(buffer, () -> this.services, (buf) -> {
       var identifier = BufferUtil.readString(buf)
           .orElseThrow(() -> new IllegalArgumentException("Service must define identifier"));
