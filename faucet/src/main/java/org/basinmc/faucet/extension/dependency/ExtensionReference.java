@@ -18,7 +18,7 @@ package org.basinmc.faucet.extension.dependency;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Objects;
-import org.basinmc.faucet.extension.Extension;
+import org.basinmc.faucet.extension.manifest.ExtensionManifest;
 import org.basinmc.faucet.util.VersionRange;
 
 /**
@@ -50,12 +50,12 @@ public class ExtensionReference {
   /**
    * Evaluates whether this reference matches the indicated extension.
    *
-   * @param extension an extension.
+   * @param manifest an extension.
    * @return true if extension matches, false otherwise.
    */
-  public boolean matches(@NonNull Extension extension) {
-    return extension.getIdentifier().equalsIgnoreCase(this.identifier) && this.versionRange
-        .matches(extension.getVersion());
+  public boolean matches(@NonNull ExtensionManifest manifest) {
+    return manifest.getIdentifier().equalsIgnoreCase(this.identifier) && this.versionRange
+        .matches(manifest.getVersion());
   }
 
   /**
