@@ -88,7 +88,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
         throw new ExtensionManifestException(
             "Malformed extension header: Metadata exceeds " + Integer.MAX_VALUE + " bytes");
       }
-      var manifestBuffer = ByteBuffer.allocate((int) header.getManifestLength());
+      var manifestBuffer = ByteBuffer.allocate((int) this.header.getManifestLength());
       channel.read(manifestBuffer);
       manifestBuffer.flip();
 
