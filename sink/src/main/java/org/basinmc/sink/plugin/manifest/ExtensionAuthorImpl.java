@@ -21,6 +21,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class ExtensionAuthorImpl implements ExtensionAuthor {
   private final String name;
   private final String alias;
 
-  public ExtensionAuthorImpl(String name, String alias) {
+  public ExtensionAuthorImpl(@NonNull String name, @Nullable String alias) {
     this.name = name;
     this.alias = alias;
   }
