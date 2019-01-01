@@ -55,6 +55,7 @@ public class ExtensionManifestImpl implements ExtensionManifest {
   private ExtensionManifestImpl(@NonNull ByteBuf buffer) throws ExtensionManifestException {
     BufferUtil.checkMagicValue(buffer, MAGIC_NUMBER,
         () -> new ExtensionManifestException("Illegal extension header"));
+    // TODO: Header version byte
 
     this.identifier = BufferUtil.readString(buffer)
         .orElseThrow(() -> new ExtensionManifestException("Identifier must be specified"));
