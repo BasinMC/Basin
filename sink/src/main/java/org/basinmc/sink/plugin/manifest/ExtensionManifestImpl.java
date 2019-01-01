@@ -33,6 +33,7 @@ import org.basinmc.faucet.extension.dependency.ServiceDependency;
 import org.basinmc.faucet.extension.dependency.ServiceVersion;
 import org.basinmc.faucet.extension.error.ExtensionManifestException;
 import org.basinmc.faucet.extension.manifest.ExtensionAuthor;
+import org.basinmc.faucet.extension.manifest.ExtensionFlags;
 import org.basinmc.faucet.extension.manifest.ExtensionManifest;
 import org.basinmc.faucet.util.Version;
 import org.basinmc.faucet.util.VersionRange;
@@ -42,6 +43,9 @@ import org.basinmc.sink.util.BufferUtil;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public class ExtensionManifestImpl implements ExtensionManifest {
+
+  private final short formatVersion;
+  private final ExtensionFlags flags;
 
   private final String identifier;
   private final Version version;
@@ -53,6 +57,12 @@ public class ExtensionManifestImpl implements ExtensionManifest {
   private final List<ServiceDependency> serviceDependencies = new ArrayList<>();
 
   public ExtensionManifestImpl(@NonNull ByteBuf buffer) throws ExtensionManifestException {
+    this.formatVersion = buffer.readUnsignedByte();
+    if (this.formatVersion != 0) {
+      throw new ExtensionManifestException("Unsupported format version: " + this.formatVersion);
+    }
+    this.flags = new ExtensionFlags(buffer.readUnsignedShort());
+
     this.identifier = BufferUtil.readString(buffer)
         .orElseThrow(() -> new ExtensionManifestException("Identifier must be specified"));
     this.version = BufferUtil.readString(buffer)
@@ -87,6 +97,8 @@ public class ExtensionManifestImpl implements ExtensionManifest {
   }
 
   public ExtensionManifestImpl(
+      short formatVersion,
+      @NonNull ExtensionFlags flags,
       @NonNull String identifier,
       @NonNull Version version,
       @Nullable UUID distributionId,
@@ -95,6 +107,8 @@ public class ExtensionManifestImpl implements ExtensionManifest {
       @NonNull Collection<ServiceVersion> services,
       @NonNull Collection<ExtensionDependency> extensionDependencies,
       @NonNull Collection<ServiceDependency> serviceDependencies) {
+    this.formatVersion = formatVersion;
+    this.flags = flags;
     this.identifier = identifier;
     this.version = version;
     this.distributionId = distributionId;
@@ -117,6 +131,23 @@ public class ExtensionManifestImpl implements ExtensionManifest {
 
       return factory.create(identifier, version, optional);
     };
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getFormatVersion() {
+    return this.formatVersion;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @NonNull
+  @Override
+  public ExtensionFlags getFlags() {
+    return this.flags;
   }
 
   /**

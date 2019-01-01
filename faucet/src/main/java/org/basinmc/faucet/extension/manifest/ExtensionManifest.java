@@ -40,6 +40,24 @@ public interface ExtensionManifest {
   int MAGIC_NUMBER = 0x0DEBAC1E;
 
   /**
+   * <p>Retrieves the manifest format version.</p>
+   *
+   * <p>In cases where multiple revisions are supported by the server implementation, this value
+   * may be useful in providing fallback functionality where necessary.</p>
+   *
+   * @return a manifest version.
+   */
+  int getFormatVersion();
+
+  /**
+   * Retrieves a list of set extension flags.
+   *
+   * @return a list of flags.
+   */
+  @NonNull
+  ExtensionFlags getFlags();
+
+  /**
    * <p>Retrieves the globally unique identification for this extension.</p>
    *
    * <p>This value is used to refer to this extension within manifests (for instance, when a
