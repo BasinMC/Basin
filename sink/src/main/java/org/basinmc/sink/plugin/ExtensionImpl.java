@@ -17,26 +17,26 @@
 package org.basinmc.sink.plugin;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.jar.JarFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.extension.Extension;
-import org.basinmc.faucet.extension.dependency.ExtensionDependency;
-import org.basinmc.faucet.extension.dependency.ServiceDependency;
-import org.basinmc.faucet.extension.dependency.ServiceReference;
+import org.basinmc.faucet.extension.error.ExtensionAccessException;
 import org.basinmc.faucet.extension.error.ExtensionContainerException;
 import org.basinmc.faucet.extension.error.ExtensionException;
 import org.basinmc.faucet.extension.error.ExtensionManifestException;
-import org.basinmc.faucet.util.Version;
+import org.basinmc.sink.plugin.manifest.ExtensionHeader;
+import org.basinmc.sink.plugin.manifest.ExtensionManifestImpl;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -48,11 +48,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class ExtensionImpl implements AutoCloseable, Extension {
 
   private final Path containerPath;
-  private final JarFile jarFile;
   private final Logger logger;
 
-  private final String identifier;
-  private final Version version;
+  private final ExtensionHeader header;
+  private final ExtensionManifestImpl manifest;
 
   private Phase phase = Phase.REGISTERED;
   private final List<ExtensionImpl> resolvedDependencies = new ArrayList<>();
@@ -62,31 +61,63 @@ public class ExtensionImpl implements AutoCloseable, Extension {
   ExtensionImpl(@NonNull Path containerPath) throws ExtensionException {
     this.containerPath = containerPath;
 
-    try {
-      this.jarFile = new JarFile(containerPath.toFile());
-
-      var manifest = this.jarFile.getManifest();
-      var attrs = manifest.getMainAttributes();
-
-      this.identifier = attrs.getValue(IDENTIFIER_HEADER);
-      if (this.identifier == null || this.identifier.isEmpty()) {
-        throw new ExtensionManifestException("Missing extension identifier");
+    try (var channel = FileChannel.open(containerPath, StandardOpenOption.READ)) {
+      if (channel.size() < ExtensionHeader.LENGTH) {
+        throw new ExtensionManifestException(
+            "Missing or malformed extension header: Expected " + ExtensionHeader.LENGTH
+                + " bytes but got " + channel.size());
       }
 
-      try {
-        var version = attrs.getValue(VERSION_HEADER);
-        if (version == null) {
-          throw new ExtensionManifestException("Missing extension version");
-        }
-        this.version = new Version(version);
-      } catch (IllegalArgumentException ex) {
-        throw new ExtensionManifestException("Illegal extension version", ex);
+      var headerBuffer = ByteBuffer.allocate(ExtensionHeader.LENGTH);
+      channel.read(headerBuffer);
+      headerBuffer.flip();
+
+      this.header = new ExtensionHeader(Unpooled.wrappedBuffer(headerBuffer));
+
+      if (this.header.getSignatureLength() != 0) {
+        // TODO
+        throw new UnsupportedOperationException("Extension signature not yet supported");
       }
 
-      this.logger = LogManager.getFormatterLogger(this.identifier + "#" + this.version);
+      if (this.header.getManifestLength() == 0) {
+        throw new ExtensionManifestException(
+            "Malformed extension header: Metadata must be present");
+      }
+      // TODO: Set reasonable size bounds
+      if (this.header.getManifestLength() > Integer.MAX_VALUE) {
+        throw new ExtensionManifestException(
+            "Malformed extension header: Metadata exceeds " + Integer.MAX_VALUE + " bytes");
+      }
+      var manifestBuffer = ByteBuffer.allocate((int) header.getManifestLength());
+      channel.read(manifestBuffer);
+      manifestBuffer.flip();
+
+      this.manifest = new ExtensionManifestImpl(Unpooled.wrappedBuffer(manifestBuffer));
     } catch (IOException ex) {
-      throw new ExtensionManifestException("Cannot access extension manifest", ex);
+      throw new ExtensionAccessException("Cannot read container file", ex);
     }
+
+    this.logger = LogManager.getFormatterLogger(this.manifest.getDisplayName());
+  }
+
+  /**
+   * Retrieves the path to the container file from which this extension definition originates.
+   *
+   * @return a container file path.
+   */
+  @NonNull
+  public Path getContainerPath() {
+    return this.containerPath;
+  }
+
+  /**
+   * Retrieves the container header.
+   *
+   * @return a container header.
+   */
+  @NonNull
+  public ExtensionHeader getHeader() {
+    return this.header;
   }
 
   /**
@@ -94,26 +125,8 @@ public class ExtensionImpl implements AutoCloseable, Extension {
    */
   @NonNull
   @Override
-  public Optional<UUID> getDistributionId() {
-    return Optional.empty(); // TODO: Unsupported atm
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @NonNull
-  @Override
-  public String getIdentifier() {
-    return this.identifier;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @NonNull
-  @Override
-  public Version getVersion() {
-    return this.version;
+  public ExtensionManifestImpl getManifest() {
+    return this.manifest;
   }
 
   /**
@@ -123,90 +136,6 @@ public class ExtensionImpl implements AutoCloseable, Extension {
   @Override
   public Phase getPhase() {
     return this.phase;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @NonNull
-  @Override
-  public List<ServiceReference> getServices() {
-    return Collections.emptyList(); // TODO: Scan and expose services
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @NonNull
-  @Override
-  public List<ExtensionDependency> getDependencies() {
-    return Collections.emptyList(); // TODO: Parse dependencies
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @NonNull
-  @Override
-  public List<ServiceDependency> getServiceDependencies() {
-    return Collections.emptyList(); // TODO: Discover service dependencies
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @NonNull
-  @Override
-  public String getDisplayName() {
-    return this.getDisplayName(Locale.getDefault()); // TODO: Locale setting?
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @NonNull
-  @Override
-  public String getDisplayName(@NonNull Locale locale) {
-    return ""; // TODO
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @NonNull
-  @Override
-  public List<String> getAuthors() {
-    return Collections.emptyList(); // TODO
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @NonNull
-  @Override
-  public List<String> getContributors() {
-    return Collections.emptyList(); // TODO
-  }
-
-  /**
-   * Retrieves the location of the container in which this extension resides.
-   *
-   * @return a container file path.
-   */
-  @NonNull
-  // TODO: Expose this via the API definition
-  public Path getContainerPath() {
-    return this.containerPath;
-  }
-
-  /**
-   * Retrieves the file from which extension classes and resources are loaded.
-   *
-   * @return an archive file.
-   */
-  @NonNull
-  public JarFile getJarFile() {
-    return this.jarFile;
   }
 
   /**
@@ -323,11 +252,16 @@ public class ExtensionImpl implements AutoCloseable, Extension {
       this.ctx.close();
     } catch (Throwable ex) {
       this.logger.error("Failed to perform graceful shutdown", ex);
-    } finally {
-      // TODO: Remove all registrations with the server (and other extensions)
-
-      this.ctx = null;
     }
+    // TODO: Remove all registrations with the server (and other extensions)
+    this.ctx = null;
+
+    try {
+      this.classLoader.close();
+    } catch (Throwable ex) {
+      this.logger.error("Failed to close extension classloader", ex);
+    }
+    this.classLoader = null;
   }
 
   /**
@@ -335,10 +269,6 @@ public class ExtensionImpl implements AutoCloseable, Extension {
    */
   @Override
   public void close() throws IOException {
-    try {
-      this.stop();
-    } finally {
-      this.jarFile.close();
-    }
+    this.stop();
   }
 }

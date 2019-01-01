@@ -17,14 +17,7 @@
 package org.basinmc.faucet.extension;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
-import org.basinmc.faucet.extension.dependency.ExtensionDependency;
-import org.basinmc.faucet.extension.dependency.ServiceDependency;
-import org.basinmc.faucet.extension.dependency.ServiceReference;
-import org.basinmc.faucet.util.Version;
+import org.basinmc.faucet.extension.manifest.ExtensionManifest;
 
 /**
  * Represents the metadata associated with a loaded or to-be-loaded extension.
@@ -34,48 +27,13 @@ import org.basinmc.faucet.util.Version;
  */
 public interface Extension {
 
-  String IDENTIFIER_HEADER = "Basin-Extension-Id";
-  String VERSION_HEADER = "Basin-Extension-Version";
-
   /**
-   * <p>Retrieves the distribution network identifier for this extension.</p>
+   * Retrieves the extension manifest.
    *
-   * <p>This value is used for auto-update and auto-download purposes and may be left empty when
-   * the extension is not available via the distribution network.</p>
-   *
-   * @return a distribution identifier or an empty optional.
+   * @return a manifest.
    */
   @NonNull
-  Optional<UUID> getDistributionId();
-
-  /**
-   * <p>Retrieves the globally unique identification for this extension.</p>
-   *
-   * <p>This value is used to refer to this extension within manifests (for instance, when a
-   * dependency is declared) and is expected to be globally unique (e.g. may only ever exist once
-   * within the extension ecosystem).</p>
-   *
-   * <p>The expected format for this particular field is equal to the Java package format (as
-   * outlined in the Java specification and Oracle Code Style). For instance: {@code
-   * org.example.project.extension}</p>
-   *
-   * @return a unique extension identifier.
-   */
-  @NonNull
-  String getIdentifier();
-
-  /**
-   * <p>Retrieves a human readable (yet machine parsable) representation of the extension's version
-   * number.</p>
-   *
-   * <p>This value is expected to follow the <a href="https://semver.org">Semantic Versioning</a>
-   * specification in order to permit automatic dependency resolving based on compatibility (e.g.
-   * evaluate whether an alternative version is expected to be API compatible).</p>
-   *
-   * @return a extension version.
-   */
-  @NonNull
-  Version getVersion();
+  ExtensionManifest getManifest();
 
   /**
    * Retrieves the phase in which this extension currently resides.
@@ -84,77 +42,6 @@ public interface Extension {
    */
   @NonNull
   Phase getPhase();
-
-  /**
-   * Retrieves a list of services which are provided by this extension and are made available to
-   * plugins which wish to consume them.
-   *
-   * @return a list of provided services and their versions.
-   */
-  @NonNull
-  List<ServiceReference> getServices();
-
-  /**
-   * Retrieves a list of extension level dependencies which are required to be present in order to
-   * permit extension loading or alter the extension loading order if present.
-   *
-   * @return a list of dependencies.
-   */
-  @NonNull
-  List<ExtensionDependency> getDependencies();
-
-  /**
-   * Retrieves a list of services which are required to be present in order to permit extension loading
-   * or alter the extension loading order if present.
-   *
-   * @return a list of service dependencies.
-   */
-  @NonNull
-  List<ServiceDependency> getServiceDependencies();
-
-  /**
-   * <p>Retrieves a human readable name for this extension.</p>
-   *
-   * <p>This method behaves the same way as {@link #getDisplayName(Locale)} but will always choose
-   * the current server locale as its display locale.</p>
-   *
-   * @return a display name.
-   * @see #getDisplayName(Locale)
-   */
-  @NonNull
-  String getDisplayName();
-
-  /**
-   * <p>Retrieves a human readable name for this extension (e.g. a project name or summary of the
-   * provided functionality).</p>
-   *
-   * <p>This value may be localized by the extension author in order to make their plugins more
-   * accessible.</p>
-   *
-   * <p>When no localization has been declared for the specified display locale, a standard
-   * translation will be returned instead.</p>
-   *
-   * @param locale an arbitrary display locale.
-   * @return a localized name.
-   */
-  @NonNull
-  String getDisplayName(@NonNull Locale locale);
-
-  /**
-   * Retrieves a list of authors who are actively involved with the development of this extension.
-   *
-   * @return a sorted list of authors.
-   */
-  @NonNull
-  List<String> getAuthors();
-
-  /**
-   * Retrieves a list of contributors who contributed to the extension's development at least once.
-   *
-   * @return a sorted list of contributors.
-   */
-  @NonNull
-  List<String> getContributors();
 
   /**
    * Represents the phases which plugins may enter.

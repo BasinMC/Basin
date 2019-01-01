@@ -52,15 +52,7 @@ public class ExtensionManifestImpl implements ExtensionManifest {
   private final List<ExtensionDependency> extensionDependencies = new ArrayList<>();
   private final List<ServiceDependency> serviceDependencies = new ArrayList<>();
 
-  private ExtensionManifestImpl(@NonNull ByteBuf buffer) throws ExtensionManifestException {
-    BufferUtil.checkMagicValue(buffer, MAGIC_NUMBER,
-        () -> new ExtensionManifestException("Illegal extension header"));
-
-    var headerVersion = buffer.readUnsignedByte();
-    if (headerVersion != 0) {
-      throw new ExtensionManifestException("Unsupported header version: " + headerVersion);
-    }
-
+  public ExtensionManifestImpl(@NonNull ByteBuf buffer) throws ExtensionManifestException {
     this.identifier = BufferUtil.readString(buffer)
         .orElseThrow(() -> new ExtensionManifestException("Identifier must be specified"));
     this.version = BufferUtil.readString(buffer)
