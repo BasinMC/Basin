@@ -25,7 +25,7 @@ import org.basinmc.faucet.extension.manifest.ExtensionManifest;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  * @since 1.0
  */
-public interface Extension {
+public interface Extension extends Comparable<Extension> {
 
   /**
    * Retrieves the extension manifest.
@@ -42,6 +42,30 @@ public interface Extension {
    */
   @NonNull
   Phase getPhase();
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  default int compareTo(@NonNull Extension o) {
+    var dependsOnLocal = o.getManifest().getExtensionDependencies().stream()
+        .anyMatch((dep) -> dep.matches(this.getManifest()));
+    var dependsOnOther = this.getManifest().getExtensionDependencies().stream()
+        .anyMatch((dep) -> dep.matches(o.getManifest()));
+
+    // circular dependency or no relation at all - don't care
+    if (dependsOnLocal == dependsOnOther) {
+      return 0;
+    }
+
+    // other depends on us => us == higher priority
+    if (dependsOnLocal) {
+      return -1;
+    }
+
+    // we depend on other => us == lower priority
+    return 1;
+  }
 
   /**
    * Represents the phases which plugins may enter.
