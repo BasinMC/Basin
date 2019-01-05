@@ -162,6 +162,7 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
     logger.debug("Performing startup on loaded extensions");
     this.extensions.stream()
         .filter((e) -> e.getPhase() == Phase.LOADED)
+        .sorted()
         .forEach((e) -> {
           try {
             e.start(this.ctx);
