@@ -175,16 +175,6 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
         });
   }
 
-  private void shutdown() {
-    logger.info("Extension system is shutting down");
-
-    logger.debug("Performing clean extension shutdown");
-    this.extensions.stream()
-        .filter((e) -> e.getPhase() == Phase.RUNNING)
-        .sorted()
-        .forEach(ExtensionImpl::close);
-  }
-
   private void clearRegistry() {
     this.lock.lock();
     try {
@@ -193,5 +183,15 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
     } finally {
       this.lock.unlock();
     }
+  }
+
+  private void shutdown() {
+    logger.info("Extension system is shutting down");
+
+    logger.debug("Performing clean extension shutdown");
+    this.extensions.stream()
+        .filter((e) -> e.getPhase() == Phase.RUNNING)
+        .sorted()
+        .forEach(ExtensionImpl::close);
   }
 }
