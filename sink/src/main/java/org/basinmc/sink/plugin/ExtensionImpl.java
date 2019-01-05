@@ -273,15 +273,20 @@ public class ExtensionImpl implements AutoCloseable, Extension {
    * etc).
    *
    * @param parentCtx a parent context from which the extension context will inherit.
+   * @throws ExtensionContainerException when the startup fails due to a container related issue.
    */
-  public void start(@NonNull ApplicationContext parentCtx) {
+  public void start(@NonNull ApplicationContext parentCtx) throws ExtensionContainerException {
     if (this.ctx != null) {
       return;
     }
 
     var failedDependencies = this.resolvedDependencies.stream()
-        .filter((e) -> e.phase != Phase.LOADED && e.phase != Phase.RUNNING)
+        .filter((e) -> e.phase != Phase.RUNNING)
         .collect(Collectors.toList());
+
+    if (!failedDependencies.isEmpty()) {
+      throw new ExtensionResolverException(this.manifest, failedDependencies);
+    }
 
     this.ctx = new AnnotationConfigApplicationContext();
     this.ctx.setParent(parentCtx);
