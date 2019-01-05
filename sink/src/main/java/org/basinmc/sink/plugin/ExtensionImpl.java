@@ -28,13 +28,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.extension.Extension;
+import org.basinmc.faucet.extension.dependency.ServiceDependency;
 import org.basinmc.faucet.extension.error.ExtensionAccessException;
 import org.basinmc.faucet.extension.error.ExtensionContainerException;
 import org.basinmc.faucet.extension.error.ExtensionException;
 import org.basinmc.faucet.extension.error.ExtensionManifestException;
+import org.basinmc.faucet.extension.error.ExtensionResolverException;
 import org.basinmc.sink.plugin.manifest.ExtensionHeader;
 import org.basinmc.sink.plugin.manifest.ExtensionManifestImpl;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -198,6 +201,18 @@ public class ExtensionImpl implements AutoCloseable, Extension {
   public void initialize() throws ExtensionContainerException {
     if (this.ctx != null) {
       return;
+    }
+
+    var unresolvedExtensions = this.manifest.getExtensionDependencies().stream()
+        .filter((dep) -> this.resolvedDependencies.stream()
+            .map(ExtensionImpl::getManifest).anyMatch(dep::matches))
+        .collect(Collectors.toList());
+    // TODO: Resolve services
+    var unresolvedServices = Collections.<ServiceDependency>emptyList();
+
+    if (!unresolvedExtensions.isEmpty() || !unresolvedServices.isEmpty()) {
+      throw new ExtensionResolverException(this.manifest, unresolvedExtensions,
+          unresolvedServices);
     }
 
     try {
