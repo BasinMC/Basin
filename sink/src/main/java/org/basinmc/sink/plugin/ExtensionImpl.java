@@ -17,6 +17,7 @@
 package org.basinmc.sink.plugin;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -26,12 +27,15 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.extension.Extension;
+import org.basinmc.faucet.extension.dependency.ExtensionDependency;
 import org.basinmc.faucet.extension.dependency.ServiceDependency;
 import org.basinmc.faucet.extension.error.ExtensionAccessException;
 import org.basinmc.faucet.extension.error.ExtensionContainerException;
@@ -58,6 +62,8 @@ public class ExtensionImpl implements AutoCloseable, Extension {
 
   private Phase phase = Phase.REGISTERED;
   private final List<ExtensionImpl> resolvedDependencies = new ArrayList<>();
+  private final Map<ExtensionImpl, ExtensionDependency> resolvedDependencySources = new HashMap<>();
+
   private ExtensionClassLoader classLoader;
   private AnnotationConfigApplicationContext ctx;
 
@@ -182,15 +188,38 @@ public class ExtensionImpl implements AutoCloseable, Extension {
    * Wires a dependency into this extension.
    *
    * @param extension an extension.
+   * @param dependency the dependency which is fulfilled by this wiring (if any).
    * @throws IllegalStateException when invoked outside of the resolve (e.g. {@link Phase#LOADED}
    * phase).
    */
-  public void wireDependency(@NonNull ExtensionImpl extension) {
+  public void wireDependency(@NonNull ExtensionImpl extension,
+      @Nullable ExtensionDependency dependency) {
     if (this.phase != Phase.REGISTERED) {
       throw new IllegalStateException("Cannot wire dependency in " + this.phase + " phase");
     }
 
     this.resolvedDependencies.add(extension);
+
+    if (dependency != null) {
+      this.resolvedDependencySources.put(extension, dependency);
+    }
+  }
+
+  public void resolve() throws ExtensionContainerException {
+    var unresolvedExtensions = this.manifest.getExtensionDependencies().stream()
+        .filter((dep) -> !dep.isOptional())
+        .filter((dep) -> this.resolvedDependencies.stream()
+            .map(ExtensionImpl::getManifest).noneMatch(dep::matches))
+        .collect(Collectors.toList());
+    // TODO: Resolve services
+    var unresolvedServices = Collections.<ServiceDependency>emptyList();
+
+    if (!unresolvedExtensions.isEmpty() || !unresolvedServices.isEmpty()) {
+      throw new ExtensionResolverException(this.manifest, unresolvedExtensions,
+          unresolvedServices);
+    }
+
+    this.phase = Phase.RESOLVED;
   }
 
   /**
@@ -203,17 +232,31 @@ public class ExtensionImpl implements AutoCloseable, Extension {
       return;
     }
 
-    var unresolvedExtensions = this.manifest.getExtensionDependencies().stream()
-        .filter((dep) -> !dep.isOptional())
-        .filter((dep) -> this.resolvedDependencies.stream()
-            .map(ExtensionImpl::getManifest).noneMatch(dep::matches))
+    var unresolvedExtensions = this.resolvedDependencies.stream()
+        .filter((e) -> e.phase != Phase.RESOLVED && e.phase != Phase.LOADED)
         .collect(Collectors.toList());
-    // TODO: Resolve services
-    var unresolvedServices = Collections.<ServiceDependency>emptyList();
 
-    if (!unresolvedExtensions.isEmpty() || !unresolvedServices.isEmpty()) {
-      throw new ExtensionResolverException(this.manifest, unresolvedExtensions,
-          unresolvedServices);
+    unresolvedExtensions.stream()
+        .filter((e) -> {
+          var source = this.resolvedDependencySources.get(e);
+          return source != null && source.isOptional();
+        })
+        .forEach((e) -> {
+          this.logger
+              .debug("Removed unresolved optional dependency to %s v%s", e.manifest.getIdentifier(),
+                  e.manifest.getVersion());
+          this.resolvedDependencies.remove(e);
+          this.resolvedDependencySources.remove(e);
+        });
+    var requiredUnresolvedExtensions = unresolvedExtensions.stream()
+        .filter((e) -> {
+          var source = this.resolvedDependencySources.get(e);
+          return source == null || !source.isOptional();
+        })
+        .collect(Collectors.toList());
+
+    if (!requiredUnresolvedExtensions.isEmpty()) {
+      throw new ExtensionResolverException(this.manifest, requiredUnresolvedExtensions);
     }
 
     try {
@@ -235,6 +278,10 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     if (this.ctx != null) {
       return;
     }
+
+    var failedDependencies = this.resolvedDependencies.stream()
+        .filter((e) -> e.getPhase() != Phase.LOADED && e.getPhase() != Phase.RUNNING)
+        .collect(Collectors.toList());
 
     this.ctx = new AnnotationConfigApplicationContext();
     this.ctx.setParent(parentCtx);

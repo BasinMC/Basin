@@ -19,6 +19,7 @@ package org.basinmc.faucet.extension.error;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.basinmc.faucet.extension.Extension;
 import org.basinmc.faucet.extension.dependency.ExtensionDependency;
 import org.basinmc.faucet.extension.dependency.ServiceDependency;
 import org.basinmc.faucet.extension.manifest.ExtensionAuthor;
@@ -37,8 +38,13 @@ public class ExtensionResolverException extends ExtensionContainerException {
     super(buildErrorMessage(manifest, extensionDependencies, serviceDependencies));
   }
 
+  public ExtensionResolverException(@NonNull ExtensionManifest manifest,
+      @NonNull List<? extends Extension> extensions) {
+    super(buildErrorMessage(manifest, extensions));
+  }
+
   @NonNull
-  public static String buildErrorMessage(@NonNull ExtensionManifest manifest,
+  private static String buildErrorMessage(@NonNull ExtensionManifest manifest,
       @NonNull List<ExtensionDependency> extensionDependencies,
       @NonNull List<ServiceDependency> serviceDependencies) {
     var builder = new StringBuilder()
@@ -48,17 +54,7 @@ public class ExtensionResolverException extends ExtensionContainerException {
         .append(System.lineSeparator())
         .append(System.lineSeparator());
 
-    builder.append("=== Metadata ===").append(System.lineSeparator())
-        .append("  Extension Id: ").append(manifest.getIdentifier()).append(System.lineSeparator())
-        .append("  Version: ").append(manifest.getVersion()).append(System.lineSeparator())
-        .append("  Display Name: ").append(manifest.getDisplayName()).append(System.lineSeparator())
-        .append("  Author(s): ").append(
-        manifest.getAuthors().stream().map(ExtensionAuthor::toString)
-            .collect(Collectors.joining(", "))).append(System.lineSeparator())
-        .append("  Contributor(s): ").append(
-        manifest.getContributors().stream().map(ExtensionAuthor::toString)
-            .collect(Collectors.joining(", "))).append(System.lineSeparator())
-        .append(System.lineSeparator());
+    appendExtensionMetadata(builder, manifest);
 
     if (!extensionDependencies.isEmpty()) {
       builder.append("=== Unresolved Extension Dependencies ===").append(System.lineSeparator());
@@ -78,11 +74,55 @@ public class ExtensionResolverException extends ExtensionContainerException {
       builder.append(System.lineSeparator());
     }
 
+    appendFooter(builder, manifest);
+
+    return builder.toString();
+  }
+
+  @NonNull
+  private static String buildErrorMessage(@NonNull ExtensionManifest manifest,
+      @NonNull List<? extends Extension> extensions) {
+    var builder = new StringBuilder()
+        .append("Cannot resolve one or more dependencies for extension")
+        .append(manifest.getIdentifier())
+        .append(" v").append(manifest.getVersion())
+        .append(System.lineSeparator())
+        .append(System.lineSeparator());
+
+    appendExtensionMetadata(builder, manifest);
+
+    builder.append("=== Unresolved Extensions ===");
+    extensions.forEach((e) -> builder.append(" - ")
+        .append(e.getManifest().getIdentifier())
+        .append(" v").append(e.getManifest().getVersion())
+        .append(System.lineSeparator()));
+    builder.append(System.lineSeparator());
+
+    appendFooter(builder, manifest);
+
+    return builder.toString();
+  }
+
+  private static void appendExtensionMetadata(@NonNull StringBuilder builder,
+      @NonNull ExtensionManifest manifest) {
+    builder.append("=== Metadata ===").append(System.lineSeparator())
+        .append("  Extension Id: ").append(manifest.getIdentifier()).append(System.lineSeparator())
+        .append("  Version: ").append(manifest.getVersion()).append(System.lineSeparator())
+        .append("  Display Name: ").append(manifest.getDisplayName()).append(System.lineSeparator())
+        .append("  Author(s): ").append(
+        manifest.getAuthors().stream().map(ExtensionAuthor::toString)
+            .collect(Collectors.joining(", "))).append(System.lineSeparator())
+        .append("  Contributor(s): ").append(
+        manifest.getContributors().stream().map(ExtensionAuthor::toString)
+            .collect(Collectors.joining(", "))).append(System.lineSeparator())
+        .append(System.lineSeparator());
+  }
+
+  private static void appendFooter(@NonNull StringBuilder builder,
+      @NonNull ExtensionManifest manifest) {
     // TODO: Refer to documentation link when available
     builder.append("This extension will not load until these dependencies are made available.")
         .append(System.lineSeparator());
     builder.append("Please refer to the extension documentation for more information");
-
-    return builder.toString();
   }
 }
