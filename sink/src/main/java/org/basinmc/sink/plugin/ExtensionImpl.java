@@ -278,6 +278,9 @@ public class ExtensionImpl implements AutoCloseable, Extension {
       }
       this.classLoader = null;
     }
+
+    this.phase = Phase.REGISTERED;
+    this.resolvedDependencies.clear();
   }
 
   /**
