@@ -259,6 +259,8 @@ public class ExtensionImpl implements AutoCloseable, Extension {
       throw new ExtensionResolverException(this.manifest, requiredUnresolvedExtensions);
     }
 
+    // TODO: Check for package overlaps
+
     try {
       this.classLoader = new ExtensionClassLoader(this); // TODO: Custom URL scheme for extensions?
     } catch (MalformedURLException ex) {
