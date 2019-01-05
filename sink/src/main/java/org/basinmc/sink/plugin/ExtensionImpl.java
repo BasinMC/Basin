@@ -233,7 +233,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     }
 
     var unresolvedExtensions = this.resolvedDependencies.stream()
-        .filter((e) -> e.phase != Phase.RESOLVED && e.phase != Phase.LOADED)
+        .filter((e) -> e.phase != Phase.LOADED)
         .collect(Collectors.toList());
 
     unresolvedExtensions.stream()
