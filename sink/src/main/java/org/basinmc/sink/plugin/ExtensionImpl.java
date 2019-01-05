@@ -250,16 +250,15 @@ public class ExtensionImpl implements AutoCloseable, Extension {
       this.phase = Phase.RUNNING;
     } catch (Throwable ex) {
       this.logger.error("Failed to perform clean startup", ex);
-      this.stop();
+      this.close();
     }
   }
 
   /**
-   * <p>Performs a graceful shutdown of the extension.</p>
-   *
-   * <p>When the shutdown fails, it will be forced via garbage collection.</p>
+   * {@inheritDoc}
    */
-  public void stop() {
+  @Override
+  public void close() {
     if (this.ctx != null) {
       try {
         this.ctx.close();
@@ -281,13 +280,5 @@ public class ExtensionImpl implements AutoCloseable, Extension {
 
     this.phase = Phase.REGISTERED;
     this.resolvedDependencies.clear();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void close() throws IOException {
-    this.stop();
   }
 }

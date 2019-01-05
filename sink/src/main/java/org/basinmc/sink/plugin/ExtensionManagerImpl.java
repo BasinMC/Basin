@@ -155,7 +155,7 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
             logger
                 .warn("Failed to initialize extension " + e.getManifest().getIdentifier() + "#" + e
                     .getManifest().getVersion(), ex);
-            e.stop(); // ensure loader is destroyed
+            e.close(); // ensure loader is destroyed
           }
         });
 
@@ -169,7 +169,7 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
             logger
                 .warn("Failed to start extension " + e.getManifest().getIdentifier() + "#" + e
                     .getManifest().getVersion(), ex);
-            e.stop(); // ensure context and loader are destroyed
+            e.close(); // ensure context and loader are destroyed
           }
         });
   }
