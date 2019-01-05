@@ -260,24 +260,24 @@ public class ExtensionImpl implements AutoCloseable, Extension {
    * <p>When the shutdown fails, it will be forced via garbage collection.</p>
    */
   public void stop() {
-    if (this.ctx == null) {
-      return;
+    if (this.ctx != null) {
+      try {
+        this.ctx.close();
+      } catch (Throwable ex) {
+        this.logger.error("Failed to perform graceful shutdown", ex);
+      }
+      // TODO: Remove all registrations with the server (and other extensions)
+      this.ctx = null;
     }
 
-    try {
-      this.ctx.close();
-    } catch (Throwable ex) {
-      this.logger.error("Failed to perform graceful shutdown", ex);
+    if (this.classLoader != null) {
+      try {
+        this.classLoader.close();
+      } catch (Throwable ex) {
+        this.logger.error("Failed to close extension classloader", ex);
+      }
+      this.classLoader = null;
     }
-    // TODO: Remove all registrations with the server (and other extensions)
-    this.ctx = null;
-
-    try {
-      this.classLoader.close();
-    } catch (Throwable ex) {
-      this.logger.error("Failed to close extension classloader", ex);
-    }
-    this.classLoader = null;
   }
 
   /**
