@@ -153,9 +153,23 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
             e.initialize();
           } catch (Throwable ex) {
             logger
+                .warn("Failed to initialize extension " + e.getManifest().getIdentifier() + "#" + e
+                    .getManifest().getVersion(), ex);
+            e.stop(); // ensure loader is destroyed
+          }
+        });
+
+    logger.debug("Performing startup on loaded extensions");
+    this.extensions.stream()
+        .filter((e) -> e.getPhase() == Phase.LOADED)
+        .forEach((e) -> {
+          try {
+            e.start(this.ctx);
+          } catch (Throwable ex) {
+            logger
                 .warn("Failed to start extension " + e.getManifest().getIdentifier() + "#" + e
                     .getManifest().getVersion(), ex);
-            e.stop(); // ensure context is destroyed
+            e.stop(); // ensure context and loader are destroyed
           }
         });
   }
