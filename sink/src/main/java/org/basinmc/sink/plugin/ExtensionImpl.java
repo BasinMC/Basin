@@ -280,7 +280,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     }
 
     var failedDependencies = this.resolvedDependencies.stream()
-        .filter((e) -> e.getPhase() != Phase.LOADED && e.getPhase() != Phase.RUNNING)
+        .filter((e) -> e.phase != Phase.LOADED && e.phase != Phase.RUNNING)
         .collect(Collectors.toList());
 
     this.ctx = new AnnotationConfigApplicationContext();
