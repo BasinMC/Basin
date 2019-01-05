@@ -19,8 +19,6 @@ package org.basinmc.faucet.extension.manifest;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
 import org.basinmc.faucet.extension.dependency.ExtensionDependency;
 import org.basinmc.faucet.extension.dependency.ServiceDependency;
 import org.basinmc.faucet.extension.dependency.ServiceVersion;
@@ -85,17 +83,6 @@ public interface ExtensionManifest {
    */
   @NonNull
   Version getVersion();
-
-  /**
-   * <p>Retrieves the distribution network identifier for this extension.</p>
-   *
-   * <p>This value is used for auto-update and auto-download purposes and may be left empty when
-   * the extension is not available via the distribution network.</p>
-   *
-   * @return a distribution identifier or an empty optional.
-   */
-  @NonNull
-  Optional<UUID> getDistributionId();
 
   /**
    * Retrieves a list of services which are provided by this extension and are made available to

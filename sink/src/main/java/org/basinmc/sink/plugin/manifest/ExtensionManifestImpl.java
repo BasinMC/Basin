@@ -17,7 +17,6 @@
 package org.basinmc.sink.plugin.manifest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,8 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Function;
 import org.basinmc.faucet.extension.dependency.ExtensionDependency;
 import org.basinmc.faucet.extension.dependency.ServiceDependency;
@@ -49,7 +46,6 @@ public class ExtensionManifestImpl implements ExtensionManifest {
 
   private final String identifier;
   private final Version version;
-  private final UUID distributionId;
   private final List<ExtensionAuthorImpl> authors = new ArrayList<>();
   private final List<ExtensionAuthorImpl> contributors = new ArrayList<>();
   private final List<ServiceVersion> services = new ArrayList<>();
@@ -68,8 +64,6 @@ public class ExtensionManifestImpl implements ExtensionManifest {
     this.version = BufferUtil.readString(buffer)
         .map(Version::new) // TODO: May throw IllegalArgumentException
         .orElseThrow(() -> new ExtensionManifestException("Version must be specified"));
-    this.distributionId = BufferUtil.readUUID(buffer)
-        .orElse(null);
 
     BufferUtil.readList(buffer, () -> this.authors, ExtensionAuthorImpl::new);
     BufferUtil.readList(buffer, () -> this.contributors, ExtensionAuthorImpl::new);
@@ -101,7 +95,6 @@ public class ExtensionManifestImpl implements ExtensionManifest {
       @NonNull ExtensionFlags flags,
       @NonNull String identifier,
       @NonNull Version version,
-      @Nullable UUID distributionId,
       @NonNull Collection<ExtensionAuthorImpl> authors,
       @NonNull Collection<ExtensionAuthorImpl> contributors,
       @NonNull Collection<ServiceVersion> services,
@@ -111,7 +104,6 @@ public class ExtensionManifestImpl implements ExtensionManifest {
     this.flags = flags;
     this.identifier = identifier;
     this.version = version;
-    this.distributionId = distributionId;
     this.services.addAll(services);
     this.extensionDependencies.addAll(extensionDependencies);
     this.serviceDependencies.addAll(serviceDependencies);
@@ -148,15 +140,6 @@ public class ExtensionManifestImpl implements ExtensionManifest {
   @Override
   public ExtensionFlags getFlags() {
     return this.flags;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @NonNull
-  @Override
-  public Optional<UUID> getDistributionId() {
-    return Optional.ofNullable(this.distributionId);
   }
 
   /**
