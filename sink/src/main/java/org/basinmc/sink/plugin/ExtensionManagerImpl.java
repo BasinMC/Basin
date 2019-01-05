@@ -141,13 +141,20 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
     logger.debug("Performing dependency resolve on new extensions");
     this.extensions.stream()
         .filter((e) -> e.getPhase() == Phase.REGISTERED)
+        .sorted()
         .forEach((e) -> {
-          // TODO: Wire dependencies
+          try {
+            e.resolve();
+          } catch (Throwable ex) {
+            logger.warn("Failed to resolve extension " + e.getManifest().getIdentifier() + "#" + e
+                .getManifest().getVersion(), ex);
+          }
         });
 
     logger.debug("Performing initialization on resolved extensions");
     this.extensions.stream()
         .filter((e) -> e.getPhase() == Phase.RESOLVED)
+        .sorted()
         .forEach((e) -> {
           try {
             e.initialize();
