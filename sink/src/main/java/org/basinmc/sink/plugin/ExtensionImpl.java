@@ -204,8 +204,9 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     }
 
     var unresolvedExtensions = this.manifest.getExtensionDependencies().stream()
+        .filter((dep) -> !dep.isOptional())
         .filter((dep) -> this.resolvedDependencies.stream()
-            .map(ExtensionImpl::getManifest).anyMatch(dep::matches))
+            .map(ExtensionImpl::getManifest).noneMatch(dep::matches))
         .collect(Collectors.toList());
     // TODO: Resolve services
     var unresolvedServices = Collections.<ServiceDependency>emptyList();
