@@ -296,6 +296,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     // TODO: Register service registration beans
 
     try {
+      this.ctx.scan(this.manifest.getIdentifier());
       this.ctx.refresh();
       this.ctx.start();
     } catch (Throwable ex) {
