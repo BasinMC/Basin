@@ -14,15 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+plugins {
+  id "io.spring.dependency-management" version "1.0.6.RELEASE"
+}
+
 apply from: 'gradle/basin.gradle'
-apply from: 'gradle/dependencies.gradle'
 
 allprojects {
+
   group = basin.groupId
   version = basin.version
 }
 
 subprojects {
+  apply plugin: 'io.spring.dependency-management'
+
+  apply from: "${rootDir}/gradle/dependencies.gradle"
+
   repositories {
     mavenLocal()
     mavenCentral()

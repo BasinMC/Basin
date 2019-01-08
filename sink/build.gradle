@@ -164,13 +164,18 @@ project(':sink:server') {
   dependencies {
     api project(':faucet')
 
-    compile libraries.di_container
-    compileOnly libraries.annotations
+    compileOnly 'com.github.spotbugs:spotbugs-annotations'
+    compile 'org.springframework:spring-context'
 
     api 'net.minecraft:client:1.13:extra'
 //    api 'net.minecraftforge:accesstransformers:0.10+:shadowed'
-    api libraries.minecraft
-    api libraries.minecraft_client
+    api 'org.jline:jline'
+    api 'java3d:vecmath'
+    api 'org.apache.logging.log4j:log4j-api'
+    api 'org.apache.logging.log4j:log4j-core'
+    api 'com.google.code.gson:gson'
+    api 'com.google.guava:guava'
+    api 'com.paulscode:soundsystem'
   }
 
   task runserver(type: JavaExec) {

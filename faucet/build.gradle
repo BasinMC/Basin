@@ -23,16 +23,20 @@ apply plugin: 'java'
 sourceCompatibility = targetCompatibility = basin.java
 
 dependencies {
-  compile libraries.di_container
-  compileOnly libraries.annotations
-  compileOnly libraries.minecraft
+  compileOnly 'com.github.spotbugs:spotbugs-annotations'
+  compile 'org.springframework:spring-context'
 
-  compile 'org.ow2.asm:asm:6.1-beta2'
-  compile 'org.apache.commons:commons-lang3:3.5'
-  compile 'org.apache.logging.log4j:log4j-api:2.8.1'
+  compile 'org.ow2.asm:asm'
+  compile 'org.apache.commons:commons-lang3'
+  compile 'org.apache.logging.log4j:log4j-api'
 
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+  compile 'java3d:vecmath'
+  compile 'org.apache.logging.log4j:log4j-api'
+  compile 'com.google.code.gson:gson'
+  compile 'com.google.guava:guava'
+
+  testImplementation 'org.junit.jupiter:junit-jupiter-api'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 processResources {
