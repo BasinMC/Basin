@@ -131,18 +131,18 @@ project(':sink:server') {
     exc = file("$rootDir/sink/src/main/resources/basin.exc")
     srgPatches = true
 
-    serverRun {
-      main = 'org.basinmc.sink.LaunchTesting'
-      environment = [
-          target: 'basindevserver'
-      ]
-      properties = [
-          'mc.version'   : MC_VERSION,
-          'mcp.version'  : MCP_VERSION,
-          'basin.version': "${project.version.substring(MC_VERSION.length() + 1)}".toString(),
-          'basin.group'  : project.group
-      ]
-    }
+//    serverRun {
+//      main = 'org.basinmc.sink.LaunchTesting'
+//      environment = [
+//          target: 'basindevserver'
+//      ]
+//      properties = [
+//          'mc.version'   : MC_VERSION,
+//          'mcp.version'  : MCP_VERSION,
+//          'basin.version': "${project.version.substring(MC_VERSION.length() + 1)}".toString(),
+//          'basin.group'  : project.group
+//      ]
+//    }
   }
 
   applyPatches {
