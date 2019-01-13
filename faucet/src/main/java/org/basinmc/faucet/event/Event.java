@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public interface Event<STATE extends Enum<STATE>> {
+public interface Event<STATE> {
 
   /**
    * Retrieves the default state for this event's execution context.
