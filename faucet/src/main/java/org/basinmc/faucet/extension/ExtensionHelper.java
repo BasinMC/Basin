@@ -38,7 +38,7 @@ public interface ExtensionHelper {
    * @return a calling extension or an empty optional.
    */
   @NonNull
-  Optional<Extension> getCallingExtension();
+  Optional<? extends Extension> getCallingExtension();
 
   /**
    * <p>Retrieves the calling extension.</p>
@@ -53,5 +53,5 @@ public interface ExtensionHelper {
    * @return a calling extension or an empty optional.
    */
   @NonNull
-  Optional<Extension> getFirstCallingExtension();
+  Optional<? extends Extension> getFirstCallingExtension();
 }
