@@ -73,6 +73,11 @@ public interface Extension extends Comparable<Extension> {
   enum Phase {
 
     /**
+     * Placeholder phase for filtering purposes.
+     */
+    NONE,
+
+    /**
      * Plugin has been registered with the server but has not yet been loaded or initialized.
      */
     REGISTERED,
