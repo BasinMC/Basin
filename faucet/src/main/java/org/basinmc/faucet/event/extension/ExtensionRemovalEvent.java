@@ -22,11 +22,11 @@ import org.basinmc.faucet.extension.Extension;
 import org.basinmc.faucet.extension.Extension.Phase;
 
 /**
- * Notifies listeners about the graceful shutdown of an extension.
+ * Notifies listeners about the removal of an extension in an arbitrary phase.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public interface ExtensionShutdownEvent<S> extends ExtensionPhaseEvent<S> {
+public interface ExtensionRemovalEvent extends ExtensionPhaseEvent<Void> {
 
   /**
    * {@inheritDoc}
@@ -34,7 +34,7 @@ public interface ExtensionShutdownEvent<S> extends ExtensionPhaseEvent<S> {
   @Nonnull
   @Override
   default Phase getCurrentPhase() {
-    return Phase.RUNNING;
+    return this.getExtension().getPhase();
   }
 
   /**
@@ -43,17 +43,17 @@ public interface ExtensionShutdownEvent<S> extends ExtensionPhaseEvent<S> {
   @Nonnull
   @Override
   default Phase getTargetPhase() {
-    return Phase.REGISTERED;
+    return Phase.NONE;
   }
 
-  final class Pre extends AbstractExtensionEvent<Void> implements ExtensionShutdownEvent<Void> {
+  final class Pre extends AbstractExtensionEvent<Void> implements ExtensionRemovalEvent {
 
     public Pre(@NonNull Extension extension) {
       super(extension);
     }
   }
 
-  final class Post extends AbstractExtensionEvent<Void> implements ExtensionShutdownEvent<Void> {
+  final class Post extends AbstractExtensionEvent<Void> implements ExtensionRemovalEvent {
 
     public Post(@NonNull Extension extension) {
       super(extension);
