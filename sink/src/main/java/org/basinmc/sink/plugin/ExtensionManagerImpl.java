@@ -27,6 +27,11 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.basinmc.faucet.event.EventBus;
+import org.basinmc.faucet.event.extension.ExtensionLoadEvent;
+import org.basinmc.faucet.event.extension.ExtensionRegistrationEvent;
+import org.basinmc.faucet.event.extension.ExtensionResolveEvent;
+import org.basinmc.faucet.event.extension.ExtensionRunEvent;
 import org.basinmc.faucet.extension.Extension;
 import org.basinmc.faucet.extension.Extension.Phase;
 import org.basinmc.faucet.extension.ExtensionManager;
@@ -47,6 +52,7 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
   private static final Logger logger = LogManager.getFormatterLogger(ExtensionManagerImpl.class);
 
   private final ApplicationContext ctx;
+  private final EventBus eventBus;
   private final Path pluginDir;
 
   // TODO: Given a copy on write list we won't need to sync as long as only one thread writes to this list
@@ -57,8 +63,10 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
   @Autowired
   public ExtensionManagerImpl(
       @NonNull ApplicationContext ctx,
+      @NonNull EventBus eventBus,
       @NonNull @Value("${basin.extension.dir:extensions/}") Path pluginDir) {
     this.ctx = ctx;
+    this.eventBus = eventBus;
     this.pluginDir = pluginDir;
   }
 
@@ -128,8 +136,12 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
     try {
       var extension = new ExtensionImpl(path);
 
-      this.registrations.add(path);
-      this.extensions.add(extension);
+      var state = this.eventBus.post(new ExtensionRegistrationEvent.Pre(extension));
+      if (state.has(ExtensionRegistrationEvent.State.REGISTER)) {
+        this.registrations.add(path);
+        this.extensions.add(extension);
+        this.eventBus.post(new ExtensionRegistrationEvent.Post(extension));
+      }
     } catch (ExtensionException ex) {
       logger.error("Failed to load extension: " + path, ex);
     }
@@ -143,8 +155,14 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
         .filter((e) -> e.getPhase() == Phase.REGISTERED)
         .sorted()
         .forEach((e) -> {
+          var state = this.eventBus.post(new ExtensionResolveEvent.Pre(e));
+          if (!state.has(ExtensionResolveEvent.State.RESOLVE)) {
+            return;
+          }
+
           try {
             e.resolve();
+            this.eventBus.post(new ExtensionResolveEvent.Post(e));
           } catch (Throwable ex) {
             logger.warn("Failed to resolve extension " + e.getManifest().getIdentifier() + "#" + e
                 .getManifest().getVersion(), ex);
@@ -156,8 +174,14 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
         .filter((e) -> e.getPhase() == Phase.RESOLVED)
         .sorted()
         .forEach((e) -> {
+          var state = this.eventBus.post(new ExtensionLoadEvent.Pre(e));
+          if (!state.has(ExtensionLoadEvent.State.LOAD)) {
+            return;
+          }
+
           try {
             e.initialize();
+            this.eventBus.post(new ExtensionLoadEvent.Post(e));
           } catch (Throwable ex) {
             logger
                 .warn("Failed to initialize extension " + e.getManifest().getIdentifier() + "#" + e
@@ -171,8 +195,14 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
         .filter((e) -> e.getPhase() == Phase.LOADED)
         .sorted()
         .forEach((e) -> {
+          var state = this.eventBus.post(new ExtensionRunEvent.Pre(e));
+          if (!state.has(ExtensionRunEvent.State.RUN)) {
+            return;
+          }
+
           try {
             e.start(this.ctx);
+            this.eventBus.post(new ExtensionRunEvent.Post(e));
           } catch (Throwable ex) {
             logger
                 .warn("Failed to start extension " + e.getManifest().getIdentifier() + "#" + e
