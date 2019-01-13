@@ -37,6 +37,11 @@ public class ExtensionClassLoader extends URLClassLoader {
     this.extension = extension;
   }
 
+  @NonNull
+  public ExtensionImpl getExtension() {
+    return this.extension;
+  }
+
   /**
    * {@inheritDoc}
    */
