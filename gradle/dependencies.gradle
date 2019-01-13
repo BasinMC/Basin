@@ -16,6 +16,8 @@
  */
 dependencyManagement {
     dependencies {
+        dependency 'org.basinmc.chloramine:manifest:1.0.0-SNAPSHOT' // TODO: Switch to stable release once available
+
         dependency 'com.github.spotbugs:spotbugs-annotations:3.1.1'
         dependency 'org.apache.commons:commons-lang3:3.5'
         dependency 'org.ow2.asm:asm:7.0'

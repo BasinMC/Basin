@@ -163,6 +163,7 @@ project(':sink:server') {
 
   dependencies {
     api project(':faucet')
+    implementation 'org.basinmc.chloramine:manifest'
 
     compileOnly 'com.github.spotbugs:spotbugs-annotations'
     compile 'org.springframework:spring-context'
