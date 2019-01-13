@@ -79,7 +79,6 @@ public interface ExtensionResolveEvent<S> extends ExtensionPhaseEvent<S> {
   final class State extends BitMask<State> {
 
     public static final State RESOLVE = new State(0b0000_0000_0000_0001);
-    public static final State IGNORE = new State(0b0000_0000_0000_0010);
 
     public State(int mask) {
       super(mask);
@@ -98,7 +97,7 @@ public interface ExtensionResolveEvent<S> extends ExtensionPhaseEvent<S> {
      */
     @Override
     public Collection<State> values() {
-      return Set.of(RESOLVE, IGNORE);
+      return Set.of(RESOLVE);
     }
   }
 }

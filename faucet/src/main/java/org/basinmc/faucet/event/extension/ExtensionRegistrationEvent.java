@@ -18,6 +18,7 @@ package org.basinmc.faucet.event.extension;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Collection;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import org.basinmc.faucet.extension.Extension;
 import org.basinmc.faucet.extension.Extension.Phase;
@@ -79,7 +80,6 @@ public interface ExtensionRegistrationEvent<S> extends ExtensionPhaseEvent<S> {
   final class State extends BitMask<State> {
 
     public static final State REGISTER = new State(0b0000_0000_0000_0001);
-    public static final State IGNORE = new State(0b0000_0000_0000_0010);
 
     public State(int mask) {
       super(mask);
@@ -98,7 +98,7 @@ public interface ExtensionRegistrationEvent<S> extends ExtensionPhaseEvent<S> {
      */
     @Override
     public Collection<State> values() {
-      return null;
+      return Set.of(REGISTER);
     }
   }
 }
