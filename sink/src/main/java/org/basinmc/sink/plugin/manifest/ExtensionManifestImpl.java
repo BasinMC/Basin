@@ -17,14 +17,14 @@
 package org.basinmc.sink.plugin.manifest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.netty.buffer.ByteBuf;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.basinmc.chloramine.manifest.Manifest;
+import org.basinmc.chloramine.manifest.error.ManifestException;
 import org.basinmc.faucet.extension.dependency.ExtensionDependency;
 import org.basinmc.faucet.extension.dependency.ServiceDependency;
 import org.basinmc.faucet.extension.dependency.ServiceVersion;
@@ -34,95 +34,63 @@ import org.basinmc.faucet.extension.manifest.ExtensionFlags;
 import org.basinmc.faucet.extension.manifest.ExtensionManifest;
 import org.basinmc.faucet.util.Version;
 import org.basinmc.faucet.util.VersionRange;
-import org.basinmc.sink.util.BufferUtil;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public class ExtensionManifestImpl implements ExtensionManifest {
 
-  private final short formatVersion;
+  private final Manifest source;
+
   private final ExtensionFlags flags;
-
-  private final String identifier;
   private final Version version;
-  private final List<ExtensionAuthorImpl> authors = new ArrayList<>();
-  private final List<ExtensionAuthorImpl> contributors = new ArrayList<>();
-  private final List<ServiceVersion> services = new ArrayList<>();
-  private final List<ExtensionDependency> extensionDependencies = new ArrayList<>();
-  private final List<ServiceDependency> serviceDependencies = new ArrayList<>();
 
-  public ExtensionManifestImpl(@NonNull ByteBuf buffer) throws ExtensionManifestException {
-    this.formatVersion = buffer.readUnsignedByte();
-    if (this.formatVersion != 0) {
-      throw new ExtensionManifestException("Unsupported format version: " + this.formatVersion);
-    }
-    this.flags = new ExtensionFlags(buffer.readUnsignedShort());
+  private final List<ExtensionAuthorImpl> authors;
+  private final List<ExtensionAuthorImpl> contributors;
+  private final List<ServiceVersion> services;
+  private final List<ExtensionDependency> extensionDependencies;
+  private final List<ServiceDependency> serviceDependencies;
 
-    this.identifier = BufferUtil.readString(buffer)
-        .orElseThrow(() -> new ExtensionManifestException("Identifier must be specified"));
-    this.version = BufferUtil.readString(buffer)
-        .map(Version::new) // TODO: May throw IllegalArgumentException
-        .orElseThrow(() -> new ExtensionManifestException("Version must be specified"));
-
-    BufferUtil.readList(buffer, () -> this.authors, ExtensionAuthorImpl::new);
-    BufferUtil.readList(buffer, () -> this.contributors, ExtensionAuthorImpl::new);
-
-    BufferUtil.readList(buffer, () -> this.services, (buf) -> {
-      var identifier = BufferUtil.readString(buf)
-          .orElseThrow(() -> new IllegalArgumentException("Service must define identifier"));
-      var version = BufferUtil.readString(buf)
-          .map(Version::new)
-          .orElseThrow(() -> new IllegalArgumentException("Service must define version"));
-
-      return new ServiceVersion(identifier, version);
-    });
-
-    BufferUtil.readList(
-        buffer,
-        () -> this.extensionDependencies,
-        readDependency(ExtensionDependency::new)
-    );
-    BufferUtil.readList(
-        buffer,
-        () -> this.serviceDependencies,
-        readDependency(ServiceDependency::new)
-    );
+  public ExtensionManifestImpl(@NonNull ByteBuffer buffer) throws ExtensionManifestException {
+    this(readData(buffer));
   }
 
-  public ExtensionManifestImpl(
-      short formatVersion,
-      @NonNull ExtensionFlags flags,
-      @NonNull String identifier,
-      @NonNull Version version,
-      @NonNull Collection<ExtensionAuthorImpl> authors,
-      @NonNull Collection<ExtensionAuthorImpl> contributors,
-      @NonNull Collection<ServiceVersion> services,
-      @NonNull Collection<ExtensionDependency> extensionDependencies,
-      @NonNull Collection<ServiceDependency> serviceDependencies) {
-    this.formatVersion = formatVersion;
-    this.flags = flags;
-    this.identifier = identifier;
-    this.version = version;
-    this.services.addAll(services);
-    this.extensionDependencies.addAll(extensionDependencies);
-    this.serviceDependencies.addAll(serviceDependencies);
-    this.authors.addAll(authors);
-    this.contributors.addAll(contributors);
+  public ExtensionManifestImpl(@NonNull Manifest source) {
+    this.source = source;
+
+    this.flags = new ExtensionFlags(source.getFlags());
+    this.version = new Version(source.getMetadata().getVersion());
+
+    this.authors = source.getMetadata().getAuthors().stream()
+        .map(ExtensionAuthorImpl::new)
+        .collect(Collectors.toList());
+    this.contributors = source.getMetadata().getContributors().stream()
+        .map(ExtensionAuthorImpl::new)
+        .collect(Collectors.toList());
+
+    this.services = source.getMetadata().getProvidedServices().stream()
+        .map(service -> new ServiceVersion(service.getIdentifier(),
+            new Version(service.getVersion()))) // TODO: Throw ExtensionManifestException
+        .collect(Collectors.toList());
+    this.extensionDependencies = source.getMetadata().getExtensionDependencies().stream()
+        .map(dependency -> new ExtensionDependency(dependency.getIdentifier(),
+            new VersionRange(dependency.getVersionRange()),
+            dependency.isOptional())) // TODO: Throw ExtensionManifestException
+        .collect(Collectors.toList());
+    this.serviceDependencies = source.getMetadata().getServiceDependencies().stream()
+        .map(dependency -> new ServiceDependency(dependency.getIdentifier(),
+            new VersionRange(dependency.getVersionRange()),
+            dependency.isOptional()))  // TODO: Throw ExtensionManifestException
+        .collect(Collectors.toList());
   }
 
   @NonNull
-  private static <D> Function<ByteBuf, D> readDependency(@NonNull DependencyFactory<D> factory) {
-    return (in) -> {
-      var identifier = BufferUtil.readString(in)
-          .orElseThrow(() -> new IllegalArgumentException("Dependency must define identifier"));
-      var version = BufferUtil.readString(in)
-          .map(VersionRange::new)
-          .orElseThrow(() -> new IllegalArgumentException("Dependency must define version range"));
-      var optional = in.readBoolean(); // TODO: Replace with bitmask
-
-      return factory.create(identifier, version, optional);
-    };
+  private static Manifest readData(@NonNull ByteBuffer buffer) throws ExtensionManifestException {
+    try {
+      return new Manifest(buffer);
+    } catch (ManifestException ex) {
+      throw new ExtensionManifestException("Cannot decode manifest", ex);
+    }
   }
 
   /**
@@ -130,7 +98,7 @@ public class ExtensionManifestImpl implements ExtensionManifest {
    */
   @Override
   public int getFormatVersion() {
-    return this.formatVersion;
+    return this.source.getMetadata().getFormatVersion();
   }
 
   /**
@@ -148,7 +116,7 @@ public class ExtensionManifestImpl implements ExtensionManifest {
   @NonNull
   @Override
   public String getIdentifier() {
-    return this.identifier;
+    return this.source.getMetadata().getIdentifier();
   }
 
   /**
@@ -235,8 +203,7 @@ public class ExtensionManifestImpl implements ExtensionManifest {
       return false;
     }
     ExtensionManifestImpl that = (ExtensionManifestImpl) o;
-    return Objects.equals(this.identifier, that.identifier) &&
-        Objects.equals(this.version, that.version);
+    return Objects.equals(this.source, that.source);
   }
 
   /**
@@ -244,13 +211,6 @@ public class ExtensionManifestImpl implements ExtensionManifest {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(this.identifier, this.version);
-  }
-
-  @FunctionalInterface
-  private interface DependencyFactory<D> {
-
-    @NonNull
-    D create(@NonNull String identifier, @NonNull VersionRange version, boolean optional);
+    return Objects.hash(this.source);
   }
 }

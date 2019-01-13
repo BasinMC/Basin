@@ -16,43 +16,21 @@
  */
 package org.basinmc.sink.plugin.manifest;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
-import io.netty.buffer.ByteBuf;
-import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
+import org.basinmc.chloramine.manifest.metadata.Author;
 import org.basinmc.faucet.extension.manifest.ExtensionAuthor;
-import org.basinmc.sink.util.BufferUtil;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public class ExtensionAuthorImpl implements ExtensionAuthor {
 
-  private final String name;
-  private final String alias;
+  private final Author source;
 
-  /**
-   * Decodes an extension author from its binary representation.
-   *
-   * @param in an input buffer.
-   * @throws IllegalArgumentException when the buffer contains illegal data.
-   */
-  public ExtensionAuthorImpl(@NonNull ByteBuf in) {
-    this.name = BufferUtil.readString(in)
-        .orElseThrow(() -> new IllegalArgumentException("Author must specify name"));
-    this.alias = BufferUtil.readString(in)
-        .orElse(null);
-  }
-
-  public ExtensionAuthorImpl(@NonNull String name, @Nullable String alias) {
-    this.name = name;
-    this.alias = alias;
+  public ExtensionAuthorImpl(@NonNull Author source) {
+    this.source = source;
   }
 
   /**
@@ -61,7 +39,7 @@ public class ExtensionAuthorImpl implements ExtensionAuthor {
   @NonNull
   @Override
   public String getName() {
-    return this.name;
+    return this.source.getName();
   }
 
   /**
@@ -70,7 +48,7 @@ public class ExtensionAuthorImpl implements ExtensionAuthor {
   @NonNull
   @Override
   public Optional<String> getAlias() {
-    return Optional.ofNullable(this.alias);
+    return this.source.getAlias();
   }
 
   /**
@@ -85,8 +63,7 @@ public class ExtensionAuthorImpl implements ExtensionAuthor {
       return false;
     }
     ExtensionAuthorImpl that = (ExtensionAuthorImpl) o;
-    return Objects.equals(this.name, that.name) &&
-        Objects.equals(this.alias, that.alias);
+    return Objects.equals(this.source, that.source);
   }
 
   /**
@@ -94,37 +71,6 @@ public class ExtensionAuthorImpl implements ExtensionAuthor {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(this.name, this.alias);
-  }
-
-  /**
-   * Provides a simple de-serializer which permits the representation of extension authors as
-   * strings or slightly more complex objects.
-   */
-  public static class Deserializer implements JsonDeserializer<ExtensionAuthorImpl> {
-
-    /**
-     * {@inheritDoc}
-     */
-    @NonNull
-    @Override
-    public ExtensionAuthorImpl deserialize(@NonNull JsonElement json, @NonNull Type typeOfT,
-        @NonNull JsonDeserializationContext context) throws JsonParseException {
-      if (json.isJsonObject()) {
-        var obj = json.getAsJsonObject();
-
-        var nameElement = obj.get("name");
-        var aliasElement = obj.get("alias");
-
-        if (nameElement == null) {
-          throw new JsonParseException("Author name must be set");
-        }
-
-        return new ExtensionAuthorImpl(nameElement.getAsString(),
-            aliasElement != null ? aliasElement.getAsString() : null);
-      }
-
-      return new ExtensionAuthorImpl(json.getAsString(), null);
-    }
+    return Objects.hash(this.source);
   }
 }
