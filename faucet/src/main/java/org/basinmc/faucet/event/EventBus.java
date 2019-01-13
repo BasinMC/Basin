@@ -31,9 +31,9 @@ public interface EventBus {
    * type of event will receive the event.
    *
    * @param event The even to post
-   * @param <STATE> identifies the desired return state (as specified by the event listeners).
+   * @param <S> identifies the desired return state (as specified by the event listeners).
    */
-  <STATE extends Enum<STATE>> STATE post(@NonNull Event<STATE> event);
+  <S> S post(@NonNull Event<S> event);
 
   void subscribe(@NonNull Object listener);
 
