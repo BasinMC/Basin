@@ -20,6 +20,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Predicate;
+import org.basinmc.faucet.event.extension.ExtensionShutdownEvent;
+import org.basinmc.faucet.event.handler.Subscribe;
 
 /**
  * Provides a generic manager capable of handling registrations of arbitrary extensions.
@@ -27,6 +29,16 @@ import java.util.function.Predicate;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public abstract class RegistrationManager<R extends Registration> {
+
+  /**
+   * Handles the graceful shutdown of an extension.
+   *
+   * @param event an event.
+   */
+  @Subscribe
+  private void handleExtensionShutdown(@NonNull ExtensionShutdownEvent.Pre event) {
+    this.unregister((reg) -> reg.getExtension() == event.getExtension());
+  }
 
   /**
    * Retrieves a complete list of active registrations within this manager.
@@ -96,6 +108,4 @@ public abstract class RegistrationManager<R extends Registration> {
         .filter(predicate::test)
         .forEach(this::unregister);
   }
-
-  // TODO: Handle extension unload
 }
