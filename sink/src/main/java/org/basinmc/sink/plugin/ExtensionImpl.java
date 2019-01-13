@@ -127,16 +127,15 @@ public class ExtensionImpl implements AutoCloseable, Extension {
   }
 
   /**
-   * <p>Retrieves the context in which this extension is <strong>currently</strong> executed.</p>
-   *
-   * <p>If the plugin is not in the running phase, an empty optional will be returned instead as no
-   * context is present at the moment.</p>
-   *
-   * @return an application context.
+   * {@inheritDoc}
    */
   @NonNull
-  public Optional<AnnotationConfigApplicationContext> getContext() {
-    return Optional.ofNullable(this.ctx);
+  public AnnotationConfigApplicationContext getContext() {
+    if (this.ctx == null) {
+      throw new IllegalStateException("Extension has not been initialized yet");
+    }
+
+    return this.ctx;
   }
 
   /**

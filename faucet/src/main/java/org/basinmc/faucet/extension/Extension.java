@@ -18,6 +18,7 @@ package org.basinmc.faucet.extension;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import org.basinmc.faucet.extension.manifest.ExtensionManifest;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Represents the metadata associated with a loaded or to-be-loaded extension.
@@ -42,6 +43,18 @@ public interface Extension extends Comparable<Extension> {
    */
   @NonNull
   Phase getPhase();
+
+  /**
+   * Retrieves the application context which manages all extension components throughout their
+   * lifecycle.
+   *
+   * @return an application context.
+   * @throws IllegalStateException when the extension is not currently running.
+   */
+  // TODO: Re-Evaluate this interface as it exposes extension state and could cause leaks when used
+  //       incorrectly
+  @NonNull
+  ApplicationContext getContext();
 
   /**
    * {@inheritDoc}
@@ -93,7 +106,8 @@ public interface Extension extends Comparable<Extension> {
     LOADED,
 
     /**
-     * Extension is running (e.g. its classes have been registered and initialized (where desired)).
+     * Extension is running (e.g. its classes have been registered and initialized (where
+     * desired)).
      */
     RUNNING,
   }
