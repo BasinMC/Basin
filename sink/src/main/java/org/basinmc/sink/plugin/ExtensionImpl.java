@@ -159,7 +159,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     }
   }
 
-  public void resolve() throws ExtensionContainerException {
+  void resolve() throws ExtensionContainerException {
     var unresolvedExtensions = this.manifest.getExtensionDependencies().stream()
         .filter((dep) -> !dep.isOptional())
         .filter((dep) -> this.resolvedDependencies.stream()
@@ -181,7 +181,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
    *
    * @throws ExtensionContainerException when the container cannot be accessed.
    */
-  public void initialize() throws ExtensionContainerException {
+  void initialize() throws ExtensionContainerException {
     if (this.ctx != null) {
       return;
     }
@@ -231,7 +231,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
    * @param parentCtx a parent context from which the extension context will inherit.
    * @throws ExtensionContainerException when the startup fails due to a container related issue.
    */
-  public void start(@NonNull ApplicationContext parentCtx) throws ExtensionContainerException {
+   void start(@NonNull ApplicationContext parentCtx) throws ExtensionContainerException {
     if (this.ctx != null) {
       return;
     }
