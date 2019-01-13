@@ -17,7 +17,8 @@
 package org.basinmc.sink.plugin.manifest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -51,8 +52,9 @@ public class ExtensionManifestImpl implements ExtensionManifest {
   private final List<ExtensionDependency> extensionDependencies;
   private final List<ServiceDependency> serviceDependencies;
 
-  public ExtensionManifestImpl(@NonNull ByteBuffer buffer) throws ExtensionManifestException {
-    this(readData(buffer));
+  public ExtensionManifestImpl(@NonNull ReadableByteChannel channel)
+      throws ExtensionManifestException, IOException {
+    this(readData(channel));
   }
 
   public ExtensionManifestImpl(@NonNull Manifest source) {
@@ -85,9 +87,10 @@ public class ExtensionManifestImpl implements ExtensionManifest {
   }
 
   @NonNull
-  private static Manifest readData(@NonNull ByteBuffer buffer) throws ExtensionManifestException {
+  private static Manifest readData(@NonNull ReadableByteChannel channel)
+      throws ExtensionManifestException, IOException {
     try {
-      return new Manifest(buffer);
+      return Manifest.read(channel);
     } catch (ManifestException ex) {
       throw new ExtensionManifestException("Cannot decode manifest", ex);
     }

@@ -18,10 +18,8 @@ package org.basinmc.sink.plugin;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -40,9 +38,7 @@ import org.basinmc.faucet.extension.dependency.ServiceDependency;
 import org.basinmc.faucet.extension.error.ExtensionAccessException;
 import org.basinmc.faucet.extension.error.ExtensionContainerException;
 import org.basinmc.faucet.extension.error.ExtensionException;
-import org.basinmc.faucet.extension.error.ExtensionManifestException;
 import org.basinmc.faucet.extension.error.ExtensionResolverException;
-import org.basinmc.sink.plugin.manifest.ExtensionHeader;
 import org.basinmc.sink.plugin.manifest.ExtensionManifestImpl;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -57,7 +53,6 @@ public class ExtensionImpl implements AutoCloseable, Extension {
   private final Path containerPath;
   private final Logger logger;
 
-  private final ExtensionHeader header;
   private final ExtensionManifestImpl manifest;
 
   private Phase phase = Phase.REGISTERED;
@@ -71,37 +66,7 @@ public class ExtensionImpl implements AutoCloseable, Extension {
     this.containerPath = containerPath;
 
     try (var channel = FileChannel.open(containerPath, StandardOpenOption.READ)) {
-      if (channel.size() < ExtensionHeader.LENGTH) {
-        throw new ExtensionManifestException(
-            "Missing or malformed extension header: Expected " + ExtensionHeader.LENGTH
-                + " bytes but got " + channel.size());
-      }
-
-      var headerBuffer = ByteBuffer.allocate(ExtensionHeader.LENGTH);
-      channel.read(headerBuffer);
-      headerBuffer.flip();
-
-      this.header = new ExtensionHeader(Unpooled.wrappedBuffer(headerBuffer));
-
-      if (this.header.getSignatureLength() != 0) {
-        // TODO
-        throw new UnsupportedOperationException("Extension signature not yet supported");
-      }
-
-      if (this.header.getManifestLength() == 0) {
-        throw new ExtensionManifestException(
-            "Malformed extension header: Metadata must be present");
-      }
-      // TODO: Set reasonable size bounds
-      if (this.header.getManifestLength() > Integer.MAX_VALUE) {
-        throw new ExtensionManifestException(
-            "Malformed extension header: Metadata exceeds " + Integer.MAX_VALUE + " bytes");
-      }
-      var manifestBuffer = ByteBuffer.allocate((int) this.header.getManifestLength());
-      channel.read(manifestBuffer);
-      manifestBuffer.flip();
-
-      this.manifest = new ExtensionManifestImpl(Unpooled.wrappedBuffer(manifestBuffer));
+      this.manifest = new ExtensionManifestImpl(channel);
     } catch (IOException ex) {
       throw new ExtensionAccessException("Cannot read container file", ex);
     }
@@ -117,16 +82,6 @@ public class ExtensionImpl implements AutoCloseable, Extension {
   @NonNull
   public Path getContainerPath() {
     return this.containerPath;
-  }
-
-  /**
-   * Retrieves the container header.
-   *
-   * @return a container header.
-   */
-  @NonNull
-  public ExtensionHeader getHeader() {
-    return this.header;
   }
 
   /**
