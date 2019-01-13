@@ -36,6 +36,10 @@ subprojects {
     mavenCentral()
 
     maven {
+      url = 'https://nexus.basinmc.org/content/groups/public'
+    }
+
+    maven {
       url = 'https://libraries.minecraft.net'
     }
 
