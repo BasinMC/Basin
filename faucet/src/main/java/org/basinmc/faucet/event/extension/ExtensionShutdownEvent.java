@@ -26,7 +26,7 @@ import org.basinmc.faucet.extension.Extension.Phase;
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public interface ExtensionShutdownEvent<S> extends ExtensionPhaseEvent<S> {
+public interface ExtensionShutdownEvent extends ExtensionPhaseEvent<Void> {
 
   /**
    * {@inheritDoc}
@@ -46,14 +46,14 @@ public interface ExtensionShutdownEvent<S> extends ExtensionPhaseEvent<S> {
     return Phase.REGISTERED;
   }
 
-  final class Pre extends AbstractExtensionEvent<Void> implements ExtensionShutdownEvent<Void> {
+  final class Pre extends AbstractExtensionEvent<Void> implements ExtensionShutdownEvent {
 
     public Pre(@NonNull Extension extension) {
       super(extension);
     }
   }
 
-  final class Post extends AbstractExtensionEvent<Void> implements ExtensionShutdownEvent<Void> {
+  final class Post extends AbstractExtensionEvent<Void> implements ExtensionShutdownEvent {
 
     public Post(@NonNull Extension extension) {
       super(extension);
