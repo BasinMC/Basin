@@ -78,22 +78,22 @@ public interface Extension extends Comparable<Extension> {
     NONE,
 
     /**
-     * Plugin has been registered with the server but has not yet been loaded or initialized.
+     * Extension has been registered with the server but has not yet been loaded or initialized.
      */
     REGISTERED,
 
     /**
-     * Plugin dependencies have been resolved but it has yet to be loaded and initialized.
+     * Extension dependencies have been resolved but it has yet to be loaded and initialized.
      */
     RESOLVED,
 
     /**
-     * Plugin has been loaded (e.g. a class loader has been created) but not yet initialized.
+     * Extension has been loaded (e.g. a class loader has been created) but not yet initialized.
      */
     LOADED,
 
     /**
-     * Plugin is running (e.g. its classes have been registered and initialized (where desired)).
+     * Extension is running (e.g. its classes have been registered and initialized (where desired)).
      */
     RUNNING,
   }
