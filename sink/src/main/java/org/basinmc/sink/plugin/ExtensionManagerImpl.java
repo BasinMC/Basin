@@ -20,6 +20,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -30,8 +31,10 @@ import org.apache.logging.log4j.Logger;
 import org.basinmc.faucet.event.EventBus;
 import org.basinmc.faucet.event.extension.ExtensionLoadEvent;
 import org.basinmc.faucet.event.extension.ExtensionRegistrationEvent;
+import org.basinmc.faucet.event.extension.ExtensionRemovalEvent;
 import org.basinmc.faucet.event.extension.ExtensionResolveEvent;
 import org.basinmc.faucet.event.extension.ExtensionRunEvent;
+import org.basinmc.faucet.event.extension.ExtensionShutdownEvent;
 import org.basinmc.faucet.extension.Extension;
 import org.basinmc.faucet.extension.Extension.Phase;
 import org.basinmc.faucet.extension.ExtensionManager;
@@ -215,8 +218,13 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
   private void clearRegistry() {
     this.lock.lock();
     try {
+      var extensions = new ArrayList<>(this.extensions);
+      extensions.forEach((e) -> this.eventBus.post(new ExtensionRemovalEvent.Pre(e)));
+
       this.extensions.clear();
       this.registrations.clear();
+
+      extensions.forEach((e) -> this.eventBus.post(new ExtensionRemovalEvent.Post(e)));
     } finally {
       this.lock.unlock();
     }
@@ -229,6 +237,17 @@ public class ExtensionManagerImpl extends LifecycleService implements ExtensionM
     this.extensions.stream()
         .filter((e) -> e.getPhase() == Phase.RUNNING)
         .sorted()
-        .forEach(ExtensionImpl::close);
+        .forEach((e) -> {
+          this.eventBus.post(new ExtensionShutdownEvent.Pre(e));
+
+          try {
+            e.close();
+          } catch (Throwable ex) {
+            logger.warn("Failed to perform graceful shutdown of extension " + e.getManifest()
+                .getIdentifier() + "#" + e.getManifest().getVersion(), ex);
+          }
+
+          this.eventBus.post(new ExtensionShutdownEvent.Post(e));
+        });
   }
 }
