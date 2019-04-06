@@ -166,6 +166,7 @@ project(':sink:server') {
     implementation 'org.basinmc.chloramine:manifest'
 
     compileOnly 'com.github.spotbugs:spotbugs-annotations'
+    compile 'io.reactivex.rxjava2:rxjava:2.2.8'
     compile 'org.springframework:spring-context'
 
     api 'net.minecraft:client:1.13:extra'

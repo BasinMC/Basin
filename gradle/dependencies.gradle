@@ -20,7 +20,9 @@ dependencyManagement {
 
         dependency 'com.github.spotbugs:spotbugs-annotations:3.1.1'
         dependency 'org.apache.commons:commons-lang3:3.5'
+        dependency 'io.reactivex.rxjava2:rxjava:2.2.8'
         dependency 'org.ow2.asm:asm:7.0'
+
 
         // Spring Components
         dependencySet(group:'org.springframework', version: '5.1.3.RELEASE') {
