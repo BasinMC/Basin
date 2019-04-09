@@ -15,63 +15,49 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.math;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
+package org.basinmc.faucet.math
 
 /**
  * Relative directions.
  */
-public enum Direction {
+enum class Direction(
+
+    /**
+     * Get the transformation vector for moving one place in this direction. Remember
+     * that you can perform scalar multiplication on this vector to signify movement of a
+     * value different than 1 block.
+     *
+     * @return a 3-dimensional transformation vector
+     */
+    val vector: Vector3Int) {
+
   /**
    * Down, towards negative-y
    */
-  DOWN(0, -1, 0),
+  DOWN(Vector3Int.down),
 
   /**
    * Up, towards positive-y
    */
-  UP(0, 1, 0),
+  UP(Vector3Int.up),
 
   /**
    * North, towards negative-z
    */
-  NORTH(0, 0, -1),
+  NORTH(Vector3Int.backward),
 
   /**
    * South, towards positive-z
    */
-  SOUTH(0, 0, 1),
+  SOUTH(Vector3Int.forward),
 
   /**
    * West, towards negative-x
    */
-  WEST(-1, 0, 0),
+  WEST(Vector3Int.left),
 
   /**
    * East, towards positive-x
    */
-  EAST(1, 0, 0);
-
-  private final Vector3 vector;
-
-  Direction(Vector3 vector) {
-    this.vector = vector;
-  }
-
-  Direction(double x, double y, double z) {
-    this(new Vector3(x, y, z));
-  }
-
-  /**
-   * Get the transformation vector for moving one place in this direction. Remember
-   * that you can perform scalar multiplication on this vector to signify movement of a
-   * value different than 1 block.
-   *
-   * @return a 3-dimensional transformation vector
-   */
-  @NonNull
-  Vector3 vector() {
-    return vector;
-  }
+  EAST(Vector3Int.right)
 }
