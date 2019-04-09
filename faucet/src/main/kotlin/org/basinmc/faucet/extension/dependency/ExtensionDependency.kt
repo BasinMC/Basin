@@ -31,17 +31,17 @@ class ExtensionDependency(identifier: String, versionRange: VersionRange,
   /**
    * {@inheritDoc}
    */
-  override fun equals(o: Any?): Boolean {
-    if (this === o) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
       return true
     }
-    if (o !is ExtensionDependency) {
+    if (other !is ExtensionDependency) {
       return false
     }
-    if (!super.equals(o)) {
+    if (!super.equals(other)) {
       return false
     }
-    val that = o as ExtensionDependency?
+    val that = other as ExtensionDependency?
     return this.isOptional == that!!.isOptional
   }
 

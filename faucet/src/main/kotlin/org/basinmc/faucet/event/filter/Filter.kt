@@ -16,9 +16,6 @@
  */
 package org.basinmc.faucet.event.filter
 
-import java.lang.annotation.Documented
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
 import kotlin.reflect.KClass
 
 /**
@@ -29,8 +26,8 @@ import kotlin.reflect.KClass
  *
  * @author [Johannes Donath](mailto:johannesd@torchmind.com)
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
+@MustBeDocumented
+@Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.ANNOTATION_CLASS)
 annotation class Filter(
 
