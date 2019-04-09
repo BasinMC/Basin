@@ -44,6 +44,15 @@ public interface EventBus {
    */
   void subscribe(@Nonnull EventHandler handler);
 
+  /**
+   * Scans the supplied object for compatible event handler methods and registers them with this
+   * bus.
+   *
+   * Only method which bear the {@link org.basinmc.faucet.event.handler.Subscribe} annotation will
+   * be considered by this method.
+   *
+   * @param listener an arbitrary object.
+   */
   void subscribe(@NonNull Object listener);
 
   /**
