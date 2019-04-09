@@ -14,10 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.faucet.internal.util;
+package org.basinmc.faucet.internal.warn
 
-@FunctionalInterface
-public interface StringParsable<T> {
+import kotlin.annotation.MustBeDocumented
 
-  T fromString(String s);
-}
+/**
+ * Denotes an API method, class, or constructor subject to extreme breaking changes in the near
+ * future.
+ */
+@MustBeDocumented
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FILE, AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER,
+    AnnotationTarget.CONSTRUCTOR)
+annotation class Volatile(val value: String = "")
