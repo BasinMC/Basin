@@ -19,6 +19,8 @@ package org.basinmc.faucet.event;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+import org.basinmc.faucet.event.handler.EventHandler;
 
 /**
  * Provides an event management system which will automatically post events to all registered
@@ -34,6 +36,13 @@ public interface EventBus {
    * @param <S> identifies the desired return state (as specified by the event listeners).
    */
   <S> S post(@NonNull Event<S> event);
+
+  /**
+   * Subscribes an arbitrary event handler to this particular bus.
+   *
+   * @param handler a handler implementation.
+   */
+  void subscribe(@Nonnull EventHandler handler);
 
   void subscribe(@NonNull Object listener);
 
