@@ -18,21 +18,19 @@
 package org.basinmc.faucet.world
 
 
-import org.basinmc.faucet.math.Direction
-import org.basinmc.faucet.math.Vector3
-import org.basinmc.faucet.math.WorldPosition
+import org.basinmc.faucet.math.*
 
 /**
  * Represents something with an absolute position in the world.
  */
-interface WorldObject {
+interface WorldObject { // TODO: Differentiate between entities and objects?
 
   /**
    * Get an immutable copy of this object's position in the world at this moment.
    *
    * @return a world position
    */
-  val position: WorldPosition
+  val position: WorldVectorDouble
 
   /**
    * Move the object within the same world. In implementations for axis-aligned objects
@@ -43,7 +41,7 @@ interface WorldObject {
    * @param vector the translation vector
    * @return an instance of the new object, or the same object if no change occured.
    */
-  fun translate(vector: Vector3): WorldObject
+  fun translate(vector: Vector3Double): WorldObject
 
   /**
    * Checks for an object in the world of the *same type* as this and returns it if it

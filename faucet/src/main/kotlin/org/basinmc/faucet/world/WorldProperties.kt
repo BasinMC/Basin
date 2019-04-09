@@ -17,14 +17,14 @@
  */
 package org.basinmc.faucet.world
 
-import org.basinmc.faucet.math.BlockAlignedVector3
-import org.basinmc.faucet.math.Vector2I
+import org.basinmc.faucet.math.Vector2Int
+import org.basinmc.faucet.math.Vector3Int
 
 /**
  * Represents various properties about a world. Default values are taken from
  * net.minecraft.world.storage.WorldInfo
  */
-class WorldProperties(private var spawn: BlockAlignedVector3?,
+class WorldProperties(private var spawn: Vector3Int?,
     @Deprecated("NMS Magic Number")
     val dimensionId: Int, // TODO: Deprecated NMS magic number - Really necessary?
     private var name: String?) {
@@ -58,11 +58,11 @@ class WorldProperties(private var spawn: BlockAlignedVector3?,
     return this
   }
 
-  fun getSpawn(): BlockAlignedVector3? {
+  fun getSpawn(): Vector3Int? {
     return spawn
   }
 
-  fun setSpawn(spawn: BlockAlignedVector3): WorldProperties {
+  fun setSpawn(spawn: Vector3Int): WorldProperties {
     this.spawn = spawn
     return this
   }
@@ -127,7 +127,7 @@ class WorldProperties(private var spawn: BlockAlignedVector3?,
    */
   class Border {
 
-    private var center = Vector2I(0, 0)
+    private var center = Vector2Int(0, 0)
     private var radius = 6.0E7
     private var safeZone = 5.0
     private var damage = 0.2
@@ -139,11 +139,11 @@ class WorldProperties(private var spawn: BlockAlignedVector3?,
      *
      * @return a 2 dimensional integer vector
      */
-    fun getCenter(): Vector2I {
+    fun getCenter(): Vector2Int {
       return center
     }
 
-    fun setCenter(center: Vector2I): Border {
+    fun setCenter(center: Vector2Int): Border {
       this.center = center
       return this
     }

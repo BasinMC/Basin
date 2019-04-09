@@ -19,6 +19,7 @@ package org.basinmc.faucet.world
 
 import org.basinmc.faucet.entity.Entity
 import org.basinmc.faucet.math.Vector3
+import org.basinmc.faucet.math.Vector3Double
 import java.util.*
 
 interface World {
@@ -49,7 +50,7 @@ interface World {
    * @return a set of entities within the sphere
    */
   // TODO: get operator?
-  fun getEntitiesAt(location: Vector3, radius: Double): Set<Entity>
+  fun getEntitiesAt(location: Vector3Double, radius: Double): Set<Entity>
 
 
 }

@@ -19,7 +19,7 @@ package org.basinmc.faucet.entity
 
 import org.basinmc.faucet.capability.CapabilityHolder
 import org.basinmc.faucet.math.Direction
-import org.basinmc.faucet.math.Vector3
+import org.basinmc.faucet.math.Vector3Double
 import org.basinmc.faucet.world.WorldObject
 
 /**
@@ -47,7 +47,7 @@ interface Entity : CapabilityHolder, WorldObject {
    *
    * @return a motion vector
    */
-  val motion: Vector3
+  val motion: Vector3Double
 
   /**
    * Check if the entity is dead. This does not have anything to do with the entity existing on the
@@ -62,7 +62,7 @@ interface Entity : CapabilityHolder, WorldObject {
   val isValid: Boolean
 
   // TODO: Plus Assign operator?
-  override fun translate(vector: Vector3): Entity
+  override fun translate(vector: Vector3Double): Entity
 
   override fun getOffset(direction: Direction): Entity?
 }

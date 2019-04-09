@@ -20,6 +20,7 @@ package org.basinmc.faucet.world
 import org.basinmc.faucet.capability.CapabilityHolder
 import org.basinmc.faucet.math.Direction
 import org.basinmc.faucet.math.Vector3
+import org.basinmc.faucet.math.Vector3Double
 
 /**
  * Represents a block in the world
@@ -31,6 +32,6 @@ interface Block : CapabilityHolder, WorldObject {
    */
   val type: BlockType
 
-  override fun translate(vector: Vector3): Block
+  override fun translate(vector: Vector3Double): Block
   override fun getOffset(direction: Direction): Block
 }
