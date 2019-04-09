@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.sink.plugin
+package org.basinmc.sink.extension
 
 import org.basinmc.faucet.extension.Extension
 import org.basinmc.faucet.extension.ExtensionHelper

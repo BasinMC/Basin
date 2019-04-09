@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.sink.plugin
+package org.basinmc.sink.extension
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -25,7 +25,7 @@ import org.basinmc.faucet.extension.error.ExtensionAccessException
 import org.basinmc.faucet.extension.error.ExtensionContainerException
 import org.basinmc.faucet.extension.error.ExtensionException
 import org.basinmc.faucet.extension.error.ExtensionResolverException
-import org.basinmc.sink.plugin.manifest.ExtensionManifestImpl
+import org.basinmc.sink.extension.manifest.ExtensionManifestImpl
 import org.springframework.beans.factory.config.ConfigurableBeanFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.AnnotationConfigApplicationContext

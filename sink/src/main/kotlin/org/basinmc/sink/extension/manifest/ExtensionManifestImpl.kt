@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.sink.plugin.manifest
+package org.basinmc.sink.extension.manifest
 
 import org.basinmc.chloramine.manifest.Manifest
 import org.basinmc.chloramine.manifest.error.ManifestException
