@@ -15,12 +15,13 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.network;
+package org.basinmc.faucet.network
 
 /**
  * Holds the two directions in which packets can be sent.
  */
-public enum NetDirection {
+enum class NetDirection {
+
   /**
    * Client-to-server packet
    */

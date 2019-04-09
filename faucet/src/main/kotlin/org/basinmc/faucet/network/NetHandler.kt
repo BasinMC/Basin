@@ -15,35 +15,33 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.network;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
+package org.basinmc.faucet.network
 
 /**
  * Base interface for objects that can send and receive packets.
  */
-public interface NetHandler {
+interface NetHandler {
 
   /**
    * Get the network handler's active protocol version. Versions can be found at
-   * <a href="http://wiki.vg/Protocol_History#1.11">wiki.vg</a>.
+   * [wiki.vg](http://wiki.vg/Protocol_History#1.11).
    *
    * @return the protocol version as a positive integer
    */
-    int getProtocolVersion();
+  val protocolVersion: Int
 
   /**
    * Determine which protocol versions this is capable of communicating with. Versions can
-   * be found at <a href="http://wiki.vg/Protocol_History#1.11">wiki.vg</a>.
+   * be found at [wiki.vg](http://wiki.vg/Protocol_History#1.11).
    *
    * @return an array of protocol versions
    */
-  int[] getProtocolCompatibility();
+  val protocolCompatibility: IntArray
 
   /**
    * Send a packet to this network handler.
    *
    * @param packet the packet to send
    */
-  void sendPacket(@NonNull Packet packet);
+  fun sendPacket(packet: Packet)
 }

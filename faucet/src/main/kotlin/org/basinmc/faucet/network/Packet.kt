@@ -15,12 +15,9 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.network;
-
+package org.basinmc.faucet.network
 
 /**
- * Handles the construction of packets.
+ * Represents an abstract packet of data sent over the network.
  */
-public interface PacketFactory {
-
-}
+interface Packet

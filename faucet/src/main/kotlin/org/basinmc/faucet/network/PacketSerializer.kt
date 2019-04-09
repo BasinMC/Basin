@@ -15,17 +15,14 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.network;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
+package org.basinmc.faucet.network
 
 /**
  * Converts between API objects and internal packet data types.
  *
  * @param <T> the packet type
  */
-public interface PacketSerializer<T extends Packet> {
+interface PacketSerializer<T : Packet> {
 
   /**
    * Parse the given packet's fields, storing its fields in order. If this serializer
@@ -35,7 +32,7 @@ public interface PacketSerializer<T extends Packet> {
    *
    * @param packet the packet to parse
    */
-  void accept(@NonNull T packet);
+  fun accept(packet: T)
 
   /**
    * Retrieve the value of the field at the given index.
@@ -44,8 +41,7 @@ public interface PacketSerializer<T extends Packet> {
    * @param <F> the type of the field at the given index
    * @return the field's value, or null if none is found
    */
-  @Nullable
-  <F> F read(int fieldIndex);
+  fun <F> read(fieldIndex: Int): F?
 
   /**
    * Write the given value to the field at the given index
@@ -54,5 +50,5 @@ public interface PacketSerializer<T extends Packet> {
    * @param value the value to set the field to
    * @param <F> the type of the field at the given index
    */
-  <F> void write(int fieldIndex, @Nullable F value);
+  fun <F> write(fieldIndex: Int, value: F?)
 }
