@@ -53,13 +53,13 @@ interface Entity : CapabilityHolder, WorldObject {
    * Check if the entity is dead. This does not have anything to do with the entity existing on the
    * server.
    */
-  val isDead: Boolean
+  val dead: Boolean
 
   /**
    * Check if the entity is valid. This means that the entity, alive or dead, exists somewhere on
    * the server.
    */
-  val isValid: Boolean
+  val valid: Boolean
 
   // TODO: Plus Assign operator?
   override fun translate(vector: Vector3Double): Entity
