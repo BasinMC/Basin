@@ -15,33 +15,31 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.entity;
+package org.basinmc.faucet.entity
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
-import org.basinmc.faucet.capability.CapabilityHolder;
-import org.basinmc.faucet.math.Direction;
-import org.basinmc.faucet.math.Vector3;
-import org.basinmc.faucet.world.WorldObject;
-import org.jetbrains.annotations.NotNull;
+import org.basinmc.faucet.capability.CapabilityHolder
+import org.basinmc.faucet.math.Direction
+import org.basinmc.faucet.math.Vector3
+import org.basinmc.faucet.world.WorldObject
 
 /**
  * Base interface for all entities in the game.
  */
-public interface Entity extends CapabilityHolder, WorldObject {
+interface Entity : CapabilityHolder, WorldObject {
 
   /**
    * Gets the internal entity ID of the entity. This value should not be used by API methods.
    */
-  int getId();
+  // TODO: NMS constant really necessary?
+  @Deprecated("NMS Magic Number")
+  val id: Int
 
   /**
    * Gets the entity this entity is riding, or null if the entity is not riding a vehicle.
    *
    * @return another entity
    */
-  @Nullable
-  Entity getVehicle();
+  val vehicle: Entity?
 
   /**
    * Gets the current motion values for this entity. TODO Do we really want to store motion in an
@@ -49,26 +47,22 @@ public interface Entity extends CapabilityHolder, WorldObject {
    *
    * @return a motion vector
    */
-  @NonNull
-  Vector3 getMotion();
+  val motion: Vector3
 
   /**
    * Check if the entity is dead. This does not have anything to do with the entity existing on the
    * server.
    */
-  boolean isDead();
+  val isDead: Boolean
 
   /**
    * Check if the entity is valid. This means that the entity, alive or dead, exists somewhere on
    * the server.
    */
-  boolean isValid();
+  val isValid: Boolean
 
-  @NotNull
-  @Override
-  Entity translate(@NotNull Vector3 vector);
+  // TODO: Plus Assign operator?
+  override fun translate(vector: Vector3): Entity
 
-  @org.jetbrains.annotations.Nullable
-  @Override
-  Entity getOffset(@NotNull Direction direction);
+  override fun getOffset(direction: Direction): Entity?
 }
