@@ -46,22 +46,15 @@ interface ExtensionLoadEvent<S> : ExtensionPhaseEvent<S> {
       ExtensionLoadEvent<Void>
 
   class State(mask: Int) : BitMask<State>(mask) {
+    override val definition = Companion
 
-    /**
-     * {@inheritDoc}
-     */
-    override fun createInstance(mask: Int): State {
-      return State(mask)
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun values() = listOf(LOAD)
-
-    companion object {
+    companion object : Definition<State> {
 
       val LOAD = State(1)
+
+      override val values = listOf(LOAD)
+
+      override fun newInstance(mask: Int) = State(mask)
     }
   }
 }

@@ -35,8 +35,8 @@ open class ExtensionReference(val identifier: String, val versionRange: VersionR
    * @return true if extension matches, false otherwise.
    */
   fun matches(manifest: ExtensionManifest): Boolean {
-    return manifest.identifier.equals(this.identifier, ignoreCase = true) && this.versionRange
-        .matches(manifest.version)
+    return manifest.identifier.equals(this.identifier,
+        ignoreCase = true) && manifest.version in this.versionRange
   }
 
   /**

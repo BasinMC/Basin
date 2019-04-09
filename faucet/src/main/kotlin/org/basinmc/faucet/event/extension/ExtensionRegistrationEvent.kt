@@ -46,22 +46,15 @@ interface ExtensionRegistrationEvent<S> : ExtensionPhaseEvent<S> {
       ExtensionRegistrationEvent<Void>
 
   class State(mask: Int) : BitMask<State>(mask) {
+    override val definition = Companion
 
-    /**
-     * {@inheritDoc}
-     */
-    override fun createInstance(mask: Int): State {
-      return State(mask)
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun values() = listOf(REGISTER)
-
-    companion object {
+    companion object : Definition<State> {
 
       val REGISTER = State(1)
+
+      override val values = listOf(REGISTER)
+
+      override fun newInstance(mask: Int) = State(mask)
     }
   }
 }

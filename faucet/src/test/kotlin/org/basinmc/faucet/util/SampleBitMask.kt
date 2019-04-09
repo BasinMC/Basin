@@ -14,29 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.faucet.extension.manifest
-
-import org.basinmc.faucet.util.BitMask
+package org.basinmc.faucet.util
 
 /**
- * Provides a list of valid extension flags which express additional information about a build.
+ * Sample bitmask specification for testing purposes.
  *
  * @author [Johannes Donath](mailto:johannesd@torchmind.com)
  */
-class ExtensionFlags(mask: Int) : BitMask<ExtensionFlags>(mask) {
+class SampleBitMask private constructor(mask: Int) : BitMask<SampleBitMask>(mask) {
 
   override val definition = Companion
 
-  companion object : Definition<ExtensionFlags> {
+  companion object : Definition<SampleBitMask> {
 
-    // 1 - 8 are reserved
-    val PRIVATE = ExtensionFlags(16)
-    val COMMERCIAL = ExtensionFlags(32)
-    // 64 is reserved
-    val CI_BUILD = ExtensionFlags(128)
+    val A = SampleBitMask(1 shl 0)
+    val B = SampleBitMask(1 shl 1)
+    val C = SampleBitMask(1 shl 2)
+    val D = SampleBitMask(1 shl 3)
 
-    override val values = listOf(PRIVATE, COMMERCIAL, CI_BUILD)
+    override val values = listOf(A, B, C, D)
 
-    override fun newInstance(mask: Int) = ExtensionFlags(mask)
+    override fun newInstance(mask: Int) = SampleBitMask(mask)
   }
 }

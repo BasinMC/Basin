@@ -14,29 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.faucet.extension.manifest
+package org.basinmc.faucet.util
 
-import org.basinmc.faucet.util.BitMask
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+
+import org.junit.jupiter.api.Test
 
 /**
- * Provides a list of valid extension flags which express additional information about a build.
- *
  * @author [Johannes Donath](mailto:johannesd@torchmind.com)
  */
-class ExtensionFlags(mask: Int) : BitMask<ExtensionFlags>(mask) {
+class BitMaskTest {
 
-  override val definition = Companion
+  @Test
+  fun testHas() {
+    val mask = SampleBitMask.A
+        .set(SampleBitMask.B)
+        .set(SampleBitMask.C)
 
-  companion object : Definition<ExtensionFlags> {
+    assertTrue(mask.has(SampleBitMask.A))
+    assertTrue(mask.has(SampleBitMask.B))
+    assertTrue(mask.has(SampleBitMask.C))
+    assertFalse(mask.has(SampleBitMask.D))
 
-    // 1 - 8 are reserved
-    val PRIVATE = ExtensionFlags(16)
-    val COMMERCIAL = ExtensionFlags(32)
-    // 64 is reserved
-    val CI_BUILD = ExtensionFlags(128)
-
-    override val values = listOf(PRIVATE, COMMERCIAL, CI_BUILD)
-
-    override fun newInstance(mask: Int) = ExtensionFlags(mask)
+    assertTrue(mask.has(SampleBitMask.A.set(SampleBitMask.B)))
+    assertTrue(mask.has(SampleBitMask.B.set(SampleBitMask.C)))
   }
 }
