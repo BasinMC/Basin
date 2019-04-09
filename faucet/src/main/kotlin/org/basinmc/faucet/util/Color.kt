@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.faucet.command;
+package org.basinmc.faucet.util
 
-public enum Color {
+enum class Color(val code: Char) {
   BLACK('0'),
   DARK_BLUE('1'),
   DARK_GREEN('2'),
@@ -41,20 +41,12 @@ public enum Color {
   ITALICS('o'),
   RESET('r');
 
-  private char controlCode;
-
-  public static final char PREFIX = '§';
-
-  Color(char controlCode) {
-    this.controlCode = controlCode;
+  override fun toString(): String {
+    return controlPrefix.toString() + code.toString()
   }
 
-  public char getControlCode() {
-    return controlCode;
-  }
+  companion object {
 
-  @Override
-  public String toString() {
-    return String.valueOf(PREFIX) + String.valueOf(controlCode);
+    val controlPrefix = '§'
   }
 }

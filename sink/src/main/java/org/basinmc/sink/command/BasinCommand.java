@@ -18,7 +18,7 @@ package org.basinmc.sink.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Optional;
-import org.basinmc.faucet.command.Color;
+import org.basinmc.faucet.util.Color;
 import org.basinmc.faucet.command.Communicable;
 import org.basinmc.faucet.command.annotation.Alias;
 import org.basinmc.faucet.command.annotation.Command;
