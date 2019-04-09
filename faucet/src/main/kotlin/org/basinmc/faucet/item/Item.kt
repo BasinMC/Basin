@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.faucet.item;
+package org.basinmc.faucet.item
 
-import org.basinmc.faucet.key.Keyed;
+import org.basinmc.faucet.key.Keyed
 
-public interface Item extends Keyed {
-
-}
+/**
+ * Represents a known item type within the game.
+ */
+interface Item : Keyed
