@@ -16,7 +16,6 @@
 
 package org.basinmc.faucet.event.filter
 
-import org.basinmc.faucet.internal.event.InceptionDefault
 import kotlin.reflect.KClass
 
 /**
@@ -31,10 +30,10 @@ annotation class InceptionFilter(
      * Requires that the event be posted from the specified class. If left unspecified,
      * [.classloader] must be specified.
      */
-    val type: KClass<*> = InceptionDefault::class,
+    val type: KClass<*> = Nothing::class,
 
     /**
      * Requires that the event be posted from the specified class. If left unspecified, [.type]
      * must be specified.
      */
-    val classloader: KClass<*> = InceptionDefault::class)
+    val classloader: KClass<*> = Nothing::class)
