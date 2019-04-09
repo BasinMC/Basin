@@ -42,7 +42,7 @@ public class Sink implements AutoCloseable {
   }
 
   public void onStart() {
-    logger.info("Basin Sink v%s entered startup", SinkVersion.IMPLEMENTATION_VERSION);
+    logger.info("Basin Sink v%s entered startup", SinkVersion.INSTANCE.getVersion());
 
     logger.debug("Performing Spring Context initialization");
     this.context.refresh();
