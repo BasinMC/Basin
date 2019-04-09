@@ -14,12 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+buildscript {
+  ext.kotlin_version = '1.3.21'
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
 description = 'Faucet Test Plugin'
 
+apply plugin: 'kotlin'
 apply plugin: 'java'
 
 dependencies {
-    compile project(':faucet')
+  compile project(':faucet')
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 sourceCompatibility = '10'
+
+repositories {
+  mavenCentral()
+}
+
+compileKotlin {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}
+
+compileTestKotlin {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}

@@ -27,6 +27,7 @@ buildscript {
 
   dependencies {
     classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
 }
 
@@ -50,6 +51,7 @@ ext {
 
 project(':sink:mcp') {
   apply plugin: 'net.minecraftforge.gradle.forgedev.mcp'
+
   mcp {
     config = MC_VERSION + '-' + MCP_VERSION
     pipeline = 'joined'
@@ -86,6 +88,7 @@ project(':sink:clean') {
 project(':sink:server') {
   evaluationDependsOn(':sink:clean')
 
+  apply plugin: 'kotlin'
   apply plugin: 'java-library'
   apply plugin: 'maven-publish'
   apply plugin: 'net.minecraftforge.gradle.forgedev.patcher'
@@ -100,8 +103,9 @@ project(':sink:server') {
 
   sourceSets {
     main {
-      java {
+      kotlin {
         srcDir "$rootDir/sink/src/main/java"
+        srcDir "$rootDir/sink/src/main/kotlin"
       }
       resources {
         srcDir "$rootDir/sink/src/main/resources"
@@ -166,6 +170,7 @@ project(':sink:server') {
     implementation 'org.basinmc.chloramine:manifest'
 
     compileOnly 'com.github.spotbugs:spotbugs-annotations'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile 'io.reactivex.rxjava2:rxjava:2.2.8'
     compile 'org.springframework:spring-context'
 
@@ -178,6 +183,18 @@ project(':sink:server') {
     api 'com.google.code.gson:gson'
     api 'com.google.guava:guava'
     api 'com.paulscode:soundsystem'
+  }
+
+  compileKotlin {
+    kotlinOptions {
+      jvmTarget = "1.8"
+    }
+  }
+
+  compileTestKotlin {
+    kotlinOptions {
+      jvmTarget = "1.8"
+    }
   }
 
   task runserver(type: JavaExec) {
