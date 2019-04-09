@@ -15,50 +15,43 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.world;
+package org.basinmc.faucet.world
 
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
-import org.basinmc.faucet.math.Direction;
-import org.basinmc.faucet.math.Vector3;
-import org.basinmc.faucet.math.WorldPosition;
+import org.basinmc.faucet.math.Direction
+import org.basinmc.faucet.math.Vector3
+import org.basinmc.faucet.math.WorldPosition
 
 /**
  * Represents something with an absolute position in the world.
- *
- * @param <T> The type of object it is.
  */
-public interface WorldObject<T extends WorldObject> {
+interface WorldObject {
 
   /**
    * Get an immutable copy of this object's position in the world at this moment.
    *
    * @return a world position
    */
-  @NonNull
-  WorldPosition getPosition();
+  val position: WorldPosition
 
   /**
    * Move the object within the same world. In implementations for axis-aligned objects
-   * (e.g. {@link Block}) the vector should be floored before the transformation occurs.
+   * (e.g. [Block]) the vector should be floored before the transformation occurs.
    * If the implementation is mutable, then this will return the same object; if it is not,
    * this will return a new object to refer to the object at its new location.
    *
    * @param vector the translation vector
    * @return an instance of the new object, or the same object if no change occured.
    */
-  @NonNull
-  T translate(@NonNull Vector3 vector);
+  fun translate(vector: Vector3): WorldObject
 
   /**
-   * Checks for an object in the world of the <i>same type</i> as this and returns it if it
+   * Checks for an object in the world of the *same type* as this and returns it if it
    * exists. While this would likely be useless for entities, axis-aligned objects such as
    * blocks can be easily compared with this method.
    *
    * @param direction the direction relative to this object from which to search
    * @return an existing world object of same type, or null if none is found
    */
-  @Nullable
-  T getOffset(Direction direction);
+  fun getOffset(direction: Direction): WorldObject?
 }

@@ -15,20 +15,19 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.world;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
-import org.basinmc.faucet.capability.CapabilityHolder;
+package org.basinmc.faucet.world
 
 /**
- * Represents a block in the world
+ * Represents a generic type of block.
  */
-public interface Block extends CapabilityHolder, WorldObject<Block> {
-
-  /**
-   * Get the material type associated with this block
-   */
-  @NonNull
-  BlockType getBlockType();
-
-}
+// TODO: Automatically generate from NMS code?
+class BlockType(
+    val fullBlock: Boolean,
+    val translucent: Boolean,
+    val tileEntity: Boolean,
+    val randomTick: Boolean,
+    val hardness: Float,
+    val explosionResistance: Float,
+    val slide: Float,
+    val luminosity: Int,
+    val name: String)

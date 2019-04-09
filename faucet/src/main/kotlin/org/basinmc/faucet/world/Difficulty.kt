@@ -15,21 +15,22 @@
  * limitations under the License.
  *
  */
-package org.basinmc.faucet.world;
+package org.basinmc.faucet.world
 
-public enum Gamemode {
-  SURVIVAL(0),
-  CREATIVE(1),
-  ADVENTURE(2),
-  SPECTATOR(3);
+/**
+ * Represents the different difficulty values a world can have
+ */
+enum class Difficulty(
+    /**
+     * Get the int value used internally by Minecraft for this difficulty
+     *
+     * @return A number between 0 and 3 inclusive
+     */
+    @Deprecated("NMS Magic Number")
+    val id: Int) { // TODO: Deprecated NMS magic number - Really necessary?
 
-  final int id;
-
-  Gamemode(int id) {
-    this.id = id;
-  }
-
-  public int getId() {
-    return id;
-  }
+  PEACEFUL(0),
+  EASY(1),
+  NORMAL(2),
+  HARD(3)
 }

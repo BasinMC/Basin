@@ -15,15 +15,13 @@
  *  limitations under the License.
  *
  */
-package org.basinmc.faucet.world;
+package org.basinmc.faucet.world
 
-import java.util.Random;
-import java.util.Set;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import org.basinmc.faucet.entity.Entity;
-import org.basinmc.faucet.math.Vector3;
+import org.basinmc.faucet.entity.Entity
+import org.basinmc.faucet.math.Vector3
+import java.util.*
 
-public interface World {
+interface World {
 
   /**
    * Retrieve the world's associated properties object. Changes to this object should
@@ -31,14 +29,17 @@ public interface World {
    *
    * @return a properties object
    */
-  @NonNull
-  WorldProperties getProperties();
+  val properties: WorldProperties
 
   /**
    * Gets a set of entities in this world, even if they're dead.
    */
-  @NonNull
-  Set<Entity> getEntities();
+  val entities: Set<Entity>
+
+  /**
+   * Gets the Random object used by the internal Minecraft world.
+   */
+  val random: Random
 
   /**
    * Searches the given spherical area for entities.
@@ -47,14 +48,8 @@ public interface World {
    * @param radius the radius of the search sphere
    * @return a set of entities within the sphere
    */
-  @NonNull
-  Set<Entity> getEntitiesAt(Vector3 location, double radius);
-
-  /**
-   * Gets the Random object used by the internal Minecraft world.
-   */
-  @NonNull
-  Random getWorldRandom();
+  // TODO: get operator?
+  fun getEntitiesAt(location: Vector3, radius: Double): Set<Entity>
 
 
 }

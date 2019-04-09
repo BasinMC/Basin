@@ -20,23 +20,23 @@ package org.basinmc.faucet.entity;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.basinmc.faucet.capability.CapabilityHolder;
+import org.basinmc.faucet.math.Direction;
 import org.basinmc.faucet.math.Vector3;
 import org.basinmc.faucet.world.WorldObject;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base interface for all entities in the game.
  */
-public interface Entity extends CapabilityHolder, WorldObject<Entity> {
+public interface Entity extends CapabilityHolder, WorldObject {
 
   /**
-   * Gets the internal entity ID of the entity. This value should not be used
-   * by API methods.
+   * Gets the internal entity ID of the entity. This value should not be used by API methods.
    */
   int getId();
 
   /**
-   * Gets the entity this entity is riding, or null if the entity is not
-   * riding a vehicle.
+   * Gets the entity this entity is riding, or null if the entity is not riding a vehicle.
    *
    * @return another entity
    */
@@ -44,8 +44,8 @@ public interface Entity extends CapabilityHolder, WorldObject<Entity> {
   Entity getVehicle();
 
   /**
-   * Gets the current motion values for this entity.
-   * TODO Do we really want to store motion in an immutable vector? Let's figure this out later.
+   * Gets the current motion values for this entity. TODO Do we really want to store motion in an
+   * immutable vector? Let's figure this out later.
    *
    * @return a motion vector
    */
@@ -53,14 +53,22 @@ public interface Entity extends CapabilityHolder, WorldObject<Entity> {
   Vector3 getMotion();
 
   /**
-   * Check if the entity is dead. This does not have anything to do with the entity existing
-   * on the server.
+   * Check if the entity is dead. This does not have anything to do with the entity existing on the
+   * server.
    */
   boolean isDead();
 
   /**
-   * Check if the entity is valid. This means that the entity, alive or dead, exists somewhere
-   * on the server.
+   * Check if the entity is valid. This means that the entity, alive or dead, exists somewhere on
+   * the server.
    */
   boolean isValid();
+
+  @NotNull
+  @Override
+  Entity translate(@NotNull Vector3 vector);
+
+  @org.jetbrains.annotations.Nullable
+  @Override
+  Entity getOffset(@NotNull Direction direction);
 }
