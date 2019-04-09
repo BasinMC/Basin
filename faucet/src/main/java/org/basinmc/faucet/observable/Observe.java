@@ -23,8 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates a method that will have an {@link Observer} generated at runtime
- * for it.
+ * Annotates a method that will have an generated at runtime for it.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -32,9 +31,8 @@ public @interface Observe {
 
   /**
    * Represents the type of the property that will be listened to.
-   * See the type parameter of {@link Observer}
    *
    * @return The type of the property
    */
-  Class<? extends ObservableProperty> value();
+  Class<?> value();
 }
