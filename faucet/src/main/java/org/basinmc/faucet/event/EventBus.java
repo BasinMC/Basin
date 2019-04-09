@@ -42,7 +42,8 @@ public interface EventBus {
    *
    * @param handler a handler implementation.
    */
-  void subscribe(@Nonnull EventHandler handler);
+  @NonNull
+  Subscription subscribe(@Nonnull EventHandler handler);
 
   /**
    * Scans the supplied object for compatible event handler methods and registers them with this
@@ -53,7 +54,8 @@ public interface EventBus {
    *
    * @param listener an arbitrary object.
    */
-  void subscribe(@NonNull Object listener);
+  @NonNull
+  Subscription subscribe(@NonNull Object listener);
 
   /**
    * Subscribes the specified runnable functional to an arbitrary event.
@@ -62,7 +64,9 @@ public interface EventBus {
    * @param runnable an arbitrary runnable which is invoked when the event is received.
    * @param <E> an event type.
    */
-  <E extends Event<?>> void subscribe(@NonNull Class<E> eventClass, @NonNull Runnable runnable);
+  @NonNull
+  <E extends Event<?>> Subscription subscribe(@NonNull Class<E> eventClass,
+      @NonNull Runnable runnable);
 
   /**
    * Subscribes the specified consumer functional to an arbitrary event.
@@ -71,5 +75,7 @@ public interface EventBus {
    * @param consumer an event.
    * @param <E> an event type.
    */
-  <E extends Event<?>> void subscribe(@NonNull Class<E> eventClass, @NonNull Consumer<E> consumer);
+  @NonNull
+  <E extends Event<?>> Subscription subscribe(@NonNull Class<E> eventClass,
+      @NonNull Consumer<E> consumer);
 }
