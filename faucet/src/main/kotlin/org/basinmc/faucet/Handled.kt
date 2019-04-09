@@ -15,9 +15,7 @@
 * limitations under the License.
 */
 
-package org.basinmc.faucet;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
+package org.basinmc.faucet
 
 /**
  * Represents a type that wraps another type. This would primarily be used for API-NMS
@@ -25,8 +23,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  *
  * @param <T> The type being wrapped
  */
-public interface Handled<T> {
+interface Handled<out T> {
 
-  @NonNull
-  T getHandle();
+  val handle: T
 }

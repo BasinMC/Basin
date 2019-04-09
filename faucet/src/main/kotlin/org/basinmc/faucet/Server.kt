@@ -1,12 +1,12 @@
 /*
- * Copyright 2016 Johannes Donath <johannesd@torchmind.com>
+ * Copyright 2019 Johannes Donath <johannesd@torchmind.com>
  * and other copyright owners as documented in the project's IP log.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,46 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.basinmc.faucet;
+package org.basinmc.faucet
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
-import java.nio.file.Path;
+import java.nio.file.Path
 
 /**
- * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
+ * @author [Johannes Donath](mailto:johannesd@torchmind.com)
  */
-public interface Server {
-
-  /**
-   * Retrieves the currently active API version.
-   */
-  @NonNull
-  default String getApiVersion() {
-    Package p = this.getClass().getPackage();
-
-    if (p != null) {
-      String specificationVersion = p.getSpecificationVersion();
-
-      if (specificationVersion != null) {
-        return specificationVersion;
-      }
-    }
-
-    return "1.0.0-SNAPSHOT";
-  }
+interface Server {
 
   /**
    * Retrieves a path pointing at the base server directory.
    */
-  @NonNull
-  Path getBaseDirectory();
+  val baseDirectory: Path
 
   /**
    * Retrieves a mutable representation of the server configuration.
    */
-  @NonNull
-  Configuration getConfiguration();
+  val configuration: Configuration
 
   /**
    * Retrieves the overall time the server has been running for in game ticks.
@@ -61,13 +39,12 @@ public interface Server {
    * This number is equal to the amount of ticks processed by the server during its runtime and thus
    * may differ from the usual 20 ticks = 1 second scale.
    */
-  int getLifeTime();
+  val lifeTime: Int
 
   /**
    * Retrieves the currently active server version (as in game version such as 1.9.4 or 1.10).
    */
-  @NonNull
-  String getVersion();
+  val version: String
 
   /**
    * Checks whether the server authenticates against Mojang or whether any player can join
@@ -75,7 +52,7 @@ public interface Server {
    *
    * @return true if in online mode, false otherwise.
    */
-  boolean isOnlineMode();
+  val isOnlineMode: Boolean
 
   /**
    * Stop the server gracefully with a given reason. The reason will be printed to the console and
@@ -85,36 +62,25 @@ public interface Server {
    *
    * @param reason The reason the server is shutting down (if null, "Server Shutdown" is used).
    */
-  @Deprecated
-  void shutdown(@Nullable String reason);
+  @Deprecated("")
+  fun shutdown(reason: String?)
 
   interface Configuration {
 
     /**
-     * Checks whether command blocks are enabled on the server.
-     *
-     * When true, opped players in creative mode will be able to alter command blocks as well as
-     * place new ones in the world.
-     *
-     * @return true if enabled, false otherwise.
-     */
-    boolean areCommandBlocksEnabled();
-
-    /**
      * Retrieves the address the server is configured to listen on.
      */
-    @NonNull
-    String getHostname();
+    val hostname: String
 
     /**
      * Retrieves the maximum amount of concurrent players connected to the server.
      */
-    int getMaximumConcurrentPlayers();
+    val maximumConcurrentPlayers: Int
 
     /**
      * Retrieves the maximum height players are allowed to build at.
      */
-    int getMaximumBuildHeight();
+    val maximumBuildHeight: Int
 
     /**
      * Retrieves the maximum amount a server is allowed to wait for a single tick to process before
@@ -123,28 +89,28 @@ public interface Server {
      * A value of -1 indicates, that the watchdog shall not shutdown the server regardless of how
      * long a tick needs to process.
      */
-    long getMaximumTickTime();
+    val maximumTickTime: Long
 
     /**
      * Retrieves the threshold at which plugins will be compressed.
      *
      * @return a threshold in bytes.
      */
-    int getNetworkCompressionThreshold();
+    val networkCompressionThreshold: Int
 
     /**
      * Retrieves the operator permission level.
      *
      * Each level grants an additional set of permissions in the vanilla permission system as
-     * follows: <ul> <li><strong>1</strong> - Allows operators to bypass spawn protection.</li> <li>
-     * <strong>2</strong> - Allows operators to utilize /clear, /difficulty, /effect, /gamemode,
-     * /gamerule, /give, and /tp, and can edit command blocks. </li> <li><strong>3</strong> - Allows
-     * operators to utilize /ban, /deop, /kick, and /op</li> <li><strong>4</strong> - Allows
-     * operators to utilize /stop</li> </ul>
+     * follows:   * **1** - Allows operators to bypass spawn protection.  *
+     * **2** - Allows operators to utilize /clear, /difficulty, /effect, /gamemode,
+     * /gamerule, /give, and /tp, and can edit command blocks.   * **3** - Allows
+     * operators to utilize /ban, /deop, /kick, and /op  * **4** - Allows
+     * operators to utilize /stop
      *
      * @return an operator permission level.
      */
-    int getOperatorPermissionLevel();
+    val operatorPermissionLevel: Int
 
     /**
      * Retrieves the maximum amount of minutes a player is allowed to idle before being kicked from
@@ -152,40 +118,39 @@ public interface Server {
      *
      * If set to zero, players will not be kicked for idling.
      */
-    int getPlayerIdleTimeout();
+    val playerIdleTimeout: Int
 
     /**
      * Retrieves the port the server is listening on for server status queries.
      */
-    int getQueryPort();
+    val queryPort: Int
 
     /**
      * Retrieves the password used for authentication purposes on the remote console (RCon) server.
      */
-    @NonNull
-    String getRemoteConsolePassword();
+    val remoteConsolePassword: String
 
     /**
      * Retrieves the port the server is listening on for remote console (RCon) connections.
      */
-    int getRemoteConsolePort();
+    val remoteConsolePort: Int
 
     /**
      * Retrieves the radius (in blocks) which is protected from building by operators.
      */
-    int getSpawnProtectionRadius();
+    val spawnProtectionRadius: Int
 
     /**
      * Retrieves a player's view distance in chunks.
      */
-    int getViewDistance();
+    val viewDistance: Int
 
     /**
      * Checks whether flying is allowed outside of creative mode.
      *
      * @return true if allowed, false otherwise.
      */
-    boolean isFlightAllowed();
+    val isFlightAllowed: Boolean
 
     /**
      * Checks whether player game modes will be updated according to the default setting upon
@@ -193,14 +158,14 @@ public interface Server {
      *
      * @return true if enabled, false otherwise.
      */
-    boolean isGamemodeForced();
+    val isGamemodeForced: Boolean
 
     /**
      * Checks whether a world is set to hardcore and thus does not allow players to respawn.
      *
      * @return true if hardcore, false otherwise.
      */
-    boolean isHardcore();
+    val isHardcore: Boolean
 
     /**
      * Checks whether native transport is enabled on the server.
@@ -210,41 +175,51 @@ public interface Server {
      *
      * @return true if enabled, false otherwise.
      */
-    boolean isNativeTransportEnabled();
+    val isNativeTransportEnabled: Boolean
 
     /**
      * Checks whether players are allowed to enter the nether.
      *
      * @return true if allowed, false otherwise.
      */
-    boolean isNetherAllowed();
+    val isNetherAllowed: Boolean
 
     /**
      * Checks whether PvP (Player vs. Player) is allowed on the server.
      *
      * @return true if enabled, false otherwise.
      */
-    boolean isPvpEnabled();
+    val isPvpEnabled: Boolean
 
     /**
      * Checks whether the server listens for remote console (RCon) connections.
      *
      * @return true if enabled, false otherwise.
      */
-    boolean isRemoteConsoleEnabled();
+    val isRemoteConsoleEnabled: Boolean
 
     /**
      * Checks whether the query server is enabled.
      *
      * @return true if enabled, false otherwise.
      */
-    boolean isQueryEnabled();
+    val isQueryEnabled: Boolean
 
     /**
      * Checks whether Minecraft's statistics collection is enabled.
      *
      * @return true if enabled, false otherwise.
      */
-    boolean isSnooperEnabled();
+    val isSnooperEnabled: Boolean
+
+    /**
+     * Checks whether command blocks are enabled on the server.
+     *
+     * When true, opped players in creative mode will be able to alter command blocks as well as
+     * place new ones in the world.
+     *
+     * @return true if enabled, false otherwise.
+     */
+    val commandBlocksEnabled: Boolean
   }
 }

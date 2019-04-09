@@ -119,7 +119,7 @@ public class SinkServer implements Server, Handled<MinecraftServer> {
      * {@inheritDoc}
      */
     @Override
-    public boolean areCommandBlocksEnabled() {
+    public boolean getCommandBlocksEnabled() {
       return SinkServer.this.server.isCommandBlockEnabled();
     }
 
