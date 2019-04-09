@@ -16,7 +16,6 @@
  */
 package org.basinmc.faucet.extension.dependency
 
-import java.util.Objects
 import org.basinmc.faucet.util.Version
 
 /**
@@ -27,24 +26,19 @@ import org.basinmc.faucet.util.Version
  */
 class ServiceVersion(val identifier: String, val version: Version) {
 
-  /**
-   * {@inheritDoc}
-   */
   override fun equals(other: Any?): Boolean {
-    if (this === other) {
-      return true
-    }
-    if (other !is ServiceVersion) {
-      return false
-    }
-    val that = other as ServiceVersion?
-    return this.identifier == that!!.identifier && this.version == that.version
+    if (this === other) return true
+    if (other !is ServiceVersion) return false
+
+    if (identifier != other.identifier) return false
+    if (version != other.version) return false
+
+    return true
   }
 
-  /**
-   * {@inheritDoc}
-   */
   override fun hashCode(): Int {
-    return Objects.hash(this.identifier, this.version)
+    var result = identifier.hashCode()
+    result = 31 * result + version.hashCode()
+    return result
   }
 }

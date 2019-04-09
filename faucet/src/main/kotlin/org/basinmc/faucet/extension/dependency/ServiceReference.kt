@@ -16,7 +16,6 @@
  */
 package org.basinmc.faucet.extension.dependency
 
-import java.util.Objects
 import org.basinmc.faucet.util.VersionRange
 
 /**
@@ -27,24 +26,19 @@ import org.basinmc.faucet.util.VersionRange
  */
 open class ServiceReference(val baseClassName: String, val versionRange: VersionRange) {
 
-  /**
-   * {@inheritDoc}
-   */
   override fun equals(other: Any?): Boolean {
-    if (this === other) {
-      return true
-    }
-    if (other !is ServiceReference) {
-      return false
-    }
-    val that = other as ServiceReference?
-    return this.baseClassName == that!!.baseClassName && this.versionRange == that.versionRange
+    if (this === other) return true
+    if (other !is ServiceReference) return false
+
+    if (baseClassName != other.baseClassName) return false
+    if (versionRange != other.versionRange) return false
+
+    return true
   }
 
-  /**
-   * {@inheritDoc}
-   */
   override fun hashCode(): Int {
-    return Objects.hash(this.baseClassName, this.versionRange)
+    var result = baseClassName.hashCode()
+    result = 31 * result + versionRange.hashCode()
+    return result
   }
 }

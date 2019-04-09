@@ -17,7 +17,6 @@
 package org.basinmc.faucet.extension.dependency
 
 import org.basinmc.faucet.util.VersionRange
-import java.util.*
 
 /**
  * Represents a dependency to another extension.
@@ -25,30 +24,22 @@ import java.util.*
  * @author [Johannes Donath](mailto:johannesd@torchmind.com)
  * @since 1.0
  */
-class ExtensionDependency(identifier: String, versionRange: VersionRange,
-    val isOptional: Boolean) : ExtensionReference(identifier, versionRange) {
+class ExtensionDependency(identifier: String, versionRange: VersionRange, val optional: Boolean) :
+    ExtensionReference(identifier, versionRange) {
 
-  /**
-   * {@inheritDoc}
-   */
   override fun equals(other: Any?): Boolean {
-    if (this === other) {
-      return true
-    }
-    if (other !is ExtensionDependency) {
-      return false
-    }
-    if (!super.equals(other)) {
-      return false
-    }
-    val that = other as ExtensionDependency?
-    return this.isOptional == that!!.isOptional
+    if (this === other) return true
+    if (other !is ExtensionDependency) return false
+    if (!super.equals(other)) return false
+
+    if (optional != other.optional) return false
+
+    return true
   }
 
-  /**
-   * {@inheritDoc}
-   */
   override fun hashCode(): Int {
-    return Objects.hash(super.hashCode(), this.isOptional)
+    var result = super.hashCode()
+    result = 31 * result + optional.hashCode()
+    return result
   }
 }

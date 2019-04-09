@@ -18,7 +18,6 @@ package org.basinmc.faucet.extension.dependency
 
 import org.basinmc.faucet.extension.manifest.ExtensionManifest
 import org.basinmc.faucet.util.VersionRange
-import java.util.*
 
 /**
  * Represents a reference to one or more versions of a given extension.
@@ -39,24 +38,20 @@ open class ExtensionReference(val identifier: String, val versionRange: VersionR
         ignoreCase = true) && manifest.version in this.versionRange
   }
 
-  /**
-   * {@inheritDoc}
-   */
   override fun equals(other: Any?): Boolean {
-    if (this === other) {
-      return true
-    }
-    if (other !is ExtensionReference) {
-      return false
-    }
-    val that = other as ExtensionReference?
-    return this.identifier == that!!.identifier && this.versionRange == that.versionRange
+    if (this === other) return true
+    if (other !is ExtensionReference) return false
+
+    if (identifier != other.identifier) return false
+    if (versionRange != other.versionRange) return false
+
+    return true
   }
 
-  /**
-   * {@inheritDoc}
-   */
   override fun hashCode(): Int {
-    return Objects.hash(this.identifier, this.versionRange)
+    var result = identifier.hashCode()
+    result = 31 * result + versionRange.hashCode()
+    return result
   }
+
 }

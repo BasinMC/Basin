@@ -98,7 +98,7 @@ class ExtensionImpl @Throws(ExtensionException::class) internal constructor(
   @Throws(ExtensionContainerException::class)
   internal fun resolve() {
     val unresolvedExtensions = this.manifest.extensionDependencies
-        .filter { dep -> !dep.isOptional }
+        .filter { dep -> !dep.optional }
         .filter { dep -> this.resolvedDependencies.none { dep.matches(it.manifest) } }
 
     // TODO: Resolve services
@@ -129,7 +129,7 @@ class ExtensionImpl @Throws(ExtensionException::class) internal constructor(
     unresolvedExtensions.stream()
         .filter { e ->
           val source = this.resolvedDependencySources[e]
-          source != null && source.isOptional
+          source != null && source.optional
         }
         .forEach { e ->
           this.logger
@@ -141,7 +141,7 @@ class ExtensionImpl @Throws(ExtensionException::class) internal constructor(
         }
     val requiredUnresolvedExtensions = unresolvedExtensions
         .filter { e ->
-          this.resolvedDependencySources[e]?.takeIf(ExtensionDependency::isOptional) == null
+          this.resolvedDependencySources[e]?.takeIf(ExtensionDependency::optional) == null
         }
 
     if (!requiredUnresolvedExtensions.isEmpty()) {
