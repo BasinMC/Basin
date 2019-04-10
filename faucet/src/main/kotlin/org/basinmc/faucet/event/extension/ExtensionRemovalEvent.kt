@@ -16,6 +16,7 @@
  */
 package org.basinmc.faucet.event.extension
 
+import org.basinmc.faucet.event.StatelessEvent
 import org.basinmc.faucet.extension.Extension
 import org.basinmc.faucet.extension.Extension.Phase
 
@@ -24,7 +25,7 @@ import org.basinmc.faucet.extension.Extension.Phase
  *
  * @author [Johannes Donath](mailto:johannesd@torchmind.com)
  */
-interface ExtensionRemovalEvent : ExtensionPhaseEvent<Void> {
+interface ExtensionRemovalEvent : ExtensionPhaseEvent<Unit> {
 
   /**
    * {@inheritDoc}
@@ -38,7 +39,9 @@ interface ExtensionRemovalEvent : ExtensionPhaseEvent<Void> {
   override val targetPhase: Phase
     get() = Phase.NONE
 
-  class Pre(extension: Extension) : AbstractExtensionEvent<Void>(extension), ExtensionRemovalEvent
+  class Pre(extension: Extension) : AbstractExtensionEvent<Unit>(extension), ExtensionRemovalEvent,
+      StatelessEvent
 
-  class Post(extension: Extension) : AbstractExtensionEvent<Void>(extension), ExtensionRemovalEvent
+  class Post(extension: Extension) : AbstractExtensionEvent<Unit>(extension), ExtensionRemovalEvent,
+      StatelessEvent
 }

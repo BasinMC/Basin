@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Johannes Donath <johannesd@torchmind.com>
+ * Copyright 2019 Johannes Donath <johannesd@torchmind.com>
  * and other copyright owners as documented in the project's IP log.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,16 +17,15 @@
 package org.basinmc.faucet.event
 
 /**
- * Marks the annotated type as an event which may be passed to the local event bus.
+ * Provides an extension to the standard event type which does not contain any mutable output state.
  *
- * @author [Johannes Donath](mailto:johannesd@torchmind.com)
+ * Note that events of this type will simply internally refer to [Unit] in order to represent their
+ * state rather than defining no state at all.
+ *
+ * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-interface Event<out STATE> {
+interface StatelessEvent : Event<Unit> {
 
-  /**
-   * Retrieves the default state for this event's execution context.
-   *
-   * @return an arbitrary state.
-   */
-  val defaultState: STATE
+  override val defaultState: Unit
+    get() = Unit
 }

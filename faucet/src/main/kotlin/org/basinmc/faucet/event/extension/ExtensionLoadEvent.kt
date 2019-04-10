@@ -16,6 +16,7 @@
  */
 package org.basinmc.faucet.event.extension
 
+import org.basinmc.faucet.event.StatelessEvent
 import org.basinmc.faucet.extension.Extension
 import org.basinmc.faucet.extension.Extension.Phase
 import org.basinmc.faucet.util.BitMask
@@ -42,8 +43,8 @@ interface ExtensionLoadEvent<S> : ExtensionPhaseEvent<S> {
   class Pre constructor(extension: Extension, state: State = State.LOAD) :
       AbstractStatefulExtensionEvent<State>(extension, state), ExtensionLoadEvent<State>
 
-  class Post(extension: Extension) : AbstractExtensionEvent<Void>(extension),
-      ExtensionLoadEvent<Void>
+  class Post(extension: Extension) : AbstractExtensionEvent<Unit>(extension),
+      ExtensionLoadEvent<Unit>, StatelessEvent
 
   class State(mask: Int) : BitMask<State>(mask) {
     override val definition = Companion
