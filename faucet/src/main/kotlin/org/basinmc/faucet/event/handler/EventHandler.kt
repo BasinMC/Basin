@@ -17,6 +17,8 @@
 package org.basinmc.faucet.event.handler
 
 import org.basinmc.faucet.event.Event
+import org.basinmc.faucet.util.Priority
+import javax.naming.event.EventContext
 
 /**
  * Represents an arbitrary event handler which is notified of one or more event types within the
@@ -24,7 +26,13 @@ import org.basinmc.faucet.event.Event
  *
  * @author [Johannes Donath](mailto:johannesd@torchmind.com)
  */
-interface EventHandler {
+interface EventHandler : Comparable<EventHandler> {
+
+  /**
+   * Identifies the relative priority of this particular handler.
+   */
+  val priority: Priority
+    get() = Priority.NORMAL
 
   /**
    * Evaluates whether this subscription accepts the given event type.
@@ -42,17 +50,19 @@ interface EventHandler {
   /**
    * Evaluates whether this subscription accepts the given event.
    *
-   * @param event an arbitrary event.
+   * @param ctx an arbitrary event context.
    * @return true if this event is accepted, false otherwise.
    */
-  fun accepts(event: Event<*>): Boolean
+  fun accepts(ctx: EventContext): Boolean
 
   /**
    * Executes the subscription specific handler logic.
    *
    * This method is only ever invoked if the event object is accepted by the handler via [ ][.accepts] and [.accepts].
    *
-   * @param event an event object.
+   * @param ctx an arbitrary event context.
    */
-  fun handle(event: Event<*>)
+  operator fun invoke(ctx: EventContext)
+
+  override fun compareTo(other: EventHandler) = this.priority.compareTo(other.priority)
 }
