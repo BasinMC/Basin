@@ -23,14 +23,14 @@ import org.basinmc.faucet.util.State
  *
  * @author [Johannes Donath](mailto:johannesd@torchmind.com)
  */
-interface ExecutionContext<STATE : Enum<STATE>> {
+interface ExecutionContext<S> {
 
   /**
    * Retrieves the events respective default state.
    *
    * Note: This method is guaranteed to return [State.ALLOW] or [State.DENY].
    */
-  val defaultState: STATE
+  val defaultState: S
 
   /**
    * Retrieves the current event state.
@@ -48,5 +48,5 @@ interface ExecutionContext<STATE : Enum<STATE>> {
    * @throws IllegalArgumentException when [State.WILDCARD] is being passed.
    * @throws IllegalStateException when the event state has been finalized.
    */
-  var state: STATE
+  var state: S
 }

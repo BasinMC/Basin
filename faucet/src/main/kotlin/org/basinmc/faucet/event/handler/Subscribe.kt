@@ -19,6 +19,7 @@ package org.basinmc.faucet.event.handler
 
 import org.basinmc.faucet.event.Event
 import org.basinmc.faucet.event.ExecutionContext
+import org.basinmc.faucet.event.StatelessEvent
 import org.basinmc.faucet.util.Priority
 import org.basinmc.faucet.util.State
 import kotlin.reflect.KClass
@@ -56,5 +57,5 @@ annotation class Subscribe(
      */
     val receiveState: State = State.WILDCARD) {
 
-  class DefaultEvent : Event<State>
+  class DefaultEvent private constructor() : StatelessEvent
 }
