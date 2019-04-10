@@ -19,6 +19,7 @@ package org.basinmc.faucet.event.handler
 import org.basinmc.faucet.event.Event
 import org.basinmc.faucet.util.Priority
 import javax.naming.event.EventContext
+import kotlin.reflect.KClass
 
 /**
  * Represents an arbitrary event handler which is notified of one or more event types within the
@@ -45,7 +46,7 @@ interface EventHandler : Comparable<EventHandler> {
    * @param eventType an arbitrary event type.
    * @return true if this event is accepted, false otherwise.
    */
-  fun accepts(eventType: Class<out Event<*>>): Boolean
+  fun accepts(eventType: KClass<out Event<*>>): Boolean
 
   /**
    * Evaluates whether this subscription accepts the given event.
