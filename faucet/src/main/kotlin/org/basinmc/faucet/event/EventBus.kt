@@ -27,16 +27,6 @@ import java.util.function.Consumer
 interface EventBus {
 
   /**
-   * Posts a stateless event to the bus.
-   *
-   * Each handler configured to accept a supertype or equivalent type of event will receive the
-   * event.
-   *
-   * @param event The even to post
-   */
-  fun post(event: Event<Unit>)
-
-  /**
    * Posts an event to the event bus.
    *
    * Each handler configured to accept a supertype or equivalent type of event will receive the
@@ -45,7 +35,7 @@ interface EventBus {
    * @param event The even to post
    * @param <S> identifies the desired return state (as specified by the event listeners).
    */
-  fun <S : Any> post(event: Event<S>): S
+  fun <E : Event<S>, S : Any> post(event: E): S
 
   /**
    * Subscribes an arbitrary event handler to this particular bus.
