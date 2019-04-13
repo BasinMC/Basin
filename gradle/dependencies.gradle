@@ -30,6 +30,7 @@ dependencyManagement {
         }
 
         // JUnit
+        dependency 'junit:junit:4.12'
         dependencySet(group:'org.junit.jupiter', version: '5.4.0-M1') {
             entry 'junit-jupiter-api'
             entry 'junit-jupiter-engine'
